@@ -1,0 +1,590 @@
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<!-- Fonts & GSAP -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+<link as="image" href="/s/articles/690d728df055414ae934dd4b/images/Pasta shapes.gif" rel="preload" type="image/gif" /><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style type="text/css">:root {
+  --brand-blue: #1D5379;
+  --brand-gold: #AA8A00;
+  --brand-red: #E1251B;
+  --text: #164261;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --border: rgba(255, 255, 255, 0.3);
+  --card-yellow: #FFFACD;
+  --card-blue: #E6F7FF;
+  --glow-gold: rgba(255, 215, 0, 0.45);
+  --glow-red: rgba(225, 37, 27, 0.4);
+  --parchment-grain: rgba(255, 255, 255, 0.15);
+  --sauce-color-start: #8B0000;
+  --sauce-color-end: #A52A2A;
+  --gustora-blue: #003366;
+  --glow-green: rgba(0, 128, 0, 0.5);
+  --glow-purple: rgba(128, 0, 128, 0.5);
+  --glow-orange: rgba(255, 165, 0, 0.5);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height: 100%; font-family: 'Montserrat', sans-serif; color: var(--text); overflow-x: hidden; scroll-behavior: smooth; }
+.bg-gif {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+  background: url('/s/articles/690d728df055414ae934dd4b/images/Pasta shapes.gif') center/cover no-repeat;
+  background-attachment: fixed; will-change: background-position;
+}
+header {
+  position: relative; text-align: center; padding: 6rem 2rem 5rem; z-index: 1;
+}
+header::before {
+  content: ''; position: absolute; inset: 0; background: inherit; background-attachment: inherit; z-index: -1; filter: brightness(0.85);
+}
+.logo-title {
+  font-size: 3.4rem; font-weight: 800; color: white; text-shadow: 0 3px 10px var(--shadow); letter-spacing: -0.8px; margin-bottom: .6rem;
+}
+.chapter {
+  font-size: 1.35rem; font-weight: 600; color: #FFFBCC; letter-spacing: 1.2px; text-shadow: 0 2px 6px var(--shadow);
+}
+.container { max-width: 800px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+.card {
+  background: rgba(255,255,255,.96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin: 3.5rem auto;
+  box-shadow: 0 16px 45px rgba(0,0,0,.22), 0 8px 20px rgba(0,0,0,.12);
+  transition: all .4s cubic-bezier(.25,.8,.25,1); cursor: default; position: relative;
+}
+.card:hover {
+  transform: translateY(-14px) scale(1.04);
+  box-shadow: 0 28px 70px rgba(0,0,0,.3), 0 0 40px var(--glow-gold); z-index: 20;
+}
+.heading-bar {
+  background: linear-gradient(to right, var(--sauce-color-start), var(--sauce-color-end));
+  color: white; padding: 1.5rem 2rem; font-weight: 800; font-size: 1.55rem;
+  text-align: center; letter-spacing: 1.3px; position: relative; cursor: pointer;
+  text-transform: uppercase; border-radius: 18px 18px 0 0; overflow: hidden;
+  box-shadow: 0 4px 15px rgba(139,0,0,.3);
+}
+.heading-bar::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 85px; height: 5px; background: var(--brand-gold); border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(170,138,0,.4);
+}
+.heading-bar:hover { animation: pulseGlow 2s infinite; }
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 4px 15px rgba(225,37,27,.4); }
+  50% { box-shadow: 0 4px 30px rgba(225,37,27,.7), 0 0 25px var(--glow-red); }
+}
+.blue-card .heading-bar {
+  background: var(--gustora-blue); box-shadow: 0 4px 15px rgba(0, 51, 102, 0.4);
+}
+.blue-card .heading-bar::after {
+  background: var(--brand-gold); box-shadow: 0 2px 8px rgba(170,138,0,.5);
+}
+.content {
+  padding: 0.2rem 2.8rem; color: var(--text); line-height: 1.95; font-size: 1.12rem;
+  position: relative; border-radius: 0 0 18px 18px; background: var(--card-yellow); overflow: hidden;
+}
+.card:nth-child(1) .content { background: var(--card-yellow); }
+.card:nth-child(2) .content { background: var(--card-blue); }
+.card:nth-child(3) .content { background: var(--card-yellow); }
+.card:nth-child(4) .content { background: var(--card-blue); }
+.card:nth-child(5) .content { background: var(--card-yellow); }
+.card:nth-child(6) .content { background: var(--card-blue); }
+.card:nth-child(7) .content { background: var(--card-yellow); }
+.card:nth-child(8) .content { background: var(--card-blue); }
+.content::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, var(--parchment-grain) 0px, transparent 1px, transparent 8px, var(--parchment-grain) 9px),
+    repeating-linear-gradient(0deg, var(--parchment-grain) 0px, transparent 1px, transparent 8px, var(--parchment-grain) 9px);
+  opacity: .25; pointer-events: none; border-radius: 0 0 18px 18px; mix-blend-mode: overlay;
+}
+.content p { margin: 1.4rem 0; }
+.content strong { color: var(--brand-blue); font-weight: 600; }
+.pasta-float {
+  position: absolute; width: 60px; opacity: 0.12; pointer-events: none; z-index: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+.pasta-float.left { left: 10px; top: 20px; transform: rotate(-15deg); }
+.pasta-float.right { right: 10px; bottom: 30px; transform: rotate(20deg); }
+.video-wrapper {
+  position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+  border-radius: 14px; margin: 2.6rem 0; box-shadow: 0 14px 40px rgba(0,0,0,.2);
+}
+.video-wrapper iframe {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 14px;
+}
+.content img {
+  width: 100%; max-width: 600px; height: auto; border-radius: 18px; margin: 2.8rem auto;
+  object-fit: cover; display: block; transition: all .5s ease; box-shadow: 0 12px 32px rgba(0,0,0,.18);
+}
+.content img:hover {
+  transform: scale(1.05); box-shadow: 0 24px 60px rgba(0,0,0,.35), 0 0 45px var(--glow-gold);
+}
+.napkin-img {
+  width: 100%; max-width: 600px; height: auto; display: block; margin: 2.8rem auto;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.2)); border-radius: 18px;
+}
+footer {
+  text-align: center; padding: 4.5rem 2rem; background: var(--brand-blue); color: white;
+  margin-top: 6rem; z-index: 1; font-size: .98rem;
+}
+#particle-container {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;
+}
+
+/* QUIZ STYLES */
+#quiz-card input { 
+  border: none; border-bottom: 2px solid var(--brand-blue); background: transparent; 
+  font-size:1rem; padding:4px 0; text-align:center; width:120px;
+}
+#quiz-card input:focus { outline:none; border-color:var(--brand-gold); }
+
+/* WHEEL STYLES */
+@import "https://fonts.googleapis.com/css2?family=Aleo&display=swap";
+#container {
+  background-image: ur[](https://assets.codepen.io/262181/intro-bg.jpg);
+  background-size: cover; background-position: center;
+  width: 100vw; height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; z-index: 101; position: absolute;
+}
+#lottie { height: 40vh; max-height: 400px; z-index: 102; display: flex; }
+#enter button {
+  cursor: pointer; margin-top: 20px; padding: 12px 24px; background:#9d988a; color:#6b2414;
+  border-radius: 8px; border: none; font-size:1.2rem; font-weight:600;
+}
+.webgl { position: fixed; top: 0; left: 0; outline: none; z-index: 100; }
+
+@media (max-width: 768px) {
+  .logo-title { font-size: 2.5rem; }
+  .chapter { font-size: 1.1rem; }
+  header { padding: 4rem 1rem 3rem; }
+  .heading-bar { font-size: 1.3rem; padding: 1.2rem 1rem; }
+  .content { padding: 2.2rem; }
+  .card:hover { transform: translateY(-10px) scale(1.03); }
+  .content img, .napkin-img { max-width: 100%; margin: 2rem auto; }
+}
+</style>
+<!-- BACKGROUND GIF -->
+<div class="bg-gif">&nbsp;</div>
+<!-- HEADER -->
+
+<header style="translate: none; rotate: none; scale: none; opacity: 0.0002; transform: translate3d(0px, -99.9766px, 0px);">
+<h1 class="logo-title">Gustora Foods</h1>
+
+<h3 class="chapter"><strong>CHAPTER 3</strong></h3>
+
+<h3 class="chapter"><strong>PRODUCT INNOVATION</strong></h3>
+</header>
+
+<div class="container"><!-- CARD: How Gustora Pasta is Made -->
+<div class="card">
+<div class="heading-bar" data-particle-target="">How Gustora Pasta is Made</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-fusilli"></use></svg> <svg class="pasta-float right"><use href="#pasta-farfalle"></use></svg>
+
+<p>Gustora pasta is crafted by combining authentic Italian pasta-making traditions with advanced production technology, enriched by Indian raw materials.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/ejMFua9iibQ?start=11&amp;rel=0" title="How Gustora Pasta is Made"></iframe></div>
+<img alt="Pasta Making Process" class="napkin-img" src="https://via.placeholder.com/600x400/FFFACD/003366?text=How+Gustora+Pasta+is+Made" /></div>
+</div>
+<!-- CARD: Raw Material Selection -->
+
+<div class="card blue-card">
+<div class="heading-bar" data-particle-target="">Raw Material Selection</div>
+
+<div class="content"><svg><use href="#pasta-penne"></use></svg> <svg class="pasta-float right"><use href="#pasta-rigatoni"></use></svg>
+
+<p>The process begins with selecting the finest 100% durum wheat semolina, primarily sourced from India&rsquo;s Madhya Pradesh region, renowned for its quality wheat that imparts the pasta its golden color and rich texture.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/966aIAKFncY?start=2388&amp;end=2439&amp;rel=0" title="Raw Material Selection"></iframe></div>
+<img alt="Durum Wheat Semolina" class="napkin-img" src="https://via.placeholder.com/600x400/E6F7FF/003366?text=Raw+Material+Selection" /></div>
+</div>
+<!-- CARD: Mixing and Kneading -->
+
+<div class="card">
+<div class="heading-bar" data-particle-target="">Mixing and Kneading</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-fusilli"></use></svg> <svg class="pasta-float right"><use href="#pasta-farfalle"></use></svg>
+
+<p>The semolina is mixed with water to form dough, which is kneaded to achieve the desired consistency, creating a perfect base for extrusion.</p>
+<img alt="Dough Preparation" class="napkin-img" src="https://via.placeholder.com/600x400/FFFACD/003366?text=Mixing+and+Kneading" /></div>
+</div>
+<!-- CARD: Bronze Die Extrusion -->
+
+<div class="card blue-card">
+<div class="heading-bar" data-particle-target="">Bronze Die Extrusion</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-penne"></use></svg> <svg class="pasta-float right"><use href="#pasta-rigatoni"></use></svg>
+
+<p>The dough is extruded through bronze dies, a traditional Italian method that gives the pasta a rough surface. This texture helps sauces cling better to the pasta, enhancing flavor in every bite&mdash;whether a classic marinara or creamy Alfredo. Bronze dies distinguish Gustora&rsquo;s artisanal pasta from smooth-molded industrial pasta.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/966aIAKFncY?start=2573&amp;end=2821&amp;rel=0" title="Bronze Die Extrusion Process"></iframe></div>
+<img alt="Bronze Die Texture" class="napkin-img" src="https://via.placeholder.com/600x400/E6F7FF/003366?text=Bronze+Die+Extrusion" /></div>
+</div>
+<!-- CARD: Slow Drying -->
+
+<div class="card">
+<div class="heading-bar" data-particle-target="">Slow Drying</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-fusilli"></use></svg> <svg class="pasta-float right"><use href="#pasta-farfalle"></use></svg>
+
+<p>The pasta undergoes a slow drying process lasting over 20 hours in controlled conditions, similar to the age-old Italian methods used by the nonnas (grandmothers). This preserves the natural flavor, aroma, and nutritional value of the pasta&mdash;something quick industrial drying cannot achieve, resulting in a premium product with beautiful texture.</p>
+<img alt="Slow Drying Chambers" class="napkin-img" src="https://via.placeholder.com/600x400/FFFACD/003366?text=Slow+Drying+Process" /></div>
+</div>
+<!-- CARD: Packaging -->
+
+<div class="card blue-card">
+<div class="heading-bar" data-particle-target="">Packaging</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-penne"></use></svg> <svg class="pasta-float right"><use href="#pasta-rigatoni"></use></svg>
+
+<p>Finally, the pasta is packaged carefully to maintain freshness, using premium materials suited for the Indian market while ensuring quality and safety.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/966aIAKFncY?start=2830&amp;end=2866&amp;rel=0" title="Packaging Process"></iframe></div>
+<img alt="Pasta Packaging" class="napkin-img" src="https://via.placeholder.com/600x400/E6F7FF/003366?text=Packaging" /></div>
+</div>
+<!-- CARD: Scale of Production -->
+
+<div class="card">
+<div class="heading-bar" data-particle-target="">Scale of Production</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-fusilli"></use></svg> <svg class="pasta-float right"><use href="#pasta-farfalle"></use></svg>
+
+<p>Gustora produces approximately 400 tons of pasta per month (equivalent to about a million packs), balancing scale with artisanal quality standards, supported by Italian experts supervising the process.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/966aIAKFncY?start=2041&amp;end=2085&amp;rel=0" title="Machinery and Scale"></iframe></div>
+<img alt="Production Facility" class="napkin-img" src="https://via.placeholder.com/600x400/FFFACD/003366?text=Scale+of+Production" /></div>
+</div>
+<!-- CARD: Nutrition -->
+
+<div class="card blue-card">
+<div class="heading-bar" data-particle-target="">Nutrition: Unveiling the Nutritional Marvel</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-penne"></use></svg> <svg class="pasta-float right"><use href="#pasta-rigatoni"></use></svg>
+
+<p>In the realm of culinary delights, few dishes evoke universal love and comfort quite like pasta...</p>
+
+<p><strong>Dispelling Myths:</strong> First and foremost, let&#39;s address the elephant in the room...</p>
+
+<p><strong>Artisanal Craftsmanship:</strong> At the heart of Gustora Pasta lies a commitment...</p>
+
+<p><strong>Nutritional Superiority:</strong> When it comes to nutritional content...</p>
+
+<p><strong>Beyond the Basics:</strong> Gustora Pasta caters to a diverse array...</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/6yJHQNX5zI4?rel=0" title="Nutrition Short"></iframe></div>
+<img alt="Gustora Nutrition Facts" class="napkin-img" src="https://via.placeholder.com/600x400/E6F7FF/003366?text=Nutritional+Profile" /></div>
+</div>
+<!-- CARD: Closing -->
+
+<div class="card">
+<div class="heading-bar" data-particle-target="">This Meticulous Manufacturing Process</div>
+
+<div class="content"><svg class="pasta-float left"><use href="#pasta-fusilli"></use></svg> <svg class="pasta-float right"><use href="#pasta-farfalle"></use></svg>
+
+<p>This meticulous manufacturing process allows Gustora to deliver authentic Italian pasta crafted with care and excellence, bringing the true spirit and flavors of Italy to Indian dining tables.</p>
+
+<div class="video-wrapper"><iframe allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/966aIAKFncY?start=3498&amp;end=3618&amp;rel=0" title="Taste of India"></iframe></div>
+<img alt="Product Innovation Summary" class="napkin-img" src="https://via.placeholder.com/600x400/FFFACD/E1251B?text=Italian+Flavors+in+India" /></div>
+</div>
+</div>
+<!-- END OF .container --><!-- QUIZ ACTIVITY -->
+
+<div class="card" id="quiz-card" style="max-width:800px;margin:3.5rem auto;">
+<div class="heading-bar">Test Your Pasta Knowledge!</div>
+
+<div class="content">
+<p>Answer these 3 quick questions to unlock the Secret Chef Wheel!</p>
+
+<form id="quiz-form">
+<p>1. Gustora pasta is made from 100% <input id="q1" type="text" /> wheat semolina.</p>
+
+<p>2. The traditional Italian dies used are made of <input id="q2" type="text" />.</p>
+
+<p>3. Gustora pasta is dried slowly for over <input id="q3" type="text" /> hours.</p>
+<button style="margin-top:20px;padding:10px 20px;background:var(--brand-red);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;" type="submit">Submit Answers</button></form>
+
+<div id="quiz-result" style="margin-top:20px;font-weight:600;display:none;">&nbsp;</div>
+</div>
+</div>
+<!-- SPINNING WHEEL ACTIVITY -->
+
+<div id="wheel-activity" style="display:none;position:relative;width:100%;height:100vh;background:#000;z-index:1000;">
+<div id="container">
+<div id="lottie">&nbsp;</div>
+
+<div id="enter"><button id="enter" onclick="start()">Pull the Lever!</button></div>
+</div>
+<canvas class="webgl"></canvas></div>
+<!-- RECIPE REVEAL CARD -->
+
+<div class="card" id="recipe-card" style="display:none;max-width:800px;margin:3.5rem auto;">
+<div class="heading-bar">Secret Chef Recipe Revealed!</div>
+
+<div class="content">
+<div id="recipe-content" style="font-size:1.15rem;line-height:2;">&nbsp;</div>
+</div>
+</div>
+
+<footer>
+<p>&copy; 2025 Gustora Foods Pvt. Ltd. &bull; Crafted with Italian Precision in India</p>
+</footer>
+
+<div id="particle-container">&nbsp;</div>
+<!-- HIDDEN PASTA SVGs -->
+
+<div style="display:none;"><svg id="pasta-fusilli" viewbox="0 0 100 100"><path d="M50 10 Q30 30,50 50 Q70 70,50 90 Q30 70,50 50 Q30 30,50 10" fill="#E1251B" stroke="#c51b1b" stroke-width="3"></path></svg> <svg id="pasta-penne" viewbox="0 0 100 100"><path d="M20 20 L40 80 L60 20 L80 80 L60 20 L40 80 Z" fill="#AA8A00" stroke="#8B6F00" stroke-width="2"></path></svg> <svg id="pasta-farfalle" viewbox="0 0 100 100"><path d="M50 20 Q30 40,50 50 Q30 60,50 80 Q70 60,50 50 Q70 40,50 20" fill="#AB3E5B" stroke="#8B2F4A" stroke-width="2"></path><path d="M30 50 L70 50" stroke="#8B2F4A" stroke-width="3"></path></svg> <svg id="pasta-rigatoni" viewbox="0 0 100 100"><rect fill="#FFBE40" height="60" rx="15" stroke="#E5A930" stroke-width="3" width="30" x="35" y="20"></rect></svg></div>
+<script>
+  gsap.from("header", { y: -100, opacity: 0, duration: 1.2, ease: "bounce.out" });
+  const pastaShapes = Array.from(document.querySelectorAll("svg[id^='pasta-']")).map(svg => svg.outerHTML);
+  const container = document.getElementById("particle-container");
+  const emitters = new Map();
+  function startEmission(el) {
+    if (emitters.has(el)) return;
+    let lastX = 0, lastY = 0;
+    const interval = setInterval(() => { if (lastX && lastY) createPastaParticle(lastX, lastY); }, 70);
+    const onMove = e => { lastX = e.clientX; lastY = e.clientY; };
+    el.addEventListener("mousemove", onMove);
+    emitters.set(el, { interval, onMove });
+  }
+  function stopEmission(el) {
+    const data = emitters.get(el);
+    if (data) { clearInterval(data.interval); el.removeEventListener("mousemove", data.onMove); emitters.delete(el); }
+  }
+  function createPastaParticle(x, y) {
+    const div = document.createElement("div");
+    div.innerHTML = pastaShapes[Math.floor(Math.random() * pastaShapes.length)];
+    const svg = div.querySelector("svg");
+    const size = 24 + Math.random() * 20;
+    svg.style.width = size + "px";
+    div.style.position = "absolute"; div.style.left = x + "px"; div.style.top = y + "px";
+    div.style.pointerEvents = "none"; div.style.zIndex = "9999";
+    container.appendChild(div);
+    const angle = 180 + (Math.random() - 0.5) * 140;
+    const vel = 250 + Math.random() * 250;
+    const vx = Math.cos(angle * Math.PI / 180) * vel;
+    const vy = Math.sin(angle * Math.PI / 180) * vel;
+    gsap.fromTo(div, { scale: 0.3, rotation: Math.random() * 360, opacity: 1 },
+      { x: "+=" + vx, y: "+=" + vy, scale: 0, opacity: 0, rotation: "+=1000", duration: 1.8, ease: "power2.out", onComplete: () => div.remove() });
+  }
+  document.querySelectorAll(".heading-bar").forEach(el => {
+    el.addEventListener("mouseenter", () => startEmission(el));
+    el.addEventListener("mouseleave", () => stopEmission(el));
+  });
+</script><!-- WHEEL + QUIZ + RECIPE LOGIC --><script type="module">
+  import * as THREE from "https://esm.sh/three@0.174.0";
+  import { OrbitControls } from "https://esm.sh/three@0.174.0/addons/controls/OrbitControls.js";
+  import { GLTFLoader } from "https://esm.sh/three@0.174.0/examples/jsm/loaders/GLTFLoader.js";
+  import { DRACOLoader } from "https://esm.sh/three@0.174.0/examples/jsm/loaders/DRACOLoader";
+  import { RGBELoader } from "https://esm.sh/three@0.174.0/examples/jsm/loaders/RGBELoader";
+  import Lottie from "https://esm.sh/lottie-web";
+
+  window.start3 = false;
+  let cameraSetup = { cameraIsSettled: false, cameraTgt: { x: 0.11611507465368477, y: 3.5939784540499456e-16, z: 5.8682635668005005 }, totalIterations: 900, iteration: 0, leverTgt: 1 };
+  let anim = null;
+  let initLottie = () => {
+    anim = Lottie.loadAnimation({
+      container: document.getElementById("lottie"), renderer: "svg", loop: true, autoplay: true,
+      path: "https://assets.codepen.io/262181/crnvlintro.json"
+    });
+    let loop = () => { anim.goToAndPlay(120, true); };
+    anim.addEventListener("loopComplete", loop);
+  };
+  let wheel; let lever = null; let hitArea = null; let pullSign = null; let ready = false;
+  let speed = 0; let inc = 0.02; let incSpeed = 12; let signSpinSpeed = 1;
+  let mouse = { pressing: false, curY: null, isClicking: false, dragStarted: false, dragDistance: 0, isSpinning: false };
+  let revealAnim = { isAnimating: false, isShowing: false };
+  let resultSign = null; let resultAnim = null; let animAction = null; let animMixer = null;
+  let numArr = [];
+  let deviceType = null;
+  const canvas = document.querySelector("canvas.webgl");
+  const scene = new THREE.Scene();
+  const textureLoader = new THREE.TextureLoader();
+  const dracoLoader = new DRACOLoader(); dracoLoader.setDecoderPath("draco/");
+  const gltfLoader = new GLTFLoader(); gltfLoader.setDRACOLoader(dracoLoader);
+  const raycaster = new THREE.Raycaster(); const pointer = new THREE.Vector2();
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  deviceType = isMobile ? "mobile" : "desktop";
+
+  const isDown = (e) => {
+    mouse.pressing = true;
+    let tgt = deviceType === "mobile" ? e.targetTouches[0] : e;
+    mouse.x = tgt.clientX; mouse.y = tgt.clientY;
+    pointer.x = (tgt.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(tgt.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObject(hitArea);
+    if (intersects.length > 0) { e.preventDefault(); controls.enableRotate = false; mouse.isClicking = true; }
+  };
+  const isUp = () => { mouse.pressing = false; mouse.isClicking = false; controls.enableRotate = true; if (mouse.dragStarted) { mouse.dragStarted = false; lever.rotation.x = 1; } };
+  const isMove = (e) => {
+    let tgt = deviceType === "mobile" ? e.targetTouches[0] : e;
+    mouse.x = tgt.clientX; mouse.y = tgt.clientY;
+    if (mouse.pressing && mouse.isClicking) {
+      e.preventDefault(); controls.enableRotate = false;
+      if (mouse.curY == null) { mouse.curY = tgt.clientY; }
+      else if (mouse.curY > tgt.clientY) { mouse.direction = "up"; }
+      else if (mouse.curY < tgt.clientY) {
+        if (mouse.direction !== "down") { mouse.direction = "down"; mouse.dragDistance = 0; }
+        let dist = tgt.clientY - mouse.curY;
+        mouse.dragStarted = true;
+        mouse.dragDistance += dist;
+        let r = Math.min(2, mouse.dragDistance / 100 + 1);
+        lever.rotation.x = r;
+        if (inc < 0.4) inc += r / 100;
+      }
+      mouse.curY = tgt.clientY;
+    }
+  };
+  window.addEventListener("touchstart", isDown); window.addEventListener("mousedown", isDown);
+  window.addEventListener("mouseup", isUp); window.addEventListener("touchend", isUp);
+  window.addEventListener("mousemove", isMove); window.addEventListener("touchmove", isMove);
+
+  const sizes = { width: window.innerWidth, height: window.innerHeight };
+  window.addEventListener("resize", () => {
+    sizes.width = window.innerWidth; sizes.height = window.innerHeight;
+    camera.aspect = sizes.width / sizes.height; camera.updateProjectionMatrix();
+    renderer.setSize(sizes.width, sizes.height); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  });
+
+  const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100);
+  camera.position.set(10, -2.3, -15.4); scene.add(camera);
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true; controls.minDistance = 4; controls.maxDistance = 7;
+  controls.maxPolarAngle = Math.PI / 2; controls.maxAzimuthAngle = 0.785; controls.minAzimuthAngle = -1.5;
+
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(sizes.width, sizes.height); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const bakedTexture = textureLoader.load("https://assets.codepen.io/262181/baked.jpg"); bakedTexture.flipY = false; bakedTexture.colorSpace = THREE.SRGBColorSpace;
+  const wheelTexture = textureLoader.load("https://assets.codepen.io/262181/wheel.jpg"); wheelTexture.flipY = false; wheelTexture.colorSpace = THREE.SRGBColorSpace;
+  const shadowTexture = textureLoader.load("https://assets.codepen.io/262181/shadow.png"); shadowTexture.flipY = false; shadowTexture.colorSpace = THREE.SRGBColorSpace;
+
+  const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture });
+  const wheelMaterial = new THREE.MeshBasicMaterial({ map: wheelTexture });
+  const shadowMaterial = new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, opacity: 0.5 });
+  const transpMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+
+  gltfLoader.load("https://assets.codepen.io/262181/carnival.glb", (gltf) => {
+    gltf.scene.traverse((child) => {
+      if (child.name === "lever") { lever = child; lever.rotation.x = 2; child.material = bakedMaterial; }
+      else if (child.name === "hitarea") { hitArea = child; child.material = transpMaterial; }
+      else if (child.name === "wheel") { child.material = wheelMaterial; wheel = child; ready = true; }
+      else if (child.name === "shadow") { child.material = shadowMaterial; }
+      else if (child.name === "sign_swing") { child.material = bakedMaterial; pullSign = child; }
+      else if (child.name === "result_panel") { resultSign = child; initResultAnimation(child, gltf); }
+      else if (child.name.includes("num")) { numArr.push(child); child.material = bakedMaterial; child.visible = false; }
+      else { child.material = bakedMaterial; }
+    });
+    scene.add(gltf.scene);
+  });
+
+  let initResultAnimation = (child, gltf) => {
+    resultSign = child;
+    resultAnim = THREE.AnimationClip.findByName(gltf.animations, "result_panelAction");
+    animMixer = new THREE.AnimationMixer(resultSign);
+    animMixer.addEventListener("finished", (e) => { manageRevealAnim(e); });
+    animAction = animMixer.clipAction(resultAnim);
+    animAction.reset(); animAction.clampWhenFinished = true; animAction.setLoop(THREE.LoopOnce, 1);
+  };
+  let manageRevealAnim = () => {
+    if (revealAnim.isShowing) { revealAnim.isShowing = false; } else { revealAnim.isShowing = true; }
+    revealAnim.isAnimating = false; animAction.paused = true;
+  };
+  let showNumber = (answer) => {
+    numArr.forEach(n => n.visible = false);
+    numArr[answer - 1].visible = true;
+  };
+
+  const secretRecipes = [
+    null,
+    `<strong>1. Massimo Bottura – “Oops! I Dropped the Lemon Tart” Pasta</strong><br>Tagliatelle with lemon zest emulsion, Parmigiano Reggiano foam, and caper powder. Cook fresh tagliatelle 2 min, toss in warm lemon juice + olive oil emulsion, top with whipped 36-month Parmigiano foam.`,
+    `<strong>2. Carlo Cracco – Black Squid Ink Spaghetti</strong><br>Spaghetti nero with cuttlefish ink, sea urchin, and bottarga. Sauté garlic in olive oil, add squid ink, toss al dente spaghetti, finish with raw sea urchin tongues and grated bottarga.`,
+    `<strong>3. Antonia Klugmann – Herb-Infused Pici</strong><br>Hand-rolled pici with 22 wild herbs. Blanch herbs, blend with olive oil, toss with pici, finish with toasted pine nuts.`,
+    `<strong>4. Niko Romito – Cacio e Pepe 2.0</strong><br>Tonarelli with water-based pecorino cream. Dissolve 200g Pecorino Romano in 400ml cold water overnight, cook pasta in minimal water, emulsify.`,
+    `<strong>5. Alain Ducasse – Truffle Tagliolini</strong><br>Fresh egg tagliolini with 30g fresh white truffle per person. Cook 1 min, toss in warm butter, shave truffle tableside.`,
+    `<strong>6. Heinz Beck – Fagotelli Carbonara</strong><br>Liquid carbonara-filled pasta parcels. Fill ravioli with raw egg yolk + pecorino + guanciale cream, cook 90 sec, serve with crispy guanciale.`,
+    `<strong>7. Davide Oldani – Saffron Risotto-Style Pasta</strong><br>Short pasta cooked like risotto with saffron and toasted yeast. Toast pasta in butter, add saffron stock gradually, finish with dehydrated yeast powder.`,
+    `<strong>8. Nadia Santini – Tortelli di Zucca</strong><br>Pumpkin tortelli with amaretti and mostarda. Fill with roasted pumpkin, crushed amaretti, mustard fruit, serve with burnt butter and sage.`,
+    `<strong>9. René Redzepi – Fermented Garlic Pasta</strong><br>Spaghetti with black garlic ferment. Blend 2-year fermented garlic with pasta water, toss with pasta, top with wild herbs.`,
+    `<strong>10. Heston Blumenthal – Sound-Enhanced Spaghetti</strong><br>Spaghetti with iPod playing ocean sounds + seafood broth reduction. Serve with edible sand and sea foam for multisensory experience.`
+  ];
+
+  const clock = new THREE.Clock();
+  const tick = () => {
+    controls.update();
+    if (ready && window.start3) {
+      speed += inc;
+      if (inc > 0) {
+        if (!mouse.isSpinning) inc += 0.1;
+        wheel.rotation.z = speed;
+        inc -= 0.001;
+        mouse.isSpinning = true;
+        if (revealAnim.isShowing) {
+          animAction.paused = false; revealAnim.isAnimating = true;
+          animAction.setLoop(THREE.LoopOnce); animAction.timeScale = -1; animAction.time = 0.5; animAction.play();
+          revealAnim.isShowing = false;
+        }
+      } else {
+        let rad = (wheel.rotation.z * (180 / Math.PI)) % 360;
+        let answer = Math.floor(1 + rad / 36);
+        if (mouse.isSpinning) {
+          showNumber(answer);
+          mouse.isSpinning = false;
+          animAction.paused = false; revealAnim.isAnimating = true;
+          animAction.setLoop(THREE.LoopOnce); animAction.timeScale = 1; animAction.play();
+          setTimeout(() => {
+            document.getElementById('wheel-activity').style.display = 'none';
+            document.getElementById('recipe-card').style.display = 'block';
+            document.getElementById('recipe-content').innerHTML = secretRecipes[answer];
+          }, 3000);
+        }
+      }
+      if (incSpeed > 0 && pullSign != null) {
+        pullSign.rotation.z = Math.sin(signSpinSpeed) / 3;
+        signSpinSpeed += incSpeed / 100; incSpeed -= 0.068;
+      }
+      if (!cameraSetup.cameraIsSettled && cameraSetup.iteration < 100) {
+        cameraSetup.iteration++;
+        let xx = easeOutCubic(cameraSetup.iteration, camera.position.x, cameraSetup.cameraTgt.x - camera.position.x, cameraSetup.totalIterations);
+        let yy = easeOutCubic(cameraSetup.iteration, camera.position.y, cameraSetup.cameraTgt.y - camera.position.y, cameraSetup.totalIterations);
+        let zz = easeOutCubic(cameraSetup.iteration, camera.position.z, cameraSetup.cameraTgt.z - camera.position.z, cameraSetup.totalIterations);
+        camera.position.set(xx, yy, zz);
+        let leverR = easeInOutCubic(cameraSetup.iteration, lever.rotation.x, cameraSetup.leverTgt - lever.rotation.x, 80);
+        lever.rotation.x = leverR;
+      } else { cameraSetup.cameraIsSettled = true; }
+    }
+    const delta = clock.getDelta();
+    if (animMixer) animMixer.update(delta);
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(tick);
+  };
+  function easeOutCubic(t, b, c, d) { t /= d; t--; return c * (t * t * t + 1) + b; }
+  function easeInOutCubic(t, b, c, d) { t /= d / 2; if (t < 1) return (c / 2) * t * t * t + b; t -= 2; return (c / 2) * (t * t * t + 2) + b; }
+
+  initLottie();
+  tick();
+
+  // QUIZ LOGIC
+  document.getElementById('quiz-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const a1 = document.getElementById('q1').value.trim().toLowerCase();
+    const a2 = document.getElementById('q2').value.trim().toLowerCase();
+    const a3 = document.getElementById('q3').value.trim();
+
+    if(a1 === 'durum' && a2 === 'bronze' && (a3 === '20' || a3 === 'twenty')){
+      document.getElementById('quiz-result').textContent = 'Correct! Unlock the Secret Chef Wheel!';
+      document.getElementById('quiz-result').style.color = 'green';
+      document.getElementById('quiz-result').style.display = 'block';
+      document.getElementById('quiz-card').style.display = 'none';
+      document.getElementById('wheel-activity').style.display = 'block';
+    } else {
+      document.getElementById('quiz-result').textContent = 'Try again! Answers: durum, bronze, 20';
+      document.getElementById('quiz-result').style.color = 'var(--brand-red)';
+      document.getElementById('quiz-result').style.display = 'block';
+    }
+  });
+
+  window.start = () => {
+    document.getElementById("container").style.display = "none";
+    window.start3 = true;
+    anim.stop();
+  };
+</script>
