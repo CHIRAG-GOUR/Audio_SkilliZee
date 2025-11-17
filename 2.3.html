@@ -41,7 +41,7 @@ header::before {
 .chapter {
   font-size: 1.35rem; font-weight: 600; color: #FFFBCC; letter-spacing: 1.2px; text-shadow: 0 2px 6px var(--shadow);
 }
-.container { max-width: 800px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+.container { max-width: 900px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
 .card {
   background: rgba(255,255,255,.96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin: 3.5rem auto;
@@ -164,7 +164,7 @@ footer {
 <div class="bg-gif">&nbsp;</div>
 <!-- HEADER -->
 
-<header style="translate: none; rotate: none; scale: none; opacity: 0.0002; transform: translate3d(0px, -99.9766px, 0px);">
+<header style="translate: none; rotate: none; scale: none; opacity: 10000000000000000;">
 <h1 class="logo-title">Gustora Foods</h1>
 
 <h3 class="chapter"><strong>CHAPTER 3</strong></h3>
@@ -331,7 +331,6 @@ footer {
 
 <div style="display:none;"><svg id="pasta-fusilli" viewbox="0 0 100 100"><path d="M50 10 Q30 30,50 50 Q70 70,50 90 Q30 70,50 50 Q30 30,50 10" fill="#E1251B" stroke="#c51b1b" stroke-width="3"></path></svg> <svg id="pasta-penne" viewbox="0 0 100 100"><path d="M20 20 L40 80 L60 20 L80 80 L60 20 L40 80 Z" fill="#AA8A00" stroke="#8B6F00" stroke-width="2"></path></svg> <svg id="pasta-farfalle" viewbox="0 0 100 100"><path d="M50 20 Q30 40,50 50 Q30 60,50 80 Q70 60,50 50 Q70 40,50 20" fill="#AB3E5B" stroke="#8B2F4A" stroke-width="2"></path><path d="M30 50 L70 50" stroke="#8B2F4A" stroke-width="3"></path></svg> <svg id="pasta-rigatoni" viewbox="0 0 100 100"><rect fill="#FFBE40" height="60" rx="15" stroke="#E5A930" stroke-width="3" width="30" x="35" y="20"></rect></svg></div>
 <script>
-  gsap.from("header", { y: -100, opacity: 0, duration: 1.2, ease: "bounce.out" });
   const pastaShapes = Array.from(document.querySelectorAll("svg[id^='pasta-']")).map(svg => svg.outerHTML);
   const container = document.getElementById("particle-container");
   const emitters = new Map();
@@ -587,4 +586,5 @@ footer {
     window.start3 = true;
     anim.stop();
   };
+
 </script>
