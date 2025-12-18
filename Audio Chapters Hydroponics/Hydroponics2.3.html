@@ -1,0 +1,484 @@
+<div><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></div>
+<title></title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+<style type="text/css">:root{
+  --hunter:#386641; --gunmetal:#1C2628; --cornsilk:#FEFAE0; --cyan:#CAEDED;
+  --pi:#BADD7F; --fl:#D3622C; --glass:#B6D2CB;
+  --prog-main:#386641; --prog-glow:#6AAA64;
+}
+body,html{margin:0;padding:0;font-family:'Inter',sans-serif;color:var(--gunmetal);background:transparent;overflow-x:hidden;min-height:100vh}
+.bg-gif{
+  position:fixed;inset:0;z-index:-3;
+  background:url('/s/articles/693bd1188a0fae5b6ce7dbc5/images/Bg-gif 5.gif') center/cover no-repeat fixed;
+  pointer-events:none;opacity:0.88;
+}
+
+/* === STRICT 1.5rem VERTICAL SPACING SYSTEM === */
+section {
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+section > * + * {
+  margin-top: 1.5rem !important;
+}
+.glass,
+.glass-dark,
+.design-card,
+.quick-fact,
+.audio-container {
+  margin: 0 !important;
+}
+.grid {
+  gap: 1.5rem !important;
+}
+
+/* Hero untouched - 90vh */
+section.min-h-screen {
+  height: 90vh !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem !important;
+}
+section.min-h-screen > .glass {
+  border-radius: 2.5rem !important;
+  background: rgba(182,210,203,.82) !important;
+  backdrop-filter: blur(22px) !important;
+  border: 1px solid rgba(255,255,255,.4) !important;
+}
+
+#topProgress{height:8px;background:var(--hunter);position:fixed;top:0;left:0;width:0%;z-index:99999;transition:width .4s;box-shadow:0 0 30px var(--hunter)}
+#progressLeaf{
+  position:fixed;top:10px !important;left:0%;z-index:999999;width:60px;height:60px;
+  transform:translateX(-50%);pointer-events:none;transition:left .4s;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+}
+.wobbling-element{
+  position:fixed;bottom:28px;right:28px;z-index:9999;width:150px;height:150px;animation:wobble 4s ease-in-out infinite
+}
+#percentageCounter{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:2rem;font-weight:900
+}
+.outer_circle{fill:transparent;stroke:var(--prog-main);stroke-width:2;stroke-dasharray:7 1}
+.outer_circle_bars_l,.outer_circle_bars_r{fill:transparent;stroke:var(--prog-glow);stroke-width:7;stroke-dasharray:0.4 7.6}
+.outer_circle_bars_l{stroke-dashoffset:0.1}.outer_circle_bars_r{stroke-dashoffset:1.4}
+.outer_progress{fill:none;stroke:var(--prog-main);stroke-width:8;stroke-linecap:round}
+.inner_progress{fill:none;stroke:var(--prog-glow);stroke-width:8;stroke-linecap:round}
+.center_outer_circle{fill:transparent;stroke:rgba(56,102,65,0.4);stroke-width:1}
+.center_inner_circle_second{stroke:var(--prog-main);stroke-width:2;stroke-dasharray:5 95;animation:r 20s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@keyframes wobble{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-2px)}50%{transform:translate(0,3px)}75%{transform:translate(-2px,-1px)}}
+.glass{background:rgba(202,237,237,.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.6);border-radius:3rem}
+.glass-dark{background:rgba(28,38,40,.97);backdrop-filter:blur(22px);border:1px solid var(--pi);border-radius:3rem;color:#FEFAE0}
+.design-card{
+  background:linear-gradient(135deg,var(--cornsilk),#fffaf5);border-radius:3rem;padding:2.5rem;
+  box-shadow:0 30px 80px rgba(0,0,0,0.25);border:3px solid var(--hunter);
+}
+.quick-fact{
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-left:6px solid var(--hunter);
+  padding:1.5rem;border-radius:1.5rem;box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+#fullscreenBtn{
+  position:fixed;top:24px;right:24px;z-index:99999;width:68px;height:68px;
+  background:linear-gradient(135deg,var(--hunter),#6AAA64);border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 12px 35px rgba(56,102,65,.6), inset 0 0 20px rgba(255,255,255,.3);
+  border:5px solid #fff;backdrop-filter:blur(12px);transition:all .3s;
+}
+#fullscreenBtn:hover{transform:scale(1.2)}
+#fullscreenBtn svg{width:38px;height:38px;stroke:#fff;stroke-width:3}
+
+/* RAIN */
+.droplet{
+  position:fixed;z-index:99999;width:16px;height:26px;background:#6D8EC5;
+  border-radius:50%/60% 60% 40% 40%;animation:d 2.9s ease-out forwards;
+  box-shadow:inset 0 0 20px #fff;pointer-events:none;
+}
+@keyframes d{0%{transform:scale(0) translateY(0);opacity:1}60%{transform:scale(2) translateY(-140px);opacity:1}100%{transform:scale(0) translateY(-400px);opacity:0}}
+#rainOverlay{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:9998;transition:opacity 1.2s}
+#rainOverlay.active{opacity:1}
+.container{width:100%;height:100%;max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
+.rain{position:relative;width:100%;height:100%}
+.rain:nth-of-type(1){--duration:2.7s;--delay:1s;transform:translate(10%,10%) scale(0.9)}
+.rain:nth-of-type(2){--duration:2.1s;--delay:1.2s;transform:translate(-20%,40%) scale(1.3)}
+.rain:nth-of-type(3){--duration:2.3s;--delay:2s;transform:translate(0%,50%) scale(1.1)}
+.rain:nth-of-type(4){--duration:2s;--delay:4s;transform:translate(0%,-10%) scale(1.2)}
+.rain:nth-of-type(5){--duration:2.5s;--delay:0s;transform:translate(10%,0%) scale(0.9)}
+.rain:nth-of-type(6){--duration:2s;--delay:2.7s;transform:translate(-20%,0%) scale(1)}
+.rain:nth-of-type(7){--duration:1.8s;--delay:1.3s;transform:translate(20%,-40%) scale(1.2)}
+.rain:nth-of-type(8){--duration:2.2s;--delay:0s;transform:translate(20%,0%) scale(1)}
+.rain:nth-of-type(9){--duration:2s;--delay:0.5s;transform:translate(0%,-10%) scale(1.3)}
+.drop{background:white;width:3px;height:100px;position:absolute;top:calc(50% - 100px);left:calc(50% - 1.5px);animation:fall var(--duration) var(--delay) infinite ease-in backwards}
+@keyframes fall{0%{transform:translateY(-120vh)}45%{transform:translateY(0);opacity:1}46%,100%{opacity:0}}
+.waves > div{position:absolute;inset:0;border-radius:50%;border:3px solid white;animation:spread var(--duration) var(--delay) infinite ease-out backwards}
+.waves > div:nth-child(2){animation-delay:calc(var(--delay)+0.3s);animation-timing-function:linear}
+@keyframes spread{0%,40%{transform:scale(0);opacity:1}100%{transform:scale(1);opacity:0}}
+
+/* Heading spacing fix */
+.tight-top-heading {
+  margin-top: 0 !important;
+}
+.loose-bottom-heading {
+  margin-bottom: 3rem !important;
+}
+</style>
+<div class="bg-gif">&nbsp;</div>
+<!-- TOP PROGRESS BAR -->
+
+<div id="topProgress" style="width: 16.385%;">&nbsp;</div>
+<!-- MOWGLI LEAF -->
+
+<p><img alt="Mowgli" id="progressLeaf" src="/s/articles/693aa2e5633891699095c0ca/images/Mowgli 1.png" style="left: 16.385%; position: fixed; z-index: 999999; width: 60px; height: 60px; transform: translateX(-50%); pointer-events: none; transition: left 0.4s; filter: drop-shadow(rgba(0, 0, 0, 0.5) 0px 6px 12px); top: 10px !important;" /> <!-- CIRCULAR PROGRESS + PERCENTAGE --></p>
+
+<div class="wobbling-element">
+<div id="percentageCounter">16%</div>
+<svg height="150" viewbox="-100 -100 200 200" width="150"> <circle class="outer_circle" cx="0" cy="0" r="99"></circle> <circle class="outer_circle_bars_l" cx="0" cy="0" r="96"></circle> <circle class="outer_circle_bars_r" cx="0" cy="0" r="96"></circle> <circle class="outer_progress" cx="0" cy="0" r="96" stroke-dasharray="602" stroke-dashoffset="503.362242078991" transform="rotate(-90 0 0)"></circle> <circle class="inner_progress" cx="0" cy="0" r="80" stroke-dasharray="502" stroke-dashoffset="419.7472517004211" transform="rotate(90 0 0)"></circle> <circle class="center_outer_circle" cx="0" cy="0" r="73"></circle> <circle class="center_inner_circle_second" cx="0" cy="0" r="67"></circle> <rect fill="#386641" height="5" rx="2" width="5" x="-2" y="-70"></rect> <rect fill="#386641" height="5" rx="2" width="5" x="-2" y="66"></rect> <rect fill="#386641" height="5" rx="2" width="5" x="-70" y="-2"></rect> <rect fill="#386641" height="5" rx="2" width="5" x="66" y="-2"></rect> </svg></div>
+<!-- FULLSCREEN BUTTON -->
+
+<div id="fullscreenBtn" title="Toggle Fullscreen"><svg fill="none" stroke="currentColor" viewbox="0 0 24 24"> <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path> </svg></div>
+<!-- ORIGINAL RAIN OVERLAY -->
+
+<div id="rainOverlay">
+<div class="container">
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+
+<div class="rain">
+<div class="drop">&nbsp;</div>
+
+<div class="waves">
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+<!-- HERO -->
+
+<section class="min-h-screen flex items-center justify-center text-center px-6 relative">
+<div class="glass absolute inset-0">&nbsp;</div>
+
+<div class="relative z-10 max-w-6xl mx-auto">
+<h1 class="text-6xl sm:text-7xl md:text-8xl font-black leading-tight" style="font-size:72px;"><span class="text-[#D3622C]">Design Challenge</span><br />
+<span class="text-[#386641]">Space &amp; Light</span></h1>
+
+<p class="mt-8 text-4xl sm:text-5xl font-bold text-[#BADD7F]" style="font-size:48px;"><strong>Chapter 3</strong></p>
+</div>
+</section>
+<!-- ORIGINAL AUDIO CONTAINER -->
+
+<div class="audio-container">
+<audio controls="" controlslist="nodownload" oncontextmenu="return false;"><source src="https://chirag-gour.github.io/Audio_SkilliZee/Audio%20Chapters%20Hydroponics/2.3.mp3" type="audio/mp3" /> Your browser does not support the audio element.</audio>
+</div>
+<style type="text/css">.audio-container {
+  position: relative;
+  background: url('/s/articles/69410a107133c05624f6cd5c/images/HydroSticker.gif') center center no-repeat;
+  background-size: contain;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  margin: 1.5rem auto 0 auto !important;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 1920 / 1080;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+.audio-container audio {
+  width: 100%;
+  border-radius: 12px;
+  border: 2px solid #2D2B7E;
+  background: #F5F5FF;
+  height: 50px;
+  padding: 4px;
+  box-shadow: 0 3px 10px rgba(45, 43, 126, 0.3);
+}
+audio::-webkit-media-controls-panel {background-color: #E6E6FA;border-radius: 12px;}
+</style>
+<!-- INTRO - IMAGE + TEXT IN SAME CARD -->
+<section class="px-6">
+<div class="max-w-7xl mx-auto text-center">
+<div class="glass-dark p-12 rounded-3xl"><img class="w-full max-w-4xl mx-auto rounded-3xl shadow-2xl mb-8" src="https://chirag-gour.github.io/Audio_SkilliZee/Img%20Hydroponics/2.3%20-%201.jpg" />
+<p class="text-3xl md:text-4xl font-bold text-[#FEFAE0] leading-relaxed" style="font-size:18px;">Designing a hydroponic system layout based on available light and physical space requires careful planning to optimize plant growth and resource efficiency.</p>
+</div>
+</div>
+</section>
+<!-- ASSESSING AVAILABLE SPACE -->
+
+<section class="px-6 bg-[#386641]/70">
+<div class="max-w-6xl mx-auto">
+<div class="glass-dark p-12 rounded-3xl text-center">
+<h2 class="text-6xl md:text-8xl font-black mb-12 text-[#FEFAE0] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Assessing Available Space</span></h2>
+
+<div class="space-y-12 text-xl text-[#CAEDED]" style="font-size:18px;">
+<p>&bull; Measure the total area where the system will be installed, noting length, width, and height limitations.</p>
+
+<div class="flex flex-col items-center"><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full max-w-[340px] aspect-[9/16] rounded-3xl shadow-2xl" frameborder="0" src="https://www.youtube.com/embed/ZG09ogTyHmU?rel=0"></iframe></div>
+
+<p>&bull; Consider vertical space to use stacking or tiered designs, especially in small or indoor setups.</p>
+
+<p>&bull; Allocate space for reservoirs, pumps, lighting fixtures, and working access paths.</p>
+</div>
+
+<div class="quick-fact max-w-3xl mx-auto mt-12">
+<p class="text-xl font-bold text-[#386641]" style="font-size:20px;">Quick Fact: A single 1m&sup2; vertical tower can grow as many plants as 4&ndash;6m&sup2; of traditional floor space!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- EVALUATING LIGHT SOURCES -->
+
+<section class="px-6">
+<div class="max-w-6xl mx-auto">
+<div class="design-card">
+<h2 class="text-6xl md:text-8xl font-black text-center text-[#D3622C] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Evaluating Light Sources</span></h2>
+
+<div class="space-y-12 text-xl text-[#1C2628]" style="font-size:18px;">
+<p>&bull; Identify natural light availability&mdash;amount, intensity, duration, and whether it&rsquo;s direct or diffused sunlight.</p>
+
+<div class="flex flex-col items-center"><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full max-w-[340px] aspect-[9/16] rounded-3xl shadow-2xl" frameborder="0" src="https://www.youtube.com/embed/1qXjZdHcOMI?rel=0"></iframe></div>
+
+<p>&bull; For insufficient natural light, plan for artificial grow lights (LEDs, fluorescents) and place them based on plant light requirements and power availability.</p>
+
+<p>&bull; Ensure lights can be adjusted in height or angle to match plant growth stages.</p>
+</div>
+
+<div class="quick-fact max-w-3xl mx-auto mt-12">
+<p class="text-xl font-bold text-[#D3622C]" style="font-size:20px;">Quick Fact: Plants need 12&ndash;18 hours of light daily. Modern full-spectrum LEDs use 60% less electricity than old fluorescents!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CHOOSING SYSTEM TYPE AND LAYOUT -->
+
+<section class="px-6 bg-[#D3622C]/70">
+<div class="max-w-6xl mx-auto">
+<div class="glass-dark p-12 rounded-3xl text-center">
+<h2 class="text-6xl md:text-8xl font-black mb-12 text-[#FEFAE0] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Choosing System Type and Layout</span></h2>
+<img class="w-full max-w-4xl mx-auto rounded-3xl shadow-2xl" src="/s/articles/693bd1188a0fae5b6ce7dbc5/images/image-20251213150416-2.png" />
+<div class="grid md:grid-cols-2 gap-12 text-xl text-[#CAEDED]" style="font-size:18px;">
+<div>
+<p class="mb-8">Space-efficient systems like Nutrient Film Technique (NFT) or vertical tower hydroponics suit limited floor space with steady nutrient delivery.</p>
+<img class="rounded-3xl shadow-2xl w-full" src="/s/articles/693bd1188a0fae5b6ce7dbc5/images/image-20251213150440-3.png" /></div>
+
+<div>
+<p class="mb-8">Deep Water Culture (DWC) suits compact areas, but reservoirs need footprint consideration.</p>
+<img class="rounded-3xl shadow-2xl w-full" src="/s/articles/693bd1188a0fae5b6ce7dbc5/images/image-20251213150500-4.png" /></div>
+</div>
+
+<p class="mt-12 text-2xl" style="font-size:18px;">Ebb and Flow or Drip systems require more space for media beds and plumbing but support diverse plant types, including larger fruiting plants.</p>
+</div>
+</div>
+</section>
+<!-- LIGHT DISTRIBUTION AND PLANT PLACEMENT -->
+
+<section class="px-6">
+<div class="max-w-6xl mx-auto">
+<div class="design-card">
+<h2 class="text-6xl md:text-8xl font-black text-center text-[#386641] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Light Distribution and Plant Placement</span></h2>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full max-w-5xl aspect-video rounded-3xl shadow-2xl mx-auto" frameborder="0" src="https://www.youtube.com/embed/YUnLNCd9pow?rel=0"></iframe>
+
+<div class="mt-12 space-y-8 text-xl text-[#1C2628]" style="font-size:18px;">
+<p>&bull; Arrange plants to avoid shading; taller plants on the north or back side (in the northern hemisphere).</p>
+
+<p>&bull; Use reflective surfaces around the system to maximize light use.</p>
+
+<p>&bull; Plan lighting cycles (duration and intensity) to align with plant growth needs.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- WORKFLOW CONSIDERATIONS -->
+
+<section class="px-6 bg-[#1C2628]/80">
+<div class="max-w-6xl mx-auto">
+<div class="glass-dark p-12 rounded-3xl text-center">
+<h2 class="text-6xl md:text-8xl font-black mb-12 text-[#BADD7F] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Workflow Considerations</span></h2>
+
+<p class="text-2xl leading-relaxed text-[#FEFAE0] max-w-4xl mx-auto" style="font-size:18px;">Leave space for easy monitoring, nutrient adjustments, and plant maintenance. Position electrical components safely away from water, allowing proper ventilation.</p>
+
+<div class="quick-fact max-w-3xl mx-auto mt-12">
+<p class="text-xl font-bold text-[#BADD7F]" style="font-size:20px;">Quick Fact: Always keep at least 60cm walking space around your system &mdash; it saves hours of frustration later!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- FINAL MESSAGE -->
+
+<section class="px-6">
+<div class="max-w-6xl mx-auto">
+<div class="design-card text-center">
+<p class="text-3xl md:text-4xl font-bold text-[#D3622C] leading-relaxed" style="font-size:18px;">By mapping your physical and light constraints first, selecting appropriate hydroponic system types, and organizing plants with light optimization in mind, you can design a custom hydroponic layout that maximizes growth within your available space and lighting conditions.</p>
+</div>
+</div>
+</section>
+<!-- 3D MODEL CARD -->
+
+<section class="px-6">
+<div class="max-w-7xl mx-auto">
+<div class="glass p-12 rounded-3xl text-center">
+<h2 class="text-7xl md:text-9xl font-black text-[#386641] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Explore Detailed 3D Hydroponic Structure</span></h2>
+
+<div class="max-w-5xl mx-auto"><iframe allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen="" frameborder="0" mozallowfullscreen="true" src="https://sketchfab.com/models/1486c6b628ba44f8a5e579927f51a7f7/embed?ui_infos=0&amp;ui_controls=1&amp;ui_annotations=1" style="width:100%; height:520px; border:0; border-radius: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.25);" webkitallowfullscreen="true"></iframe></div>
+</div>
+</div>
+</section>
+<!-- KEY LEARNINGS -->
+
+<section class="px-6">
+<div class="max-w-7xl mx-auto text-center">
+<div class="glass p-12 rounded-3xl">
+<h2 class="text-7xl md:text-9xl font-black text-[#D3622C] tight-top-heading loose-bottom-heading"><span style="font-size:36px;">Key Learnings</span></h2>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 text-xl text-[#1C2628]" style="font-size:18px;">
+<div class="bg-white/60 backdrop-blur-md p-10 rounded-2xl">Effective hydroponic design starts with accurately measuring available floor and vertical space to plan system layout and equipment placement.</div>
+
+<div class="bg-white/60 backdrop-blur-md p-10 rounded-2xl">Light availability&mdash;natural or artificial&mdash;must be assessed to ensure plants receive the right intensity and duration for healthy growth.</div>
+
+<div class="bg-white/60 backdrop-blur-md p-10 rounded-2xl">System choice depends on space: NFT and vertical towers suit tight areas, while Ebb &amp; Flow and Drip systems need more room but support larger plants.</div>
+
+<div class="bg-white/60 backdrop-blur-md p-10 rounded-2xl">Proper plant arrangement prevents shading; using reflective surfaces and adjustable grow lights improves light efficiency.</div>
+
+<div class="bg-white/60 backdrop-blur-md p-10 rounded-2xl">Designing clear access paths and keeping electrical components safely positioned ensures smooth maintenance and safe operation.</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FINAL QUOTE -->
+
+<section class="px-6 bg-gradient-to-b from-[#386641] to-[#1C2628]">
+<div class="max-w-5xl mx-auto text-center">
+<blockquote class="text-5xl md:text-7xl font-black text-[#FEFAE0] leading-tight" style="font-size:20px;">&ldquo;Good design is not about how it looks &mdash;<br />
+it&rsquo;s about how much it grows.&rdquo;</blockquote>
+
+<p class="mt-8 text-2xl text-[#BADD7F] font-medium" style="font-size:18px;">&mdash; Every successful hydroponic grower</p>
+
+<p class="mt-16 text-4xl font-bold text-[#CAEDED]">Module 2 Complete!</p>
+</div>
+</section>
+<script>
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const percent = (document.documentElement.scrollTop || document.body.scrollTop) /
+                 (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100;
+  document.getElementById('topProgress').style.width = percent + '%';
+  document.getElementById('progressLeaf').style.left = percent + '%';
+  const outer = document.querySelector('.outer_progress');
+  const inner = document.querySelector('.inner_progress');
+  const counter = document.getElementById('percentageCounter');
+  if (outer && inner && counter) {
+    outer.setAttribute('stroke-dashoffset', 602 - (602 * percent / 100));
+    inner.setAttribute('stroke-dashoffset', 502 - (502 * percent / 100));
+    counter.textContent = Math.round(percent) + '%';
+  }
+  if (window.scrollY < lastScroll) {
+    document.getElementById('progressLeaf').src = "/s/articles/693aafadc3d7f163385c898e/images/Mowgli flipped bg.png";
+  } else {
+    document.getElementById('progressLeaf').src = "/s/articles/693aa2e5633891699095c0ca/images/Mowgli 1.png";
+  }
+  lastScroll = window.scrollY;
+  if (percent >= 98 && !window.dropletsDone) {
+    window.dropletsDone = true;
+    for(let i = 0; i < 60; i++){
+      setTimeout(() => {
+        const d = document.createElement('div');
+        d.className = 'droplet';
+        d.style.left = Math.random()*100 + 'vw';
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 4000);
+      }, i*60);
+    }
+  }
+  if (percent >= 99.8 && !window.rainShown) {
+    window.rainShown = true;
+    document.getElementById('rainOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('rainOverlay').classList.remove('active'), 5000);
+  }
+});
+document.getElementById('fullscreenBtn').onclick = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.() || document.documentElement.webkitRequestFullscreen?.();
+  } else {
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+  }
+};
+</script>
