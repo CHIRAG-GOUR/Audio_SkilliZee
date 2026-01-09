@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gustora Pasta - Secret Chef Activity (Scrollable Fixed)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aleo&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --brand-blue: #1D5379;
+            --brand-gold: #AA8A00;
+            --brand-red: #E1251B;
+            --text: #164261;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --border: rgba(255, 255, 255, 0.3);
+            --card-yellow: #FFFACD;
+            --card-blue: #E6F7FF;
+            --glow-gold: rgba(255, 215, 0, 0.45);
+            --glow-red: rgba(225, 37, 27, 0.4);
+            --parchment-grain: rgba(255, 255, 255, 0.15);
+            --sauce-color-start: #8B0000;
+            --sauce-color-end: #A52A2A;
+            --gustora-blue: #003366;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { 
+            height: auto; 
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif; 
+            color: var(--text); 
+            background: #f9f9f9;
+            overflow-x: hidden;
+            overflow-y: auto; /* Ensure page is scrollable */
+        }
+        .card {
+            background: rgba(255,255,255,.96); 
+            backdrop-filter: blur(14px); 
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--border); 
+            border-radius: 18px; 
+            overflow: hidden; 
+            margin: 3.5rem auto;
+            box-shadow: 0 16px 45px rgba(0,0,0,.22), 0 8px 20px rgba(0,0,0,.12);
+            transition: all .4s cubic-bezier(.25,.8,.25,1); 
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+        .card:hover {
+            transform: translateY(-14px) scale(1.04);
+            box-shadow: 0 28px 70px rgba(0,0,0,.3), 0 0 40px var(--glow-gold);
+        }
+        .heading-bar {
+            background: linear-gradient(to right, var(--sauce-color-start), var(--sauce-color-end));
+            color: white; 
+            padding: 1.5rem 2rem; 
+            font-weight: 800; 
+            font-size: 1.55rem;
+            text-align: center; 
+            letter-spacing: 1.3px; 
+            text-transform: uppercase; 
+            border-radius: 18px 18px 0 0;
+            box-shadow: 0 4px 15px rgba(139,0,0,.3);
+            position: relative;
+        }
+        .heading-bar::after {
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 85px; 
+            height: 5px; 
+            background: var(--brand-gold); 
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(170,138,0,.4);
+        }
+        .content {
+            padding: 2.8rem; 
+            color: var(--text); 
+            line-height: 1.95; 
+            font-size: 1.12rem;
+            background: var(--card-yellow);
+            border-radius: 0 0 18px 18px;
+        }
+        .content p { margin: 1.4rem 0; }
+        .content strong { color: var(--brand-blue); font-weight: 600; }
+        #quiz-card input {
+            border: none; 
+            border-bottom: 2px solid var(--brand-blue); 
+            background: transparent;
+            font-size:1rem; 
+            padding:4px 0; 
+            text-align:center; 
+            width:120px;
+        }
+        #quiz-card input:focus { outline:none; border-color:var(--brand-gold); }
+        button[type="submit"] {
+            margin-top:20px;
+            padding:10px 20px;
+            background:var(--brand-red);
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+        }
+        #container {
+            background-image: url("https://assets.codepen.io/262181/intro-bg.jpg");
+            background-size: cover; 
+            background-position: center;
+            width: 100%; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            position: fixed; 
+            top: 0;
+            left: 0;
+            z-index: 101;
+        }
+        #lottie { height: 40vh; max-height: 400px; display: flex; }
+        #enter button {
+            cursor: pointer; 
+            margin-top: 20px; 
+            padding: 12px 24px; 
+            background:#9d988a; 
+            color:#6b2414;
+            border-radius: 8px; 
+            border: none; 
+            font-size:1.2rem; 
+            font-weight:600;
+        }
+        .webgl { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            outline: none; 
+            z-index: 100; 
+            width: 100%;
+            height: 100vh;
+        }
+        #wheel-activity {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 1000;
+            display: none;
+        }
+        #recipe-card {
+            display: none;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 5rem; /* Extra space at bottom */
+        }
+        @media (max-width: 768px) {
+            .heading-bar { font-size: 1.3rem; padding: 1.2rem 1rem; }
+            .content { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- QUIZ CARD -->
+    <div class="card" id="quiz-card">
+        <div class="heading-bar">Test Your Pasta Knowledge!</div>
+        <div class="content">
+            <p>Answer these 3 quick questions to unlock the Secret Chef Wheel!</p>
+            <form id="quiz-form">
+                <p>1. Gustora pasta is made from <input id="q1" type="text" placeholder="?" /> wheat semolina.</p>
+                <p>2. The traditional Italian dies used are made of <input id="q2" type="text" placeholder="?" />.</p>
+                <p>3. Gustora pasta is dried slowly for over <input id="q3" type="text" placeholder="?" /> hours.</p>
+                <button type="submit">Submit Answers</button>
+            </form>
+            <div id="quiz-result" style="margin-top:20px;font-weight:600;display:none;"></div>
+        </div>
+    </div>
+
+    <!-- WHEEL ACTIVITY (Full-screen overlay) -->
+    <div id="wheel-activity">
+        <div id="container">
+            <div id="lottie"></div>
+            <div id="enter"><button id="enter">Pull the Lever!</button></div>
+        </div>
+        <canvas class="webgl"></canvas>
+    </div>
+
+    <!-- RECIPE REVEAL CARD -->
+    <div class="card" id="recipe-card">
+        <div class="heading-bar">Secret Chef Recipe Revealed!</div>
+        <div class="content">
+            <div id="recipe-content" style="font-size:1.15rem;line-height:2;"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from "https://esm.sh/three@0.174.0";
+        import { OrbitControls } from "https://esm.sh/three@0.174.0/addons/controls/OrbitControls.js";
+        import { GLTFLoader } from "https://esm.sh/three@0.174.0/examples/jsm/loaders/GLTFLoader.js";
+        import { DRACOLoader } from "https://esm.sh/three@0.174.0/examples/jsm/loaders/DRACOLoader.js";
+        import Lottie from "https://esm.sh/lottie-web";
+
+        window.start3 = false;
+
+        let anim = null;
+        const initLottie = () => {
+            anim = Lottie.loadAnimation({
+                container: document.getElementById("lottie"),
+                renderer: "svg",
+                loop: true,
+                autoplay: true,
+                path: "https://assets.codepen.io/262181/crnvlintro.json"
+            });
+        };
+
+        let wheel, lever = null, hitArea = null, pullSign = null, ready = false;
+        let speed = 0, inc = 0.02, incSpeed = 12, signSpinSpeed = 1;
+        let mouse = { pressing: false, curY: null, isClicking: false, dragStarted: false, dragDistance: 0, isSpinning: false };
+        let revealAnim = { isAnimating: false, isShowing: false };
+        let animAction = null, animMixer = null;
+        let numArr = [];
+
+        const canvas = document.querySelector("canvas.webgl");
+        const scene = new THREE.Scene();
+
+        const textureLoader = new THREE.TextureLoader();
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.7/");
+
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.setDRACOLoader(dracoLoader);
+
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const deviceType = isMobile ? "mobile" : "desktop";
+
+        const sizes = { width: window.innerWidth, height: window.innerHeight };
+        window.addEventListener("resize", () => {
+            sizes.width = window.innerWidth;
+            sizes.height = window.innerHeight;
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100);
+        camera.position.set(10, -2.3, -15.4);
+        scene.add(camera);
+
+        const controls = new OrbitControls(camera, canvas);
+        controls.enableDamping = true;
+        controls.minDistance = 4;
+        controls.maxDistance = 7;
+        controls.maxPolarAngle = Math.PI / 2;
+        controls.maxAzimuthAngle = 0.785;
+        controls.minAzimuthAngle = -1.5;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        const bakedTexture = textureLoader.load("https://assets.codepen.io/262181/baked.jpg");
+        bakedTexture.flipY = false;
+        bakedTexture.colorSpace = THREE.SRGBColorSpace;
+
+        const wheelTexture = textureLoader.load("https://assets.codepen.io/262181/wheel.jpg");
+        wheelTexture.flipY = false;
+        wheelTexture.colorSpace = THREE.SRGBColorSpace;
+
+        const shadowTexture = textureLoader.load("https://assets.codepen.io/262181/shadow.png");
+        shadowTexture.flipY = false;
+        shadowTexture.colorSpace = THREE.SRGBColorSpace;
+
+        const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture });
+        const wheelMaterial = new THREE.MeshBasicMaterial({ map: wheelTexture });
+        const shadowMaterial = new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, opacity: 0.5 });
+        const transpMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+
+        gltfLoader.load("https://assets.codepen.io/262181/carnival.glb", (gltf) => {
+            gltf.scene.traverse((child) => {
+                if (child.name === "lever") { lever = child; lever.rotation.x = 2; child.material = bakedMaterial; }
+                else if (child.name === "hitarea") { hitArea = child; child.material = transpMaterial; }
+                else if (child.name === "wheel") { child.material = wheelMaterial; wheel = child; ready = true; }
+                else if (child.name === "shadow") { child.material = shadowMaterial; }
+                else if (child.name === "sign_swing") { pullSign = child; child.material = bakedMaterial; }
+                else if (child.name === "result_panel") {
+                    const resultAnim = THREE.AnimationClip.findByName(gltf.animations, "result_panelAction");
+                    animMixer = new THREE.AnimationMixer(child);
+                    animAction = animMixer.clipAction(resultAnim);
+                    animAction.reset().clampWhenFinished = true;
+                    animAction.setLoop(THREE.LoopOnce, 1);
+                }
+                else if (child.name.includes("num")) {
+                    numArr.push(child);
+                    child.material = bakedMaterial;
+                    child.visible = false;
+                }
+                else { child.material = bakedMaterial; }
+            });
+            scene.add(gltf.scene);
+        });
+
+        const showNumber = (answer) => {
+            numArr.forEach(n => n.visible = false);
+            numArr[answer - 1].visible = true;
+        };
+
+        const secretRecipes = [
+            null,
+            `<strong>1. Massimo Bottura – “Oops! I Dropped the Lemon Tart” Pasta</strong><br>Tagliatelle with lemon zest emulsion, Parmigiano Reggiano foam, and caper powder. Cook fresh tagliatelle 2 min, toss in warm lemon juice + olive oil emulsion, top with whipped 36-month Parmigiano foam.`,
+            `<strong>2. Carlo Cracco – Black Squid Ink Spaghetti</strong><br>Spaghetti nero with cuttlefish ink, sea urchin, and bottarga. Sauté garlic in olive oil, add squid ink, toss al dente spaghetti, finish with raw sea urchin tongues and grated bottarga.`,
+            `<strong>3. Antonia Klugmann – Herb-Infused Pici</strong><br>Hand-rolled pici with 22 wild herbs. Blanch herbs, blend with olive oil, toss with pici, finish with toasted pine nuts.`,
+            `<strong>4. Niko Romito – Cacio e Pepe 2.0</strong><br>Tonarelli with water-based pecorino cream. Dissolve 200g Pecorino Romano in 400ml cold water overnight, cook pasta in minimal water, emulsify.`,
+            `<strong>5. Alain Ducasse – Truffle Tagliolini</strong><br>Fresh egg tagliolini with 30g fresh white truffle per person. Cook 1 min, toss in warm butter, shave truffle tableside.`,
+            `<strong>6. Heinz Beck – Fagotelli Carbonara</strong><br>Liquid carbonara-filled pasta parcels. Fill ravioli with raw egg yolk + pecorino + guanciale cream, cook 90 sec, serve with crispy guanciale.`,
+            `<strong>7. Davide Oldani – Saffron Risotto-Style Pasta</strong><br>Short pasta cooked like risotto with saffron and toasted yeast. Toast pasta in butter, add saffron stock gradually, finish with dehydrated yeast powder.`,
+            `<strong>8. Nadia Santini – Tortelli di Zucca</strong><br>Pumpkin tortelli with amaretti and mostarda. Fill with roasted pumpkin, crushed amaretti, mustard fruit, serve with burnt butter and sage.`,
+            `<strong>9. René Redzepi – Fermented Garlic Pasta</strong><br>Spaghetti with black garlic ferment. Blend 2-year fermented garlic with pasta water, toss with pasta, top with wild herbs.`,
+            `<strong>10. Heston Blumenthal – Sound-Enhanced Spaghetti</strong><br>Spaghetti with iPod playing ocean sounds + seafood broth reduction. Serve with edible sand and sea foam for multisensory experience.`
+        ];
+
+        const clock = new THREE.Clock();
+
+        const tick = () => {
+            controls.update();
+
+            if (ready && window.start3) {
+                speed += inc;
+                if (inc > 0) {
+                    if (!mouse.isSpinning) inc += 0.1;
+                    wheel.rotation.z = speed;
+                    inc -= 0.001;
+                    mouse.isSpinning = true;
+                } else {
+                    const rad = (wheel.rotation.z * (180 / Math.PI)) % 360;
+                    const answer = Math.floor(1 + rad / 36);
+                    if (mouse.isSpinning) {
+                        showNumber(answer);
+                        mouse.isSpinning = false;
+                        if (animAction) {
+                            animAction.timeScale = 1;
+                            animAction.reset().play();
+                        }
+                        setTimeout(() => {
+                            document.getElementById('wheel-activity').style.display = 'none';
+                            document.getElementById('recipe-card').style.display = 'block';
+                            document.getElementById('recipe-content').innerHTML = secretRecipes[answer];
+                        }, 3000);
+                    }
+                }
+
+                if (incSpeed > 0 && pullSign) {
+                    pullSign.rotation.z = Math.sin(signSpinSpeed) / 3;
+                    signSpinSpeed += incSpeed / 100;
+                    incSpeed -= 0.068;
+                }
+            }
+
+            const delta = clock.getDelta();
+            if (animMixer) animMixer.update(delta);
+            renderer.render(scene, camera);
+            requestAnimationFrame(tick);
+        };
+
+        const isDown = (e) => {
+            mouse.pressing = true;
+            const tgt = deviceType === "mobile" ? e.touches[0] : e;
+            pointer.x = (tgt.clientX / sizes.width) * 2 - 1;
+            pointer.y = -(tgt.clientY / sizes.height) * 2 + 1;
+            raycaster.setFromCamera(pointer, camera);
+            if (hitArea) {
+                const intersects = raycaster.intersectObject(hitArea);
+                if (intersects.length > 0) {
+                    e.preventDefault();
+                    controls.enableRotate = false;
+                    mouse.isClicking = true;
+                }
+            }
+        };
+
+        const isUp = () => {
+            mouse.pressing = false;
+            mouse.isClicking = false;
+            controls.enableRotate = true;
+            if (mouse.dragStarted && lever) {
+                mouse.dragStarted = false;
+                lever.rotation.x = 1;
+            }
+        };
+
+        const isMove = (e) => {
+            const tgt = deviceType === "mobile" ? e.touches[0] : e;
+            if (mouse.pressing && mouse.isClicking) {
+                e.preventDefault();
+                if (mouse.curY === null) {
+                    mouse.curY = tgt.clientY;
+                } else {
+                    const deltaY = tgt.clientY - mouse.curY;
+                    if (deltaY > 0) { // pulling down
+                        mouse.dragDistance += deltaY;
+                        const r = Math.min(2, mouse.dragDistance / 100 + 1);
+                        if (lever) lever.rotation.x = r;
+                        if (inc < 0.4) inc += Math.abs(deltaY) / 500;
+                    }
+                }
+                mouse.curY = tgt.clientY;
+                mouse.dragStarted = true;
+            }
+        };
+
+        canvas.addEventListener("mousedown", isDown);
+        canvas.addEventListener("touchstart", isDown, { passive: false });
+        window.addEventListener("mouseup", isUp);
+        window.addEventListener("touchend", isUp);
+        canvas.addEventListener("mousemove", isMove);
+        canvas.addEventListener("touchmove", isMove, { passive: false });
+
+        initLottie();
+        tick();
+
+        // Quiz logic
+        document.getElementById('quiz-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const a1 = document.getElementById('q1').value.trim().toLowerCase();
+            const a2 = document.getElementById('q2').value.trim().toLowerCase();
+            const a3 = document.getElementById('q3').value.trim().toLowerCase();
+            if (a1 === 'durum' && a2 === 'bronze' && (a3 === '20' || a3 === 'twenty')) {
+                document.getElementById('quiz-result').textContent = 'Correct! Unlock the Secret Chef Wheel!';
+                document.getElementById('quiz-result').style.color = 'green';
+                document.getElementById('quiz-result').style.display = 'block';
+                document.getElementById('quiz-card').style.display = 'none';
+                document.getElementById('wheel-activity').style.display = 'block';
+            } else {
+                document.getElementById('quiz-result').textContent = 'Try again! Answers: durum, bronze, 20';
+                document.getElementById('quiz-result').style.color = '#E1251B';
+                document.getElementById('quiz-result').style.display = 'block';
+            }
+        });
+
+        // Start wheel after clicking "Pull the Lever!"
+        document.getElementById('enter').addEventListener('click', () => {
+            document.getElementById("container").style.display = "none";
+            window.start3 = true;
+            if (anim) anim.stop();
+        });
+    </script>
+</body>
+</html>
