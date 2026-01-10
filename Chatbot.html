@@ -1,0 +1,187 @@
+<div><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></div>
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+<style type="text/css">:root { --accent: #0071E3; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow-x: hidden; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    background: #F5F5F7; color: #1D1D1F; line-height: 1.6;
+}
+.container {
+    max-width: 1000px; margin: 0 auto; padding: 40px 20px;
+}
+h1 { font-size: 2.8rem; text-align: center; margin-bottom: 20px; color: #1D1D1F; }
+.subtitle { font-size: 1.4rem; text-align: center; color: #666; margin-bottom: 60px; }
+
+.demo-box {
+    background: white; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    padding: 40px; margin-bottom: 40px;
+}
+.demo-box h2 { font-size: 2rem; margin-bottom: 20px; text-align: center; color: #0071E3; }
+
+.chat-container {
+    background: #000; border-radius: 28px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.chat-messages {
+    height: 500px; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px;
+    background: linear-gradient(to bottom, #111, #000);
+}
+.message {
+    max-width: 80%; padding: 16px 24px; border-radius: 24px; font-size: 1.2rem; line-height: 1.5;
+}
+.message.siri {
+    align-self: flex-start; background: #0071E3; color: white; border-bottom-left-radius: 8px;
+}
+.message.user {
+    align-self: flex-end; background: #333; color: white; border-bottom-right-radius: 8px;
+}
+.message.thinking {
+    align-self: flex-start; color: #888; font-style: italic;
+}
+
+.chat-input {
+    display: flex; padding: 20px; background: #111; gap: 15px;
+}
+#userInput {
+    flex: 1; padding: 18px; border-radius: 30px; border: none; background: #222; color: white;
+    font-size: 1.2rem;
+}
+#sendBtn {
+    padding: 18px 36px; background: #0071E3; color: white; border: none; border-radius: 30px;
+    cursor: pointer; font-weight: 600; font-size: 1.2rem;
+}
+#sendBtn:disabled { background: #555; cursor: not-allowed; }
+
+.status {
+    text-align: center; margin-top: 20px; font-size: 1.1rem; color: #666;
+}
+.external-count { text-align: center; margin-top: 10px; font-weight: 600; }
+
+.note {
+    font-size: 1rem; text-align: center; color: #888; margin-top: 40px;
+}
+</style>
+<div class="container">
+<h1>Chapter 6.2: Apple Intelligence</h1>
+
+<p class="subtitle">Live Demo &ndash; Talk to Real AI Siri (Powered by OpenAI GPT)</p>
+
+<div class="demo-box">
+<h2>Ask Siri Anything!</h2>
+
+<p style="text-align:center; margin-bottom:30px; color:#666;">This uses OpenAI&#39;s powerful AI for real, intelligent, kid-friendly responses to ANY question.<br />
+Perfect for showing how Apple Intelligence could work with external models!</p>
+
+<div class="chat-container">
+<div class="chat-messages" id="chatMessages">
+<div class="message siri">Hi! I&#39;m Siri 🤖 Ask me anything &ndash; weather, jokes, facts, stories, math, animals, space... I&#39;ll give smart, fun answers! 🚀</div>
+</div>
+
+<div class="chat-input"><input autofocus="" id="userInput" placeholder="Ask Siri anything..." type="text" /><button id="sendBtn">Send</button></div>
+</div>
+
+<div class="status" id="status">&nbsp;</div>
+
+<div class="external-count">External AI requests: <span id="externalCount">0</span></div>
+
+<p class="note"><strong>Note:</strong> Powered by OpenAI (your key). Real AI responses &ndash; no limits like free tiers!<br />
+Keep this page private to protect the key.</p>
+</div>
+</div>
+<script>
+let externalCount = 0;
+const chatMessages = document.getElementById('chatMessages');
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const status = document.getElementById('status');
+const externalCountEl = document.getElementById('externalCount');
+
+const OPENAI_API_KEY = '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';
+
+function addMessage(text, sender = 'siri') {
+    const msg = document.createElement('div');
+    msg.className = `message ${sender}`;
+    msg.innerHTML = text.replace(/\n/g, '<br>');
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function callOpenAI(query) {
+    status.textContent = "Thinking with real AI... 🤖";
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini", // Fast, smart, and cost-effective
+                messages: [
+                    { 
+                        role: "system", 
+                        content: "You are Siri, Apple's super fun, friendly, and intelligent assistant for kids and students. Always be positive, encouraging, educational, and safe. Use simple language, lots of emojis 😊🚀🌟, and make learning exciting! Be creative and accurate." 
+                    },
+                    { role: "user", content: query }
+                ],
+                temperature: 0.9,
+                max_tokens: 500
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || 'API error');
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content.trim();
+    } catch (error) {
+        console.error("OpenAI error:", error);
+        return "Oops! I'm having a small connection issue right now. Try again in a moment? 😊";
+    } finally {
+        status.textContent = "";
+    }
+}
+
+sendBtn.onclick = async () => {
+    const query = userInput.value.trim();
+    if (!query) return;
+
+    addMessage(query, 'user');
+    userInput.value = '';
+    sendBtn.disabled = true;
+
+    const lower = query.toLowerCase();
+    let processing = "on-device";
+
+    if (lower.includes('news') || lower.includes('latest') || lower.includes('current') || lower.includes('today') || lower.includes('stock')) {
+        processing = "external";
+    }
+
+    if (processing === "external") {
+        addMessage("This needs up-to-date info. Can I use an external AI model?", 'siri');
+        setTimeout(async () => {
+            addMessage("Yes!", 'user');
+            const response = await callOpenAI(query);
+            addMessage(response, 'siri');
+            externalCount++;
+            externalCountEl.textContent = externalCount;
+            sendBtn.disabled = false;
+        }, 1000);
+    } else {
+        const response = await callOpenAI(query);
+        addMessage(response, 'siri');
+        sendBtn.disabled = false;
+    }
+};
+
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !sendBtn.disabled) {
+        sendBtn.click();
+    }
+});
+
+userInput.focus();
+</script>
