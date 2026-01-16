@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Just the Background Animation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100vh;
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+    }
+
+    #background-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    #container {
+      background: #F7A028;
+      background: -moz-linear-gradient(-45deg, #F7A028 0%, #FFBE00 100%);
+      background: -webkit-linear-gradient(-45deg, #F7A028 0%, #FFBE00 100%);
+      background: linear-gradient(135deg, #F7A028 0%, #FFBE00 100%);
+      position: absolute;
+      inset: 0;
+    }
+
+    #container-inside {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .circle {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: circle-pulse 3s ease-in-out infinite alternate;
+      animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
+    }
+
+    #circle-small   { width: 300px;  height: 300px;  top: 200px;   left: -150px;  animation-delay: 0s;    opacity: 0.40; }
+    #circle-medium  { width: 600px;  height: 600px;  top:  50px;   left: -300px;  animation-delay: 0.3s;  opacity: 0.30; }
+    #circle-large   { width: 900px;  height: 900px;  top: -100px;  left: -450px;  animation-delay: 0.6s;  opacity: 0.20; }
+    #circle-xlarge  { width: 1200px; height: 1200px; top: -250px;  left: -600px;  animation-delay: 0.9s;  opacity: 0.10; }
+    #circle-xxlarge { width: 1500px; height: 1500px; top: -400px;  left: -750px;  animation-delay: 1.2s;  opacity: 0.05; }
+
+    @keyframes circle-pulse {
+      0%   { transform: scale(1.00); }
+      100% { transform: scale(1.10); }
+    }
+
+    /* Optional: make it look nicer on very wide screens */
+    @media (min-aspect-ratio: 21/9) {
+      .circle {
+        transform: translateX(-50%);
+        left: 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="background-container">
+    <div id="container">
+      <div id="container-inside">
+        <div class="circle" id="circle-small"></div>
+        <div class="circle" id="circle-medium"></div>
+        <div class="circle" id="circle-large"></div>
+        <div class="circle" id="circle-xlarge"></div>
+        <div class="circle" id="circle-xxlarge"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
