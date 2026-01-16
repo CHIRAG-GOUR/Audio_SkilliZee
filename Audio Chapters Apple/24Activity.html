@@ -22,13 +22,14 @@
   .container {
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
   }
   .main-sections {
     display: flex;
     justify-content: center;
     gap: 40px;
     flex-wrap: wrap;
-    margin: 30px 0;
+    margin: 40px 0 60px;
   }
   .devices-pool, .your-setup {
     width: 460px;
@@ -119,13 +120,17 @@
     cursor: pointer;
   }
   .score-panel {
-    margin: 50px auto 30px;
+    margin: 40px auto;
     padding: 30px;
     background: white;
     border-radius: 32px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     max-width: 700px;
     text-align: center;
+    display: none;
+  }
+  .score-panel.visible {
+    display: block;
   }
   .score-number {
     font-size: 4.2rem;
@@ -155,18 +160,40 @@
     border-radius: 0 14px 14px 0;
     font-size: 1.05rem;
   }
-  /* Daisy & Animation */
+  .submit-btn-container {
+    text-align: center;
+    margin: 40px 0 20px;
+  }
+  .submit-btn {
+    background: #0071e3;
+    color: white;
+    border: none;
+    padding: 16px 36px;
+    font-size: 1.3rem;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(0,113,227,0.35);
+    transition: all 0.25s ease;
+  }
+  .submit-btn:hover {
+    background: #005bb5;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,113,227,0.45);
+  }
+
+  /* Daisy - now on the LEFT side of both cards, vertically centered */
   .robot-container {
     position: fixed;
-    bottom: 40px;
-    left: 60px;
+    top: 38%;                      /* roughly vertical middle of the card area */
+    left: 60px;                    /* left side, outside the cards */
     width: 140px;
     height: 140px;
     z-index: 999;
     transition: all 1.6s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .robot-container.moving {
-    transform: translate(580px, -220px) scale(1.15) rotate(8deg);
+    transform: translateX(380px) translateY(-140px) scale(1.15) rotate(8deg);
+    /* moves right toward the center / your-setup area */
   }
   .robot {
     width: 100%;
@@ -223,8 +250,15 @@
   @media (max-width: 1000px) {
     .main-sections { flex-direction: column; align-items: center; }
     .devices-pool, .your-setup { width: 90%; max-width: 520px; }
-    .robot-container { width: 110px; height: 110px; left: 30px; bottom: 30px; }
-    .robot-container.moving { transform: translate(320px, -180px) scale(1.1) rotate(8deg); }
+    .robot-container { 
+      width: 110px; 
+      height: 110px; 
+      top: 42%; 
+      left: 20px; 
+    }
+    .robot-container.moving {
+      transform: translateX(220px) translateY(-120px) scale(1.1) rotate(8deg);
+    }
   }
 </style>
 </head>
@@ -233,34 +267,41 @@
 <div class="container">
   <h1>Build Your Apple Ecosystem (2026) with Daisy!</h1>
   <p style="text-align:center; font-size:1.2rem; color:#555; margin-bottom:30px;">
-    Click any device → watch Daisy pick it up and deliver it with excitement + fun fact!
+    Click any device → watch Daisy pick it up and deliver it with excitement + fun fact!<br>
+    When you're happy with your setup, click the button below to see how powerful your ecosystem is.
   </p>
- 
+
   <div class="main-sections">
-    <!-- Available Devices (Left) -->
+    <!-- Left: Available Devices -->
     <div class="devices-pool">
       <h2>Available Devices</h2>
       <div class="device-grid" id="devicePool">
+
         <div class="device" data-device="iPhone">
           <img src="https://img.icons8.com/fluency/96/iphone-x.png" alt="iPhone">
           <div class="device-label">iPhone</div>
         </div>
+
         <div class="device" data-device="iPad">
           <img src="https://img.icons8.com/fluency/96/ipad.png" alt="iPad">
           <div class="device-label">iPad</div>
         </div>
+
         <div class="device" data-device="MacBook">
           <img src="https://www.apple.com/newsroom/images/2024/10/new-macbook-pro/article/Apple-MacBook-Pro-M4-hero_big.jpg.large.jpg" alt="MacBook">
           <div class="device-label">MacBook</div>
         </div>
+
         <div class="device" data-device="iMac">
           <img src="https://www.apple.com/newsroom/images/2024/10/apple-introduces-new-imac-supercharged-by-m4/article/Apple-iMac-M4-hero_big.jpg.large.jpg" alt="iMac">
           <div class="device-label">iMac</div>
         </div>
+
         <div class="device" data-device="Apple Watch">
           <img src="https://img.icons8.com/fluency/96/apple-watch.png" alt="Apple Watch">
           <div class="device-label">Apple Watch</div>
         </div>
+
         <div class="device" data-device="AirPods">
           <svg xmlns="http://www.w3.org/2000/svg" width="94" height="94" viewBox="0 0 24 24" fill="none">
             <path opacity="0.4" d="M21.5 6.5V17.5C21.5 19.99 19.49 22 17 22H7C4.51 22 2.5 19.99 2.5 17.5V6.5C2.5 4.01 4.51 2 7 2H17C19.49 2 21.5 4.01 21.5 6.5Z" fill="#292D32"/>
@@ -268,35 +309,44 @@
           </svg>
           <div class="device-label">AirPods</div>
         </div>
+
         <div class="device" data-device="Apple TV">
           <img src="https://distro.justror.com/media/55/2c/2c/1686944050/Apple-TV-4K-64GB-Gen-1-with-Remote-Front-View.png?ts=1689845896" alt="Apple TV">
           <div class="device-label">Apple TV</div>
         </div>
+
         <div class="device" data-device="Vision Pro">
           <img src="https://thumbs.dreamstime.com/b/apple-vision-pro-device-front-view-white-background-vector-illustration-upcoming-mixed-reality-headset-developed-inc-296263374.jpg" alt="Vision Pro">
           <div class="device-label">Vision Pro</div>
         </div>
+
         <div class="device" data-device="HomePod">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="94" height="94" viewBox="0 0 50 50" fill="#000000">
             <path d="M25 4C19 4 17 5 17 5L17 6C12.589 6 9 9.589 9 14L9 37C9 41.411 12.589 45 17 45L17 47L33 47L33 45C37.411 45 41 41.411 41 37L41 14C41 9.589 37.411 6 33 6L33 5C33 5 31 4 25 4 z"/>
           </svg>
           <div class="device-label">HomePod</div>
         </div>
+
       </div>
     </div>
 
-    <!-- Your Setup (Right) -->
+    <!-- Right: Your Setup -->
     <div class="your-setup">
       <h2>Your Setup</h2>
       <div class="setup-items" id="setupItems"></div>
     </div>
   </div>
 
-  <!-- Score & Features -->
-  <div class="score-panel">
+  <!-- Submit / Reveal Button -->
+  <div class="submit-btn-container">
+    <button class="submit-btn" id="showScoreBtn">Show My Ecosystem Score →</button>
+  </div>
+
+  <!-- Score & Features Panel (hidden until button click) -->
+  <div class="score-panel" id="scorePanel">
     <div class="score-number" id="featureCount">0</div>
     <div class="score-text">Continuity & Ecosystem Features Unlocked</div>
-   
+  
     <div class="continuity-list">
       <h3>Active Features & Details:</h3>
       <div id="features"></div>
@@ -304,7 +354,7 @@
   </div>
 </div>
 
-<!-- Daisy Robot Container -->
+<!-- Daisy the Robot – now positioned on the LEFT -->
 <div class="robot-container" id="robotContainer">
   <div class="robot" id="robot">
     <img src="https://chirag-gour.github.io/Audio_SkilliZee/Audio%20Chapters%20Apple/image.gif" alt="Daisy the Robot">
@@ -312,13 +362,15 @@
   </div>
 </div>
 
-<!-- Fact Popup -->
+<!-- Fun Fact Popup -->
 <div class="fact-box" id="factBox">
   <strong>Wow! </strong><span id="factText"></span>
 </div>
 
 <script>
-// Features with detailed explanations (2026 state)
+// ============================================================================
+// FEATURE MAP - every device → features it unlocks (2026 perspective)
+// ============================================================================
 const FEATURE_MAP = {
   iPhone: {
     features: [
@@ -388,7 +440,9 @@ const FEATURE_MAP = {
   }
 };
 
-// Fun facts (with AirPods & HomePod)
+// ============================================================================
+// Fun facts shown when Daisy delivers each device
+// ============================================================================
 const FUN_FACTS = {
   iPhone: "Did you know? The iPhone can become your Mac's super-camera! 📸✨",
   iPad: "Fun fact: Your iPad secretly wants to be a giant Mac screen! 🖥️😎",
@@ -401,17 +455,25 @@ const FUN_FACTS = {
   HomePod: "HomePod here! I can make your whole house sing in perfect harmony! 🎶🏡"
 };
 
-const devicePool = document.getElementById('devicePool');
-const setupItems = document.getElementById('setupItems');
-const featureCountEl = document.getElementById('featureCount');
-const featuresEl = document.getElementById('features');
-const robotContainer = document.getElementById('robotContainer');
-const carriedObject = document.getElementById('carriedObject');
-const factBox = document.getElementById('factBox');
-const factText = document.getElementById('factText');
+// ============================================================================
+// DOM elements
+// ============================================================================
+const devicePool       = document.getElementById('devicePool');
+const setupItems       = document.getElementById('setupItems');
+const featureCountEl   = document.getElementById('featureCount');
+const featuresEl       = document.getElementById('features');
+const robotContainer   = document.getElementById('robotContainer');
+const carriedObject    = document.getElementById('carriedObject');
+const factBox          = document.getElementById('factBox');
+const factText         = document.getElementById('factText');
+const showScoreBtn     = document.getElementById('showScoreBtn');
+const scorePanel       = document.getElementById('scorePanel');
 
 let currentDevices = new Set();
 
+// ============================================================================
+// Clicking a device in the pool → animation + add to setup
+// ============================================================================
 devicePool.addEventListener('click', async (e) => {
   const deviceEl = e.target.closest('.device');
   if (!deviceEl) return;
@@ -420,11 +482,9 @@ devicePool.addEventListener('click', async (e) => {
   if (currentDevices.has(deviceName)) return;
 
   currentDevices.add(deviceName);
-
-  // Hide the clicked device in the pool
   deviceEl.classList.add('hidden');
 
-  // 1. Prepare carried object (clone the original element – works for both img and svg)
+  // 1. Prepare carried object (clone img or svg)
   carriedObject.innerHTML = '';
   const source = deviceEl.querySelector('img, svg');
   if (source) {
@@ -435,23 +495,21 @@ devicePool.addEventListener('click', async (e) => {
   }
   carriedObject.classList.add('show');
 
-  // 2. Daisy moves (exact animation from your code)
+  // 2. Daisy moves (from left → toward center/right)
   robotContainer.classList.add('moving');
 
-  // 3. Wait during travel → show fact midway
+  // 3. Show fun fact during travel
   await new Promise(r => setTimeout(r, 900));
-
   factText.textContent = FUN_FACTS[deviceName] || "Yay! New friend delivered! 🎉";
   factBox.classList.add('show');
 
-  // 4. Add device to setup area (preserve SVG or img)
+  // 4. Add device to "Your Setup" area
   await new Promise(r => setTimeout(r, 800));
 
   const item = document.createElement('div');
   item.className = 'setup-item';
 
   if (deviceName === "AirPods" || deviceName === "HomePod") {
-    // Use the original SVG content, resized
     let svgHTML = source.outerHTML;
     svgHTML = svgHTML.replace(/width="[^"]*"/g, 'width="84"').replace(/height="[^"]*"/g, 'height="84"');
     item.innerHTML = svgHTML + `<div class="remove-btn" onclick="removeDevice('${deviceName}', this)">×</div>`;
@@ -464,28 +522,28 @@ devicePool.addEventListener('click', async (e) => {
 
   setupItems.appendChild(item);
 
-  // 5. Reset Daisy + hide carried object & fact
+  // 5. Reset Daisy + hide carried object & fact box
   await new Promise(r => setTimeout(r, 1200));
-
   robotContainer.classList.remove('moving');
   carriedObject.classList.remove('show');
   factBox.classList.remove('show');
-
-  updateFeatures();
 });
 
+// ============================================================================
+// Remove device from setup → put it back in pool
+// ============================================================================
 window.removeDevice = function(deviceName, btn) {
   currentDevices.delete(deviceName);
   btn.closest('.setup-item').remove();
 
-  // Show device back in pool when removed from setup
   const deviceEl = document.querySelector(`.device[data-device="${deviceName}"]`);
   if (deviceEl) deviceEl.classList.remove('hidden');
-
-  updateFeatures();
 };
 
-function updateFeatures() {
+// ============================================================================
+// Show score only when user clicks the button
+// ============================================================================
+showScoreBtn.addEventListener('click', () => {
   const allFeatures = new Set();
   const featureDetails = [];
 
@@ -499,14 +557,13 @@ function updateFeatures() {
   });
 
   featureCountEl.textContent = allFeatures.size;
-
   featuresEl.innerHTML = featureDetails
     .map(f => `<div class="feature"><strong>${f.name}:</strong> ${f.desc}</div>`)
     .join('');
-}
+
+  scorePanel.classList.add('visible');
+  showScoreBtn.textContent = "Refresh My Ecosystem Score";
+});
 </script>
-
 </body>
-
 </html>
-
