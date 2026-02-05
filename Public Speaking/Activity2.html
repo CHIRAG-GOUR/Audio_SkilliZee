@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky Note Reframe Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1F3345;
+      --gold: #C78F57;
+      --sea-green: #85ABAB;
+      --beige: #F0EDE5;
+      --light-yellow: #fff9e3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', system-ui, sans-serif;
+      color: var(--navy);
+      background-color: var(--beige);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+      background-image:
+        linear-gradient(rgba(240, 237, 229, 0.94), rgba(240, 237, 229, 0.94)),
+        url('https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif');
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px; /* keeps it focused and readable */
+      background: white;
+      border-radius: 24px;
+      padding: 3.5rem 2.8rem;
+      box-shadow: 0 16px 50px rgba(31,51,69,0.18);
+      margin: 0 auto; /* centers horizontally */
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Baloo 2', cursive;
+      color: var(--gold);
+      font-size: 3.2rem;
+      margin-bottom: 1.4rem;
+    }
+
+    h3 {
+      color: var(--gold);
+      font-size: 2.2rem;
+      margin-bottom: 1.4rem;
+      font-family: 'Baloo 2', cursive;
+    }
+
+    .intro-text {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    blockquote {
+      font-style: italic;
+      font-size: 1.45rem;
+      color: var(--navy);
+      margin: 2rem 0 2.5rem;
+      padding: 1.8rem 2.2rem;
+      background: #fffaf0;
+      border-radius: 14px;
+      border-left: 7px solid var(--sea-green);
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+      line-height: 1.6;
+    }
+
+    .timer {
+      font-size: 4rem;
+      font-weight: bold;
+      color: var(--gold);
+      margin: 2rem 0;
+      min-height: 80px;
+      font-family: 'Baloo 2', cursive;
+    }
+
+    .timer.expired {
+      color: var(--sea-green);
+      font-size: 2.6rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 1.4rem;
+      font-size: 1.2rem;
+      border: 2.5px solid var(--sea-green);
+      border-radius: 14px;
+      resize: vertical;
+      margin-bottom: 2rem;
+      font-family: 'Nunito', sans-serif;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+      line-height: 1.6;
+    }
+
+    button {
+      background: var(--gold);
+      color: white;
+      font-size: 1.35rem;
+      padding: 1.2rem 3.2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(199,143,87,0.35);
+      transition: all 0.3s ease;
+      margin: 1rem 0 2.5rem;
+    }
+
+    button:hover {
+      background: #d4a06a;
+      transform: translateY(-4px);
+      box-shadow: 0 14px 34px rgba(199,143,87,0.45);
+    }
+
+    .instructions {
+      margin-top: 2rem;
+      padding: 2.2rem;
+      background: #fdfaf6;
+      border-radius: 18px;
+      border: 1px solid rgba(133,171,171,0.3);
+      font-size: 1.15rem;
+      line-height: 1.8;
+    }
+
+    .instructions ol {
+      text-align: left;
+      padding-left: 1.6rem;
+      margin: 1.2rem 0;
+    }
+
+    .highlight {
+      color: var(--sea-green);
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 2.5rem 1.8rem;
+        margin: 1rem;
+      }
+      h1 { font-size: 2.6rem; }
+      h3 { font-size: 1.9rem; }
+      .timer { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Sticky Note Reframe Challenge</h1>
+    <h3>Your 60-Second Mindset Shift</h3>
+    <p class="intro-text"><strong>Start typing your answer below</strong> &mdash; the 60-second timer will begin automatically.</p>
+
+    <blockquote>“What do these people <strong>desperately want to walk away with</strong> after my talk?”</blockquote>
+
+    <div class="timer" id="timerDisplay">60</div>
+
+    <textarea id="stickyAnswer" placeholder="Type your one-sentence answer here…
+(Example: They want 3 fast ways to run shorter, more productive meetings.)"></textarea>
+
+    <button id="downloadStickyBtn">📥 Download as Image (Save / Print)</button>
+
+    <div class="instructions">
+      <p style="font-weight: bold; color: var(--navy); margin-bottom: 1.2rem; font-size: 1.4rem;">Next Steps:</p>
+      <ol>
+        <li>Click the button above to download your personalized sticky note as an image</li>
+        <li>Save it to your phone or computer &mdash; or print it if possible</li>
+        <li>Keep it visible during the rest of your preparation and during your actual talk</li>
+        <li><strong>Submit</strong> a screenshot or photo of your completed sticky note in the LMS activity submission area to mark this challenge as complete.</li>
+      </ol>
+      <p class="highlight" style="margin-top: 2rem; font-size: 1.3rem;">This quick reframe is one of the most powerful tools in public speaking &mdash; use it before every presentation!</p>
+    </div>
+  </div>
+
+  <script>
+    // Timer – starts on first interaction with textarea
+    const timerDisplay = document.getElementById('timerDisplay');
+    const textarea = document.getElementById('stickyAnswer');
+    let timeLeft = 60;
+    let timerRunning = false;
+    let timerInterval = null;
+
+    function startTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      timerDisplay.textContent = timeLeft;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = '#B54745';
+        }
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerDisplay.textContent = "Time's up! Great job starting the reframe.";
+          timerDisplay.classList.add('expired');
+        }
+      }, 1000);
+    }
+
+    textarea.addEventListener('focus', startTimer);
+    textarea.addEventListener('input', startTimer);
+
+    // Download logic
+    document.getElementById('downloadStickyBtn').addEventListener('click', () => {
+      const answer = textarea.value.trim();
+      const displayText = answer || "They want 3 actionable ways to cut meeting time in half.";
+      const canvas = document.createElement('canvas');
+      canvas.width = 620;
+      canvas.height = 420;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#fff9e3';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 25;
+      ctx.shadowOffsetX = 10;
+      ctx.shadowOffsetY = 12;
+
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 90, 0);
+      ctx.lineTo(canvas.width, 0);
+      ctx.lineTo(canvas.width, 90);
+      ctx.fillStyle = '#ffe8c0';
+      ctx.fill();
+
+      ctx.font = 'bold 30px "Baloo 2", cursive';
+      ctx.fillStyle = '#1F3345';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'transparent';
+      wrapText(ctx, displayText, canvas.width / 2, 140, canvas.width - 100, 45);
+
+      ctx.font = 'bold 40px "Baloo 2", cursive';
+      ctx.fillStyle = '#C78F57';
+      ctx.fillText("My Sticky Note Reframe", canvas.width / 2, 70);
+
+      ctx.font = '20px Nunito, sans-serif';
+      ctx.fillStyle = '#666';
+      ctx.fillText("skillizee.io – Speak Smart Lab", canvas.width / 2, canvas.height - 35);
+
+      const link = document.createElement('a');
+      link.download = 'my-sticky-note-reframe.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = context.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          context.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, y);
+    }
+  </script>
+
+</body>
+</html>
