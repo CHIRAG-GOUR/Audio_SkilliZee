@@ -1,6 +1,6 @@
 <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title></title>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Comic+Neue:wght@700&amp;family=Luckiest+Guy&amp;display=swap" rel="stylesheet" /><!-- Required libraries for real .docx generation --><script src="https://unpkg.com/docx@8.5.0/build/index.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Comic+Neue:wght@700&amp;family=Luckiest+Guy&amp;display=swap" rel="stylesheet" /><!-- jsPDF + html2canvas for PDF generation --><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style type="text/css">body {
       font-family: 'Comic Neue', cursive;
       background: linear-gradient(135deg, #fff5fb 0%, #f8e8f0 100%);
@@ -129,7 +129,8 @@
 <p class="intro">Plan what your Locality Guide AI should know!<br />
 Fill at least <strong>4 rows</strong> &mdash; one row per category.</p>
 
-<div class="requirement">★ You must complete <strong>at least 4 full rows</strong> to finish this activity! ★</div>
+<div class="requirement">★ You must complete <strong>at least 4 full rows</strong> to finish this activity!<br />
+Change the text in all the boxes , don&#39;t use the example given below★</div>
 
 <table id="wishlistTable">
 	<thead>
@@ -141,7 +142,7 @@ Fill at least <strong>4 rows</strong> &mdash; one row per category.</p>
 			(upload image)</th>
 		</tr>
 	</thead>
-	<tbody><!-- Example starter rows -->
+	<tbody>
 		<tr>
 			<td contenteditable="true">Popular Food</td>
 			<td contenteditable="true">Dal Baati Churma, Ghevar, Ker Sangri</td>
@@ -168,10 +169,14 @@ Fill at least <strong>4 rows</strong> &mdash; one row per category.</p>
 		</tr>
 	</tbody>
 </table>
-<button class="add-row-btn" onclick="addRow()">+ Add New Row</button><button class="download-btn" onclick="downloadRealDocx()">Download Valid Word (.docx)</button>
+<button class="add-row-btn" onclick="addRow()">+ Add New Row</button><button class="download-btn" onclick="downloadAsPDF()">Download as PDF (with images)</button>
 
-<p class="submit-note">After downloading, upload the .docx file to the assignment below.<br />
-Make sure you have at least 4 rows before submitting!</p>
+<p class="submit-note">After downloading:<br />
+1. Open the .pdf file (in browser or PDF viewer)<br />
+2. See your table exactly as created (with images)<br />
+3. Upload the PDF file to the assignment below</p>
+
+<p class="submit-note" style="margin-top:1.5rem; font-size:1.2rem;">Tip: If download doesn&#39;t start, try in a new tab or check popup blocker</p>
 </div>
 <script>
 // Add new row
@@ -207,90 +212,46 @@ function previewImage(input) {
   }
 }
 
-// Download valid .docx with images
-async function downloadRealDocx() {
-  const { Packer, Document, Paragraph, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType } = docx;
+// Generate and download PDF
+async function downloadAsPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-  const doc = new Document({
-    sections: [{
-      properties: {},
-      children: [
-        new Paragraph({
-          text: "Data Wishlist Table – Locality Guide",
-          heading: "Heading1",
-          alignment: AlignmentType.CENTER
-        }),
-        new Paragraph({ text: "" }) // spacer
-      ]
-    }]
-  });
+  doc.setFontSize(20);
+  doc.setTextColor(200, 0, 0);
+  doc.text("Data Wishlist Table – Locality Guide", 105, 20, { align: "center" });
 
-  const tableRows = [];
-  const rows = document.querySelectorAll('#wishlistTable tbody tr');
-
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('td');
-    const rowCells = [];
-
-    cells.forEach((cell, index) => {
-      let content = cell.innerText.trim();
-
-      if (index === 3) { // image column
-        const img = cell.querySelector('img.image-preview');
-        if (img && img.src && img.style.display !== 'none') {
-          const base64 = img.src.split(',')[1];
-          const imageData = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-
-          rowCells.push(
-            new TableCell({
-              children: [new Paragraph({
-                children: [new ImageRun({
-                  data: imageData,
-                  transformation: { width: 140, height: 140 }
-                })]
-              })]
-            })
-          );
-          return;
-        }
-      }
-
-      // Text cells
-      rowCells.push(
-        new TableCell({
-          children: [new Paragraph(content || "—")]
-        })
-      );
-    });
-
-    tableRows.push(new TableRow({ children: rowCells }));
-  });
-
-  // Add header row
-  const headerRow = new TableRow({
-    children: [
-      new TableCell({ children: [new Paragraph("Category")] }),
-      new TableCell({ children: [new Paragraph("3 Things I Want AI to Know")] }),
-      new TableCell({ children: [new Paragraph("Why is it important?")] }),
-      new TableCell({ children: [new Paragraph("Photo / Visual Reference")] })
-    ]
-  });
-
-  doc.addSection({
-    children: [
-      new Table({
-        rows: [headerRow, ...tableRows],
-        width: { size: 100, type: WidthType.PERCENTAGE }
-      })
-    ]
-  });
+  const tableElement = document.getElementById('wishlistTable');
 
   try {
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, "Data_Wishlist_Table.docx");
-    alert("Valid .docx file downloaded successfully!\nYou can now upload it to the assignment.");
+    const canvas = await html2canvas(tableElement, {
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 190;
+    const pageHeight = doc.internal.pageSize.height;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 30;
+
+    doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight - position;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      doc.addPage();
+      doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    doc.save('Data_Wishlist_Table.pdf');
+    alert("PDF downloaded successfully!\nOpen it to see your table + images.\nUpload this file to the assignment.");
   } catch (err) {
-    alert("Error generating file: " + err.message + "\nTry copying the table manually into Word instead.");
+    alert("PDF generation failed: " + err.message + "\n\nFallback: Copy the table manually (Ctrl+A inside table → Ctrl+C) and paste into Word → Save as PDF");
   }
 }
 </script>
