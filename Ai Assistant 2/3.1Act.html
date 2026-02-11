@@ -1,0 +1,296 @@
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Comic+Neue:wght@700&amp;family=Luckiest+Guy&amp;display=swap" rel="stylesheet" /><!-- Required libraries for real .docx generation --><script src="https://unpkg.com/docx@8.5.0/build/index.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style type="text/css">body {
+      font-family: 'Comic Neue', cursive;
+      background: linear-gradient(135deg, #fff5fb 0%, #f8e8f0 100%);
+      color: #111;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border: 12px solid #c00;
+      border-radius: 24px;
+      box-shadow: 14px 14px 0 #000;
+      padding: 30px;
+      overflow: hidden;
+    }
+    h1 {
+      font-family: 'Luckiest Guy', cursive;
+      color: #c00;
+      text-align: center;
+      font-size: 3.6rem;
+      text-shadow: 6px 6px 0 #000;
+      margin: 0 0 20px;
+    }
+    .intro {
+      font-size: 1.45rem;
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    .requirement {
+      background: #ffeb3b;
+      border: 6px dashed #c00;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 20px 0;
+      font-size: 1.4rem;
+      text-align: center;
+      box-shadow: 8px 8px 0 #000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      font-size: 1.25rem;
+      background: #fff;
+    }
+    th, td {
+      border: 4px solid #000;
+      padding: 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #ffeb3b;
+      color: #c00;
+      font-weight: bold;
+      text-align: center;
+    }
+    td {
+      background: #f9f9f9;
+    }
+    .image-cell {
+      text-align: center;
+    }
+    .image-preview {
+      max-width: 180px;
+      max-height: 180px;
+      margin-top: 10px;
+      border: 4px solid #c00;
+      border-radius: 12px;
+      box-shadow: 6px 6px 0 #000;
+      display: none;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    .add-row-btn {
+      background: #c00;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.4rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 20px auto;
+      display: block;
+      font-family: 'Bangers', cursive;
+      box-shadow: 8px 8px 0 #000;
+      transition: all 0.2s;
+    }
+    .add-row-btn:hover {
+      transform: scale(1.08);
+      background: #900;
+    }
+    .download-btn {
+      background: #FFD700;
+      color: #c00;
+      border: none;
+      padding: 16px 40px;
+      font-size: 1.6rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 30px auto;
+      display: block;
+      font-family: 'Luckiest Guy', cursive;
+      box-shadow: 10px 10px 0 #000;
+      transition: all 0.2s;
+    }
+    .download-btn:hover {
+      transform: scale(1.1);
+      background: #ffeb3b;
+    }
+    .submit-note {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #444;
+      margin-top: 20px;
+    }
+</style>
+<div class="container">
+<h1>Activity 3.1 &ndash; Data Wishlist Table</h1>
+
+<p class="intro">Plan what your Locality Guide AI should know!<br />
+Fill at least <strong>4 rows</strong> &mdash; one row per category.</p>
+
+<div class="requirement">★ You must complete <strong>at least 4 full rows</strong> to finish this activity! ★</div>
+
+<table id="wishlistTable">
+	<thead>
+		<tr>
+			<th>Category</th>
+			<th>3 Things I Want AI to Know</th>
+			<th>Why is it important?</th>
+			<th>Photo / Visual Reference<br />
+			(upload image)</th>
+		</tr>
+	</thead>
+	<tbody><!-- Example starter rows -->
+		<tr>
+			<td contenteditable="true">Popular Food</td>
+			<td contenteditable="true">Dal Baati Churma, Ghevar, Ker Sangri</td>
+			<td contenteditable="true">Famous Rajasthani dishes every newcomer should try!</td>
+			<td class="image-cell"><input accept="image/*" onchange="previewImage(this)" type="file" /> <img alt="Preview" class="image-preview" /></td>
+		</tr>
+		<tr>
+			<td contenteditable="true">Tourist Places</td>
+			<td contenteditable="true">Hawa Mahal, Amber Fort, Jal Mahal</td>
+			<td contenteditable="true">Iconic landmarks that represent our city&#39;s beauty</td>
+			<td class="image-cell"><input accept="image/*" onchange="previewImage(this)" type="file" /> <img alt="Preview" class="image-preview" /></td>
+		</tr>
+		<tr>
+			<td contenteditable="true">Plants</td>
+			<td contenteditable="true">Khejri, Neem, Rohida</td>
+			<td contenteditable="true">Special desert plants that survive in Rajasthan</td>
+			<td class="image-cell"><input accept="image/*" onchange="previewImage(this)" type="file" /> <img alt="Preview" class="image-preview" /></td>
+		</tr>
+		<tr>
+			<td contenteditable="true">Greetings</td>
+			<td contenteditable="true">Ram Ram!, Khamma Ghani, Jai Shri Ram</td>
+			<td contenteditable="true">Traditional way to welcome people warmly</td>
+			<td class="image-cell"><input accept="image/*" onchange="previewImage(this)" type="file" /> <img alt="Preview" class="image-preview" /></td>
+		</tr>
+	</tbody>
+</table>
+<button class="add-row-btn" onclick="addRow()">+ Add New Row</button><button class="download-btn" onclick="downloadRealDocx()">Download Valid Word (.docx)</button>
+
+<p class="submit-note">After downloading, upload the .docx file to the assignment below.<br />
+Make sure you have at least 4 rows before submitting!</p>
+</div>
+<script>
+// Add new row
+function addRow() {
+  const table = document.getElementById('wishlistTable').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+
+  for (let i = 0; i < 4; i++) {
+    const cell = newRow.insertCell();
+    if (i === 3) {
+      cell.className = 'image-cell';
+      cell.innerHTML = `
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+        <img class="image-preview" alt="Preview">
+      `;
+    } else {
+      cell.contentEditable = true;
+      cell.innerText = i === 0 ? "New Category" : "";
+    }
+  }
+}
+
+// Image preview
+function previewImage(input) {
+  const preview = input.nextElementSibling;
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Download valid .docx with images
+async function downloadRealDocx() {
+  const { Packer, Document, Paragraph, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType } = docx;
+
+  const doc = new Document({
+    sections: [{
+      properties: {},
+      children: [
+        new Paragraph({
+          text: "Data Wishlist Table – Locality Guide",
+          heading: "Heading1",
+          alignment: AlignmentType.CENTER
+        }),
+        new Paragraph({ text: "" }) // spacer
+      ]
+    }]
+  });
+
+  const tableRows = [];
+  const rows = document.querySelectorAll('#wishlistTable tbody tr');
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const rowCells = [];
+
+    cells.forEach((cell, index) => {
+      let content = cell.innerText.trim();
+
+      if (index === 3) { // image column
+        const img = cell.querySelector('img.image-preview');
+        if (img && img.src && img.style.display !== 'none') {
+          const base64 = img.src.split(',')[1];
+          const imageData = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+
+          rowCells.push(
+            new TableCell({
+              children: [new Paragraph({
+                children: [new ImageRun({
+                  data: imageData,
+                  transformation: { width: 140, height: 140 }
+                })]
+              })]
+            })
+          );
+          return;
+        }
+      }
+
+      // Text cells
+      rowCells.push(
+        new TableCell({
+          children: [new Paragraph(content || "—")]
+        })
+      );
+    });
+
+    tableRows.push(new TableRow({ children: rowCells }));
+  });
+
+  // Add header row
+  const headerRow = new TableRow({
+    children: [
+      new TableCell({ children: [new Paragraph("Category")] }),
+      new TableCell({ children: [new Paragraph("3 Things I Want AI to Know")] }),
+      new TableCell({ children: [new Paragraph("Why is it important?")] }),
+      new TableCell({ children: [new Paragraph("Photo / Visual Reference")] })
+    ]
+  });
+
+  doc.addSection({
+    children: [
+      new Table({
+        rows: [headerRow, ...tableRows],
+        width: { size: 100, type: WidthType.PERCENTAGE }
+      })
+    ]
+  });
+
+  try {
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, "Data_Wishlist_Table.docx");
+    alert("Valid .docx file downloaded successfully!\nYou can now upload it to the assignment.");
+  } catch (err) {
+    alert("Error generating file: " + err.message + "\nTry copying the table manually into Word instead.");
+  }
+}
+</script>
