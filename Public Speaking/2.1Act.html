@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Speak Smart Lab – Fill in the Blanks</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- GSAP -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+
+    :root {
+
+      --black: #000000;
+
+      --navy: #1F3345;
+
+      --red: #B54745;
+
+      --gold: #C78F57;
+
+      --sea-green: #85ABAB;
+
+      --beige: #F0EDE5;
+
+      --light: #fdfaf6;
+
+    }
+
+    body {
+
+      font-family: 'Nunito', sans-serif;
+
+      color: var(--navy);
+
+      background: var(--beige);
+
+      min-height: 100vh;
+
+      margin: 0;
+
+      line-height: 1.7;
+
+    }
+
+    .header {
+
+      background: var(--gold);
+
+      color: white;
+
+      text-align: center;
+
+      padding: 3.5rem 1.5rem 2.5rem;
+
+      border-radius: 0 0 28px 28px;
+
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+
+    }
+
+    .header h1 {
+
+      font-family: 'Baloo 2', cursive;
+
+      font-size: clamp(2.6rem, 7vw, 4rem);
+
+    }
+
+    .container {
+
+      max-width: 1000px;
+
+      margin: 2.5rem auto;
+
+      padding: 0 1.5rem;
+
+    }
+
+    .card {
+
+      background: white;
+
+      border: 3px dashed var(--gold);
+
+      border-radius: 18px;
+
+      padding: 2.4rem 2rem;
+
+      box-shadow: 0 6px 22px rgba(31,51,69,0.12);
+
+    }
+
+    .card h2 {
+
+      font-family: 'Baloo 2', cursive;
+
+      font-size: 2rem;
+
+      color: var(--navy);
+
+      text-align: center;
+
+      margin-bottom: 2rem;
+
+    }
+
+    .question-row {
+
+      display: flex;
+
+      align-items: flex-start;
+
+      justify-content: space-between;
+
+      gap: 2rem;
+
+      margin-bottom: 3rem;
+
+      flex-wrap: wrap;
+
+    }
+
+    .question-left {
+
+      flex: 1;
+
+      min-width: 280px;
+
+    }
+
+    .question-title {
+
+      font-size: 1.25rem;
+
+      font-weight: 700;
+
+      margin-bottom: 0.9rem;
+
+      color: var(--navy);
+
+    }
+
+    .blank-container {
+
+      font-size: 1.28rem;
+
+      background: var(--light);
+
+      padding: 1.3rem;
+
+      border-radius: 12px;
+
+      border: 1px solid rgba(199,143,87,0.28);
+
+      text-align: center;
+
+      min-height: 80px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+    .blank {
+
+      display: inline-block;
+
+      min-width: 260px;
+
+      min-height: 42px;
+
+      background: #faf6ed;
+
+      border: 2.5px dashed #aaa;
+
+      border-radius: 10px;
+
+      margin: 0 8px;
+
+      padding: 6px 12px;
+
+      font-weight: 600;
+
+      color: #555;
+
+    }
+
+    .filled {
+
+      background: #e8ffe8 !important;
+
+      border-color: #2e7d32 !important;
+
+      color: #1b5e20 !important;
+
+      font-weight: 700;
+
+      padding: 6px 14px;
+
+    }
+
+    .options-right {
+
+      width: 340px;
+
+      min-width: 300px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 1rem;
+
+    }
+
+    .option-wrapper {
+
+      position: relative;
+
+      padding: 11px 18px;
+
+      background: #f8f9ff;
+
+      border: 2px solid #d0d8ff;
+
+      border-radius: 10px;
+
+      cursor: pointer;
+
+      font-size: 1.02rem;
+
+      font-weight: 600;
+
+      text-align: center;
+
+      transition: all 0.2s;
+
+      user-select: none;
+
+      overflow: hidden;
+
+    }
+
+    .option-wrapper:hover {
+
+      background: #e8eeff;
+
+      transform: translateX(4px);
+
+    }
+
+    .option-text {
+
+      position: relative;
+
+      z-index: 2;
+
+    }
+
+    .rocket-flying {
+
+      position: absolute;
+
+      top: 50%;
+
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      width: 54px;
+
+      height: 54px;
+
+      pointer-events: none;
+
+      z-index: 1;
+
+      opacity: 0;
+
+    }
+
+    .smoke-trail {
+
+      position: absolute;
+
+      bottom: -45px;
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      font-size: 2.2rem;
+
+      opacity: 0;
+
+      z-index: 0;
+
+    }
+
+    .particle {
+
+      position: absolute;
+
+      width: 12px;
+
+      height: 12px;
+
+      border-radius: 50%;
+
+      pointer-events: none;
+
+      z-index: 20;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+  <h1>Speak Smart Lab</h1>
+
+  <p class="text-lg mt-2 opacity-90">Fill in the Blanks – Core Message Practice</p>
+
+</div>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>Fill in the Blanks</h2>
+
+    <div class="question-row">
+
+      <div class="question-left">
+
+        <div class="question-title">Question 1</div>
+
+        <div class="blank-container">
+
+          Today I’m going to <span class="blank" id="q1"></span>
+
+        </div>
+
+      </div>
+
+      <div class="options-right" data-q="1"></div>
+
+    </div>
+
+    <div class="question-row">
+
+      <div class="question-left">
+
+        <div class="question-title">Question 2</div>
+
+        <div class="blank-container">
+
+          and by the end you will <span class="blank" id="q2"></span>
+
+        </div>
+
+      </div>
+
+      <div class="options-right" data-q="2"></div>
+
+    </div>
+
+    <div class="question-row">
+
+      <div class="question-left">
+
+        <div class="question-title">Question 3</div>
+
+        <div class="blank-container">
+
+          The best Big Idea is <span class="blank" id="q3"></span>
+
+        </div>
+
+      </div>
+
+      <div class="options-right" data-q="3"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// Questions data
+
+const questions = [
+
+  { blank: "q1", correct: "prove 4-day weeks boost output", wrong: ["talk about time management", "share weekend stories"] },
+
+  { blank: "q2", correct: "get my exact pitch template", wrong: ["feel a bit motivated", "stay the same"] },
+
+  { blank: "q3", correct: "short and benefit-focused", wrong: ["long and complicated", "vague and general"] }
+
+];
+
+// Shuffle
+
+function shuffle(array) {
+
+  return array.sort(() => Math.random() - 0.5);
+
+}
+
+// Populate options
+
+document.querySelectorAll('.options-right').forEach(container => {
+
+  const qIndex = parseInt(container.dataset.q) - 1;
+
+  const q = questions[qIndex];
+
+  let options = [q.correct, ...q.wrong];
+
+  shuffle(options);
+
+  options.forEach(text => {
+
+    const wrapper = document.createElement('div');
+
+    wrapper.className = 'option-wrapper';
+
+    wrapper.innerHTML = `
+
+      <div class="option-text">${text}</div>
+
+      <div class="rocket-flying">
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="54" height="54">
+
+          <polygon style="fill:#E6E2E0;" points="121.796,269.608 73.119,344.219 167.78,438.881 242.391,390.203 "/>
+
+          <polygon style="fill:#EE3840;" points="403.094,264.221 247.778,108.905 110.445,130.358 25.05,215.753 136.255,220.429 291.571,375.745 296.246,486.95 381.641,401.555 "/>
+
+          <path style="fill:#CCC4C1;" d="M504.825,7.176c-91.794-25.474-177.32,22.004-217.459,62.143 c-11.993,11.992-191.31,191.309-191.31,191.309l155.316,155.316c0,0,162.336-162.336,191.309-191.309 C482.819,184.496,530.298,98.969,504.825,7.176z"/>
+
+          <path style="fill:#EE3840;" d="M152.269,359.731c-4.628-4.628-4.628-12.133,0-16.761l164.787-164.787 c4.628-4.628,12.133-4.628,16.761,0c4.628,4.628,4.628,12.133,0,16.761L169.03,359.731 C164.401,364.359,156.897,364.36,152.269,359.731z"/>
+
+          <circle style="fill:#FFFFFF;" cx="403.105" cy="108.895" r="43.796"/>
+
+          <g>
+
+            <path style="fill:#FFB14D;" d="M3.471,432.083c-4.628-4.628-4.628-12.133,0-16.761l45.234-45.234 c4.628-4.628,12.133-4.628,16.761,0c4.628,4.628,4.628,12.133,0,16.761l-45.234,45.234C15.604,436.711,8.099,436.712,3.471,432.083 z"/>
+
+            <path style="fill:#FFB14D;" d="M79.917,508.528c-4.628-4.628-4.628-12.133,0-16.761l45.234-45.234 c4.628-4.628,12.133-4.628,16.761,0s4.628,12.133,0,16.761l-45.234,45.234C92.049,513.157,84.545,513.157,79.917,508.528z"/>
+
+            <path style="fill:#FFB14D;" d="M22.632,487.679c-4.628-4.628-4.628-12.133,0-16.761l63.45-63.45c4.628-4.628,12.133-4.628,16.761,0 c4.628,4.628,4.628,12.133,0,16.761l-63.45,63.45C34.765,492.307,27.261,492.307,22.632,487.679z"/>
+
+          </g>
+
+        </svg>
+
+      </div>
+
+      <div class="smoke-trail">💨💨💨</div>
+
+    `;
+
+    wrapper.dataset.correct = (text === q.correct) ? "true" : "false";
+
+    wrapper.dataset.target = q.blank;
+
+    container.appendChild(wrapper);
+
+  });
+
+});
+
+document.querySelectorAll('.option-wrapper').forEach(wrapper => {
+
+  wrapper.addEventListener('click', function () {
+
+    if (wrapper.classList.contains('disabled')) return;
+
+    wrapper.classList.add('disabled');
+
+    const isCorrect = wrapper.dataset.correct === "true";
+
+    const targetId = wrapper.dataset.target;
+
+    if (isCorrect) {
+
+      flyCorrect(wrapper, targetId);
+
+    } else {
+
+      flyFallBlastWrong(wrapper);
+
+    }
+
+  });
+
+});
+
+function flyCorrect(wrapper, targetId) {
+
+  const rect = wrapper.getBoundingClientRect();
+
+  const startX = rect.left + window.scrollX;
+
+  const startY = rect.top + window.scrollY;
+
+  const blank = document.getElementById(targetId);
+
+  const blankRect = blank.getBoundingClientRect();
+
+  const endX = blankRect.left + window.scrollX + (blankRect.width / 2) - 34;
+
+  const endY = blankRect.top + window.scrollY + (blankRect.height / 2) - 34;
+
+  const rocket = wrapper.querySelector('.rocket-flying');
+
+  const smoke = wrapper.querySelector('.smoke-trail');
+
+  gsap.to(rocket, { opacity: 0.92, duration: 0.25 });
+
+  gsap.to(smoke, { opacity: 0.92, duration: 0.25 });
+
+  gsap.to(wrapper, {
+
+    duration: 1.5,
+
+    x: endX - startX,
+
+    y: endY - startY,
+
+    scale: 0.8,
+
+    rotation: -4,
+
+    ease: "power2.inOut",
+
+    onUpdate: function() {
+
+      const progress = this.progress();
+
+      gsap.set(wrapper, { x: `+=${Math.sin(progress * Math.PI * 1.8) * 22}` });
+
+    },
+
+    onStart: () => {
+
+      gsap.to(smoke, { opacity: 1, scale: 1.45, duration: 0.8, repeat: -1, yoyo: true });
+
+    },
+
+    onComplete: () => {
+
+      // Instant hide rocket & smoke
+
+      gsap.set(rocket, { opacity: 0 });
+
+      gsap.set(smoke, { opacity: 0 });
+
+      // Fill blank
+
+      blank.textContent = wrapper.querySelector('.option-text').textContent.trim();
+
+      blank.classList.add('filled');
+
+      gsap.fromTo(blank, { scale: 0.65, opacity: 0.4 }, {
+
+        scale: 1,
+
+        opacity: 1,
+
+        duration: 0.65,
+
+        ease: "back.out(1.8)"
+
+      });
+
+      gsap.to(wrapper, { opacity: 0.3, duration: 1.2 });
+
+    }
+
+  });
+
+}
+
+function flyFallBlastWrong(wrapper) {
+
+  const rect = wrapper.getBoundingClientRect();
+
+  const startX = rect.left + window.scrollX;
+
+  const startY = rect.top + window.scrollY;
+
+  // Show rocket & smoke immediately
+
+  const rocket = wrapper.querySelector('.rocket-flying');
+
+  const smoke = wrapper.querySelector('.smoke-trail');
+
+  gsap.to(rocket, { opacity: 0.92, duration: 0.25 });
+
+  gsap.to(smoke, { opacity: 0.92, duration: 0.25 });
+
+  // Shake
+
+  gsap.to(wrapper, { x: -9, duration: 0.05, repeat: 7, yoyo: true });
+
+  // Fly up
+
+  gsap.to(wrapper, {
+
+    y: -140,
+
+    duration: 0.5,
+
+    ease: "power1.out",
+
+    onComplete: () => {
+
+      // Fall down
+
+      gsap.to(wrapper, {
+
+        y: 100,
+
+        duration: 0.6,
+
+        ease: "bounce.out",
+
+        onComplete: () => {
+
+          // BIG BLAST - particles everywhere
+
+          gsap.to(wrapper, {
+
+            scale: 0.1,
+
+            opacity: 0,
+
+            duration: 0.3,
+
+            ease: "expo.in",
+
+            onStart: () => createMassiveScreenBlast(wrapper),
+
+            onComplete: () => wrapper.style.visibility = "hidden"
+
+          });
+
+        }
+
+      });
+
+    }
+
+  });
+
+}
+
+function createMassiveScreenBlast(wrapper) {
+
+  const rect = wrapper.getBoundingClientRect();
+
+  const cx = rect.left + rect.width / 2 + window.scrollX;
+
+  const cy = rect.top + rect.height / 2 + window.scrollY;
+
+  const colors = ['#ff2222', '#ff6600', '#ffaa00', '#ffff55', '#ff4444', '#ff8800'];
+
+  // More particles, wider spread
+
+  for (let i = 0; i < 50; i++) {
+
+    const p = document.createElement('div');
+
+    p.className = 'particle';
+
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    p.style.boxShadow = `0 0 16px ${colors[Math.floor(Math.random() * colors.length)]}`;
+
+    document.body.appendChild(p);
+
+    gsap.set(p, { x: cx, y: cy, scale: 0.6 });
+
+    gsap.to(p, {
+
+      x: cx + (Math.random() - 0.5) * 480,
+
+      y: cy + (Math.random() - 0.5) * 480,
+
+      scale: 0,
+
+      opacity: 0,
+
+      rotation: Math.random() * 1080 - 540,
+
+      duration: Math.random() * 1.4 + 0.9,
+
+      ease: "expo.out",
+
+      delay: Math.random() * 0.3,
+
+      onComplete: () => p.remove()
+
+    });
+
+  }
+
+}
+
+</script>
+
+</body>
+
+</html>
+
+
+
