@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math Solver Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #e74c3c;
+      --yellow: #f1c40f;
+      --blue: #3498db;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --green: #27ae60;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: linear-gradient(135deg, #fffde7, #fffacd);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(3.5rem, 9vw, 6rem);
+      color: var(--red);
+      text-align: center;
+      text-shadow: 4px 4px 0 #000, -2px -2px 0 #000;
+      margin-bottom: 0.4em;
+      letter-spacing: -1px;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .intro {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      text-align: center;
+      margin: 1em 0 2em;
+      color: #444;
+      font-weight: bold;
+    }
+
+    .camera-area {
+      background: white;
+      border: 12px solid var(--dark);
+      border-radius: 24px;
+      box-shadow: 12px 12px 0 var(--dark);
+      padding: 20px;
+      margin: 2em 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    video, #preview {
+      width: 100%;
+      max-height: 480px;
+      border: 8px solid var(--blue);
+      border-radius: 16px;
+      background: black;
+      display: block;
+      margin: 1em auto;
+    }
+
+    #preview { display: none; }
+
+    .controls { text-align: center; margin: 1.5em 0; }
+
+    button {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      padding: 14px 32px;
+      margin: 10px;
+      border: 6px solid var(--dark);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 6px 6px 0 var(--dark);
+    }
+
+    #startBtn, #captureBtn { background: var(--yellow); color: var(--dark); }
+    #clearBtn { background: #95a5a6; color: white; }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-4px) rotate(-2deg);
+      box-shadow: 10px 10px 0 var(--dark);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+
+    #status {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1.5em 0;
+      min-height: 2.2em;
+      color: var(--blue);
+    }
+
+    .answer-box {
+      background: white;
+      border: 10px solid var(--red);
+      border-radius: 24px;
+      padding: 2em;
+      margin: 2em auto;
+      max-width: 900px;
+      box-shadow: 10px 10px 0 var(--dark);
+      position: relative;
+      min-height: 140px;
+    }
+
+    .answer-box::before {
+      content: "ANSWER";
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--yellow);
+      color: var(--red);
+      font-family: 'Bangers', cursive;
+      font-size: 2.4rem;
+      padding: 8px 40px;
+      border: 6px solid var(--dark);
+      border-radius: 999px;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+
+    .equation {
+      font-size: 1.9rem;
+      margin-bottom: 1.2em;
+      color: #27ae60;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .final-answer {
+      font-size: clamp(2.8rem, 10vw, 5.2rem);
+      font-weight: bold;
+      color: #e67e22;
+      text-align: center;
+      margin: 0.8em 0;
+      text-shadow: 3px 3px 0 #000;
+      background: rgba(255,255,255,0.8);
+      padding: 20px;
+      border-radius: 16px;
+      border: 5px dashed var(--yellow);
+    }
+
+    .details {
+      font-size: 1.35rem;
+      line-height: 1.55;
+      margin-top: 1.6em;
+      color: #2c3e50;
+    }
+
+    .error {
+      color: var(--red);
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.4rem;
+      margin: 1em 0;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4em;
+      font-size: 1.2rem;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      button { font-size: 1.4rem; padding: 12px 24px; }
+      .answer-box { padding: 1.5em; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Math Solver Prototype</h1>
+    <p class="intro">Show any math problem to the camera!<br>Click start → capture → see the answer instantly.<br>(Clear writing + good light = best results)</p>
+
+    <div class="camera-area">
+      <video id="video" autoplay playsinline muted></video>
+      <img id="preview" alt="Captured math problem">
+
+      <div class="controls">
+        <button id="startBtn">Start Camera</button>
+        <button id="captureBtn" disabled>Capture & Solve</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </div>
+
+    <div id="status">Ready when you are...</div>
+
+    <div class="answer-box" id="answerBox">
+      <div class="equation" id="equation"></div>
+      <div class="final-answer" id="finalAnswer"></div>
+      <div class="details" id="details"></div>
+      <div class="error" id="error" style="display:none;"></div>
+    </div>
+
+    <footer>Made with curiosity • 2026</footer>
+  </div>
+
+  <script>
+    const GROQ_API_KEY = "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";
+    const ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+
+    const video       = document.getElementById('video');
+    const preview     = document.getElementById('preview');
+    const status      = document.getElementById('status');
+    const equationEl  = document.getElementById('equation');
+    const finalEl     = document.getElementById('finalAnswer');
+    const detailsEl   = document.getElementById('details');
+    const errorEl     = document.getElementById('error');
+    const startBtn    = document.getElementById('startBtn');
+    const captureBtn  = document.getElementById('captureBtn');
+    const clearBtn    = document.getElementById('clearBtn');
+
+    let stream = null;
+
+    startBtn.onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        video.srcObject = stream;
+        status.textContent = "Camera on! Show me the math problem.";
+        startBtn.disabled = true;
+        captureBtn.disabled = false;
+      } catch (err) {
+        status.textContent = "Camera access denied. Please allow it.";
+      }
+    };
+
+    captureBtn.onclick = async () => {
+      status.textContent = "Scanning...";
+      captureBtn.disabled = true;
+      errorEl.style.display = "none";
+      equationEl.textContent = "";
+      finalEl.textContent = "";
+      detailsEl.textContent = "";
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const base64 = canvas.toDataURL("image/png").split(',')[1];
+
+      preview.src = `data:image/png;base64,${base64}`;
+      preview.style.display = 'block';
+
+      try {
+        // 1. Extraction - emphasize real integral symbol
+        const extractRes = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "meta-llama/llama-4-scout-17b-16e-instruct",
+            messages: [{
+              role: "user",
+              content: [
+                { type: "text", text: "Extract the exact handwritten mathematical expression. Use proper Unicode symbols where possible: use ∫ for integral sign (not \\int), × for multiplication, ÷ for division. Only use LaTeX (\\frac, \\sqrt, etc.) if the symbol is complex and cannot be expressed cleanly with Unicode. Do NOT confuse ∫ with $, S, or other shapes. Output ONLY the clean math expression — no extra words." },
+                { type: "image_url", image_url: { url: `data:image/png;base64,${base64}` } }
+              ]
+            }],
+            temperature: 0.0,
+            max_tokens: 400
+          })
+        });
+
+        if (!extractRes.ok) throw new Error("Couldn't read the problem");
+
+        const extractData = await extractRes.json();
+        let problem = extractData.choices?.[0]?.message?.content?.trim() || "";
+
+        // Post-process: prefer ∫ over \\int
+        problem = problem
+          .replace(/\\int/g, '∫')
+          .replace(/\\times/g, '×')
+          .replace(/\\div/g, '÷')
+          .replace(/\\\\/g, '\\')
+          .trim();
+
+        if (!problem) throw new Error("No math problem detected");
+
+        equationEl.textContent = problem;
+
+        // 2. Solving - force ∫ symbol in output
+        status.textContent = "Solving...";
+
+        const solveRes = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: [{
+              role: "user",
+              content: `You are a precise math tutor solving school-level problems (up to 12th grade). Use real mathematical symbols in your explanation: ∫ for integrals (not \\int), × for multiplication, ÷ for division, √ for square root, etc. Only fall back to LaTeX when the symbol is very complex.
+
+Strict rules:
+- Always prefer Unicode symbols like ∫, ×, ÷, √, ∞, ∂ when writing steps and final answer.
+- Do NOT use $ or \\ as operators — $ is currency or misread integral.
+- Show realistic step-by-step work for differentiation, integration (substitution, parts, trig sub, etc.), quadratics, differential equations, etc.
+- At the VERY END, on its own separate line, write ONLY the final answer using Unicode symbols where possible (e.g. ∫ x dx = (1/2)x² + C, final answer (1/2)x² + C). No explanation after it.
+
+Problem:\n${problem}`
+            }],
+            temperature: 0.05,
+            max_tokens: 2200
+          })
+        });
+
+        if (!solveRes.ok) throw new Error("Couldn't solve it");
+
+        const solveData = await solveRes.json();
+        let rawAnswer = solveData.choices?.[0]?.message?.content?.trim() || "";
+
+        // Final cleanup - prefer Unicode symbols
+        rawAnswer = rawAnswer
+          .replace(/\\int/g, '∫')
+          .replace(/\\times/g, '×')
+          .replace(/\\div/g, '÷')
+          .replace(/\\sqrt/g, '√')
+          .replace(/\\infty/g, '∞')
+          .replace(/\\partial/g, '∂')
+          .replace(/\\?boxed\{([^}]*)\}/gi, '$1')
+          .replace(/final answer( is)?:?|answer( is)?:?|result( is)?:?|equals:?/gi, '')
+          .replace(/^\s*[\$\[\(]+|[\$\]\)]+\s*$/g, '')
+          .trim();
+
+        const lines = rawAnswer.split('\n').filter(l => l.trim());
+        const cleanAnswer = lines[lines.length - 1] || rawAnswer;
+
+        finalEl.textContent = cleanAnswer || "No clear answer found";
+
+        detailsEl.textContent = rawAnswer.replace(cleanAnswer, '').trim() || "Solved!";
+
+        status.textContent = "Done! Try another problem.";
+
+      } catch (err) {
+        errorEl.textContent = "Oops! " + err.message;
+        errorEl.style.display = "block";
+        status.textContent = "Try again with clearer writing.";
+      }
+
+      captureBtn.disabled = false;
+    };
+
+    clearBtn.onclick = () => {
+      equationEl.textContent = "";
+      finalEl.textContent = "";
+      detailsEl.textContent = "";
+      errorEl.style.display = "none";
+      preview.style.display = "none";
+      status.textContent = "Ready for the next problem!";
+    };
+
+    window.addEventListener("beforeunload", () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    });
+  </script>
+
+</body>
+</html>
