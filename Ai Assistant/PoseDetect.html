@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Good Posture vs Bad Posture Detector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Luckiest+Guy&family=Permanent+Marker&display=swap" rel="stylesheet"/>
+  
+  <style>
+    :root {
+      --comic-red: #c00;
+      --comic-yellow: #ffeb3b;
+      --comic-black: #000;
+      --comic-white: #fff;
+      --gold: #FFD700;
+    }
+    body {
+      font-family: 'Comic Neue', 'Bangers', sans-serif;
+      color: #111;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-image: url('/s/articles/6992b1ac9b21c8337754fd6a/images/Banana gif.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+    .page {
+      max-width: clamp(900px, 96vw, 1200px);
+      margin: 60px auto 100px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 12px solid var(--comic-black);
+      border-radius: 24px;
+      box-shadow: 14px 14px 0 var(--comic-black);
+      padding: clamp(30px, 5vw, 60px);
+      position: relative;
+      overflow: hidden;
+    }
+    .tag {
+      margin: 0 auto 2rem;
+      padding: 2rem 3rem;
+      background: repeating-conic-gradient(from 0deg at 50% 50%, var(--comic-red) 0 6deg, #b71c1c 0 12deg),
+                  radial-gradient(circle at 50% 50%, #ff4a4a88 0%, transparent 70%);
+      color: white;
+      font-family: 'Luckiest Guy', 'Bangers', cursive;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      text-align: center;
+      border-radius: 40px 40px 0 0;
+      box-shadow: 0 12px 0 var(--comic-black);
+      text-shadow: 4px 4px 0 var(--comic-black);
+    }
+    h1 {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: clamp(3.5rem, 10vw, 5.2rem);
+      text-align: center;
+      color: var(--comic-red);
+      text-shadow: 6px 6px 0 var(--comic-black);
+      margin: 0.6em 0;
+    }
+    .intro-bubble, .info-bubble {
+      max-width: 900px;
+      margin: 2rem auto 3rem;
+      padding: 2rem 3rem;
+      font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+      background: rgba(255,255,255,0.95);
+      border: 8px solid var(--comic-black);
+      border-radius: 40px;
+      box-shadow: 10px 10px 0 var(--comic-black);
+      text-align: center;
+      line-height: 1.6;
+      font-weight: bold;
+    }
+    .info-bubble {
+      background: #fff9e6;
+      border-color: #d4a017;
+    }
+    .posture-img {
+      display: block;
+      max-width: 700px;
+      width: 90%;
+      margin: 2rem auto;
+      border: 10px solid var(--comic-black);
+      border-radius: 20px;
+      box-shadow: 12px 12px 0 var(--comic-black);
+    }
+    #webcam-container {
+      margin: 2rem auto 3rem;
+      text-align: center;
+    }
+    #webcam-container canvas {
+      width: 500px;
+      height: 500px;
+      border: 10px solid var(--comic-black);
+      border-radius: 20px;
+      box-shadow: 12px 12px 0 var(--comic-black);
+      transform: scaleX(-1); /* mirror view */
+      max-width: 100%;
+      image-rendering: crisp-edges;
+    }
+    #startBtn {
+      padding: 1.2rem 3.5rem;
+      font-size: 1.8rem;
+      font-family: 'Bangers', cursive;
+      background: var(--comic-yellow);
+      color: var(--comic-black);
+      border: 6px solid var(--comic-black);
+      border-radius: 30px;
+      box-shadow: 8px 8px 0 var(--comic-black);
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 1.5rem 0 2rem;
+    }
+    #startBtn:hover {
+      transform: translateY(-4px) rotate(2deg);
+      box-shadow: 12px 12px 0 var(--comic-black);
+    }
+    #fullscreenBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 50%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.35s ease;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #fullscreenBtn:hover {
+      background: var(--comic-red);
+      transform: scale(1.15) rotate(8deg);
+    }
+    #fullscreenBtn svg {
+      width: 32px;
+      height: 32px;
+      stroke: white;
+      stroke-width: 2.8;
+      fill: none;
+    }
+    #status {
+      font-size: 1.3rem;
+      color: #333;
+      margin: 1rem 0 2rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    #label-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 2rem auto;
+    }
+    #label-container div {
+      flex: 1 1 280px;
+      min-width: 260px;
+      padding: 1.2rem 1.8rem;
+      font-size: 1.6rem;
+      font-weight: bold;
+      background: rgba(255, 235, 59, 0.9);
+      border: 7px solid var(--comic-black);
+      border-radius: 24px;
+      box-shadow: 8px 8px 0 var(--comic-black);
+      text-align: center;
+      transition: all 0.3s;
+    }
+    #label-container div.high {
+      background: #d4edda !important;
+      transform: scale(1.08);
+      box-shadow: 12px 12px 0 var(--comic-black);
+      border-color: #28a745;
+    }
+    footer {
+      text-align: center;
+      margin: 4rem 0 2rem;
+      font-size: 1.4rem;
+      color: var(--comic-red);
+      text-shadow: 3px 3px 0 var(--comic-black);
+    }
+    @media (max-width: 768px) {
+      #webcam-container canvas { width: 360px; height: 360px; }
+      #label-container { flex-direction: column; }
+      #fullscreenBtn { width: 54px; height: 54px; top: 15px; right: 15px; }
+      #fullscreenBtn svg { width: 28px; height: 28px; stroke-width: 2.5; }
+      .posture-img { max-width: 90%; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+</head>
+<body>
+
+  <button id="fullscreenBtn" title="Toggle Fullscreen">
+    <svg viewBox="0 0 24 24">
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <polyline points="9 21 3 21 3 15"></polyline>
+      <line x1="21" x2="14" y1="3" y2="10"></line>
+      <line x1="3" x2="10" y1="21" y2="14"></line>
+    </svg>
+  </button>
+
+  <div class="page">
+    <div class="tag"><strong>Good Posture vs Bad Posture Detector</strong></div>
+
+    <h1>Pose Classifier</h1>
+
+    <div class="intro-bubble">
+      Sit or stand in front of the camera!<br>
+      This model will tell you if your posture is <strong>Good</strong> or <strong>Bad</strong> ✨<br><br>
+      It helps you become aware of your posture in real time.<br><br>
+      <strong>Click the big yellow "START POSE DETECTOR" button below to begin!</strong><br>
+      (Allow camera access when your browser asks)
+    </div>
+
+    <img src="/s/articles/698ad4a76cec4242bc3edc7e/images/posture 2.jpg" alt="Good vs Bad Posture Examples" class="posture-img">
+
+    <div class="info-bubble">
+      <strong>Why Good Posture Matters</strong><br><br>
+      Bad posture can cause: chronic back/neck/shoulder pain, tension headaches, muscle fatigue, poor digestion, reduced lung capacity (shallow breathing), poor balance, higher injury risk, and even lower confidence or mood because you feel "small" or tired.<br><br>
+      Good posture prevents pain, reduces stress on your spine and joints, improves breathing and oxygen flow, boosts energy levels, supports better digestion, and actually increases confidence and self-esteem — standing/sitting tall makes you feel and appear more powerful, especially when speaking, working, or presenting.<br><br>
+      This tool helps you train yourself to maintain better posture and feel more confident in daily life!
+    </div>
+
+    <!-- Button moved ABOVE the webcam -->
+    <div style="text-align:center;">
+      <button id="startBtn" onclick="init()">START POSE DETECTOR</button>
+    </div>
+
+    <div id="webcam-container"></div>
+
+    <div id="status">Click START POSE DETECTOR above → allow camera → sit or stand with good/bad posture!</div>
+
+    <div id="label-container"></div>
+
+    <div class="intro-bubble" style="margin-top: 4rem; background: #fff9e6;">
+      <strong>Explore more projects and try to make your own like these!</strong><br>
+      Train Teachable Machine on your own images or poses — it's easy, free, and super fun!
+    </div>
+
+    <footer>
+      Powered by Teachable Machine • Have fun detecting bananas in Jaipur!
+    </footer>
+  </div>
+
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/6CCyk7Mc9/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    async function init() {
+      const btn = document.getElementById('startBtn');
+      const status = document.getElementById('status');
+      btn.disabled = true;
+      btn.textContent = "Loading…";
+      status.textContent = "Loading model and accessing camera… Please allow access.";
+
+      try {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const constraints = {
+          video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            frameRate: { ideal: 30 }
+          }
+        };
+
+        const size = 500;
+        const flip = true; // mirror view
+        webcam = new tmImage.Webcam(size, size, flip);
+        await webcam.setup(constraints);
+        await webcam.play();
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+        labelContainer = document.getElementById("label-container");
+        labelContainer.innerHTML = '';
+
+        for (let i = 0; i < maxPredictions; i++) {
+          const div = document.createElement("div");
+          labelContainer.appendChild(div);
+        }
+
+        status.textContent = "Detector running! Show good or bad posture — results appear below";
+        btn.textContent = "Running";
+        btn.style.background = "#10b981";
+        btn.style.color = "white";
+
+        window.requestAnimationFrame(loop);
+      } catch (err) {
+        console.error("Error:", err);
+        status.textContent = `Error: ${err.message || err} — allow camera and try again`;
+        btn.disabled = false;
+        btn.textContent = "Try Again";
+      }
+    }
+
+    async function loop() {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+      try {
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+          const className = prediction[i].className || `Class ${i+1}`;
+          const prob = (prediction[i].probability * 100).toFixed(0) + "%";
+          const div = labelContainer.childNodes[i];
+          div.innerHTML = `${className}<br>${prob}`;
+          div.className = (prediction[i].probability > 0.65) ? "high" : "";
+        }
+      } catch (e) {
+        console.warn("Prediction error:", e);
+      }
+    }
+
+    // Fullscreen toggle
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log(`Fullscreen error: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+
+</body>
+</html>
