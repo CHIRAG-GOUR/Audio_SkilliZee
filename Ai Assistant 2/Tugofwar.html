@@ -1,0 +1,1029 @@
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;display=swap" rel="stylesheet" />
+<style type="text/css">:root {
+      --bg:           linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+      --card:         #ffffff;
+      --blue:         #2196f3;
+      --blue-light:   #90caf9;
+      --blue-dark:    #1976d2;
+      --red:          #f44336;
+      --red-light:    #ef9a9a;
+      --red-dark:     #d32f2f;
+      --text:         #311b92;
+      --gray:         #757575;
+      --accent:       #ffeb3b;
+      --green:        #4caf50;
+      --shadow-sm:    0 4px 16px rgba(0,0,0,0.1);
+      --shadow-md:    0 12px 36px rgba(0,0,0,0.14);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka One', cursive, system-ui;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ffca28, #ffe082);
+      color: #ef6c00;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+      font-weight: 400;
+      text-shadow: 1px 1px 5px rgba(239,108,0,0.5);
+      position: relative;
+      z-index: 20;
+      border-bottom: 8px solid #ffb300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #headerImage {
+      border: 8px solid #ffb300;
+      box-shadow: 0 0 35px #ffb300, 0 0 55px #ffeb3b;
+      border-radius: 50%;
+      width: clamp(200px, 30vw, 250px);
+      height: clamp(200px, 30vw, 250px);
+      margin-bottom: 1.5rem;
+      object-fit: cover;
+      animation: glow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 25px #ffb300; }
+      to   { box-shadow: 0 0 50px #ffeb3b; }
+    }
+
+    .setup-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,193,7,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .setup-card {
+      background: var(--card);
+      border-radius: 32px;
+      padding: 2.4rem 2.2rem;
+      max-width: 720px;
+      width: 100%;
+      box-shadow: var(--shadow-md);
+      max-height: 94vh;
+      overflow-y: auto;
+      border: 6px solid var(--accent);
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem 0 2.6rem;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-dot {
+      width: 48px;
+      height: 48px;
+      background: #ffe082;
+      color: #ef6c00;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 400;
+      font-size: 1.5rem;
+      margin: 0 auto 10px;
+      transition: all 0.35s;
+      border: 3px solid #ffb300;
+    }
+
+    .step.active .step-dot {
+      background: #ffeb3b;
+      transform: scale(1.18);
+      box-shadow: 0 0 0 8px rgba(255,202,40,0.35);
+    }
+
+    .step-line {
+      height: 6px;
+      background: #ffe082;
+      flex: 2.2;
+      margin: 0 16px;
+      border-radius: 4px;
+    }
+
+    .step.active ~ .step-line {
+      background: #ffca28;
+    }
+
+    h2 { font-size: 2.4rem; margin-bottom: 1.8rem; color: #ef6c00; text-align: center; text-shadow: 1px 1px 3px rgba(239,108,0,0.3); }
+    h3 { font-size: 1.7rem; margin-bottom: 1.4rem; color: #f57f17; }
+
+    .option-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+    }
+
+    .option-btn {
+      padding: 18px 36px;
+      font-size: 1.3rem;
+      border-radius: 18px;
+      border: 3px solid #ffb300;
+      background: #fffde7;
+      cursor: pointer;
+      transition: all 0.25s;
+      min-width: 150px;
+      font-weight: 400;
+      box-shadow: 0 4px 14px rgba(255,202,40,0.2);
+      color: #ef6c00;
+    }
+
+    .option-btn.active,
+    .option-btn:hover {
+      background: #ffeb3b;
+      color: #ef6c00;
+      border-color: #ffca28;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(255,202,40,0.45);
+    }
+
+    .team-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5rem;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+
+    .team-card {
+      background: rgba(255,253,231,0.95);
+      border-radius: 24px;
+      padding: 2rem 2.5rem;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(239,108,0,0.15);
+      border: 4px solid #ffb300;
+    }
+
+    .team-card.blue { border-color: #64b5f6; }
+    .team-card.red  { border-color: #ef5350;  }
+
+    .team-card input {
+      margin-top: 1.2rem;
+      padding: 14px 18px;
+      font-size: 1.35rem;
+      width: 100%;
+      border: 3px solid #ffb300;
+      border-radius: 16px;
+      outline: none;
+      background: #fffde7;
+      color: #ef6c00;
+      transition: all 0.2s;
+    }
+
+    .team-card input:focus {
+      border-color: #ffca28;
+      box-shadow: 0 0 0 5px rgba(255,202,40,0.3);
+    }
+
+    .vs {
+      font-size: 3.2rem;
+      font-weight: 400;
+      color: #f57f17;
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 22px;
+      justify-content: center;
+      margin-top: 2.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 18px 48px;
+      font-size: 1.45rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 400;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: #ffca28;
+      color: #ef6c00;
+    }
+
+    .btn-primary:hover { background: #ffb300; transform: translateY(-3px); }
+
+    .btn-secondary {
+      background: #ffe082;
+      color: #ef6c00;
+    }
+
+    /* ── Main game ──────────────────────────────────────── */
+
+    main {
+      padding: 2.2rem 1.6rem;
+      max-width: 2000px;
+      margin: 0 auto;
+    }
+
+    .game-layout {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 3rem;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    .numpad-panel {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      width: 24%;
+      min-width: 320px;
+      max-width: 420px;
+      flex-shrink: 1;
+      border: 5px solid var(--accent);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.6rem;
+    }
+
+    .panel-head h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #ef6c00;
+    }
+
+    .score-pill {
+      background: #ffeb3b;
+      color: #ef6c00;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-weight: 400;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .equation {
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      text-align: center;
+      margin: 1.4rem 0 1.8rem;
+      font-weight: 400;
+      color: #1a1a1a;
+      min-height: 80px;
+      line-height: 1.2;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .answer-field {
+      width: 100%;
+      font-size: clamp(3rem, 5.5vw, 4.4rem);
+      text-align: center;
+      padding: 16px;
+      border: 5px solid #ffb300;
+      border-radius: 18px;
+      margin-bottom: 1.8rem;
+      background: #fffde7;
+      font-weight: 400;
+      color: #ef6c00;
+    }
+
+    .numpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .numpad-btn {
+      aspect-ratio: 1;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 400;
+      border-radius: 18px;
+      border: none;
+      background: #ffe082;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      color: #ef6c00;
+    }
+
+    .numpad-btn:hover { background: #ffca28; transform: translateY(-2px); }
+    .numpad-btn:active  { transform: scale(0.94); }
+
+    .clear  { background: #ef5350; color: white; }
+    .submit { background: #66bb6a; color: white; }
+
+    /* Arena (center) */
+    .arena-wrapper {
+      flex: 1;
+      min-width: 420px;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 400;
+      padding: 0 1.4rem;
+      align-items: center;
+    }
+
+    .timer-box {
+      background: rgba(255,255,255,0.92);
+      padding: 12px 30px;
+      border-radius: 999px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.16);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 1.6rem;
+      color: #ef6c00;
+    }
+
+    .arena-box {
+      flex: 1;
+      position: relative;
+      background: linear-gradient(to bottom, #f0f4c3, #dce775);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      border: 5px solid var(--accent);
+    }
+
+    .center-marker {
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 8px;
+      background: repeating-linear-gradient(
+        to bottom,
+        #fff 0, #fff 20px,
+        #ffb300 20px, #ffb300 40px
+      );
+      transform: translateX(-50%);
+      z-index: 5;
+      box-shadow: 0 0 18px rgba(255,179,0,0.8);
+    }
+
+    .video-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .win-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(239,108,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s;
+    }
+
+    .win-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .win-content {
+      text-align: center;
+      padding: 3.2rem 2.8rem;
+      background: rgba(255,193,7,0.85);
+      border-radius: 32px;
+      max-width: 90%;
+      box-shadow: 0 12px 40px rgba(239,108,0,0.5);
+    }
+
+    .trophy {
+      font-size: 9.5rem;
+      margin-bottom: 1.4rem;
+      animation: bounce 1.8s infinite;
+      color: #ffb300;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-32px); }
+    }
+
+    .win-title {
+      font-size: 4.5rem;
+      margin: 1rem 0;
+      color: #ef6c00;
+      text-shadow: 2px 2px 6px rgba(255,202,40,0.6);
+    }
+
+    /* Fireworks */
+    .fireworks {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 110;
+      display: none;
+    }
+
+    .firework {
+      --initialSize: 0.5vmin;
+      --finalSize: 45vmin;
+      --particleSize: 0.2vmin;
+      --color1: yellow;
+      --color2: khaki;
+      --color3: white;
+      --color4: lime;
+      --color5: gold;
+      --color6: mediumseagreen;
+      --y: -30vmin;
+      --x: -50%;
+      --initialY: 60vmin;
+      content: "";
+      animation: firework 2s infinite;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, var(--y));
+      width: var(--initialSize);
+      aspect-ratio: 1;
+      background: radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 50% 0%,
+                  radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 50%,
+                  radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 50% 100%,
+                  radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 0% 50%,
+                  radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 80% 90%,
+                  radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 95% 90%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 90% 70%,
+                  radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 60%,
+                  radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 55% 80%,
+                  radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 70% 77%,
+                  radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 22% 90%,
+                  radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 45% 90%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 33% 70%,
+                  radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 10% 60%,
+                  radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 31% 80%,
+                  radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 28% 77%,
+                  radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 13% 72%,
+                  radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 80% 10%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 95% 14%,
+                  radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 90% 23%,
+                  radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 100% 43%,
+                  radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 85% 27%,
+                  radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 77% 37%,
+                  radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 60% 7%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 22% 14%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 45% 20%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 33% 34%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 10% 29%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 31% 37%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 28% 7%,
+                  radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 13% 42%;
+      background-size: var(--initialSize) var(--initialSize);
+      background-repeat: no-repeat;
+    }
+
+    .firework:nth-child(2) {
+      --x: 30vmin;
+      --color1: pink; --color2: violet; --color3: fuchsia; --color4: orchid; --color5: plum; --color6: lavender;
+      --finalSize: 40vmin;
+      left: 30%;
+      top: 60%;
+      animation-delay: -0.25s;
+    }
+
+    .firework:nth-child(3) {
+      --x: -30vmin;
+      --y: -50vmin;
+      --color1: cyan; --color2: lightcyan; --color3: lightblue; --color4: PaleTurquoise; --color5: SkyBlue; --color6: lavender;
+      --finalSize: 35vmin;
+      left: 70%;
+      top: 60%;
+      animation-delay: -0.4s;
+    }
+
+    @keyframes firework {
+      0%   { transform: translate(var(--x), var(--initialY)); width: var(--initialSize); opacity: 1; }
+      50%  { width: 0.5vmin; opacity: 1; }
+      100% { width: var(--finalSize); opacity: 0; }
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 300;
+    }
+
+    .ctrl-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(239,108,0,0.75);
+      color: white;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover { background: rgba(239,108,0,0.95); }
+
+    @media (max-width: 1100px) {
+      .game-layout { gap: 2rem; }
+      .numpad-panel { width: 30%; min-width: 280px; }
+      .arena-wrapper { max-width: 45%; min-width: 360px; }
+    }
+
+    @media (max-width: 768px) {
+      .game-layout { gap: 2.5rem; flex-wrap: wrap; }
+      .numpad-panel { width: 48%; min-width: 240px; }
+      .arena-wrapper { width: 100%; min-width: auto; order: -1; }
+      .equation { font-size: 2.6rem; }
+      .answer-field { font-size: 3.6rem; }
+      .numpad-btn { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      header { font-size: 2.2rem; padding: 1.2rem; }
+      .setup-card { padding: 1.8rem 1.4rem; }
+      .option-btn { min-width: 120px; padding: 16px 24px; }
+      .numpad-panel { width: 100%; }
+    }
+</style>
+<header><img alt="Math Tug of War Logo" id="headerImage" src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/TugOwar%202-Photoroom.png" /> Math Tug of War</header>
+<!-- Setup screen -->
+
+<div class="setup-screen" id="setupScreen">
+<div class="setup-card">
+<h2>Prepare Your Teams</h2>
+
+<div class="stepper">
+<div class="step active" data-step="0">
+<div class="step-dot">1</div>
+
+<div>Operations</div>
+</div>
+
+<div class="step-line">&nbsp;</div>
+
+<div class="step" data-step="1">
+<div class="step-dot">2</div>
+
+<div>Difficulty</div>
+</div>
+
+<div class="step-line">&nbsp;</div>
+
+<div class="step" data-step="2">
+<div class="step-dot">3</div>
+
+<div>Teams</div>
+</div>
+</div>
+
+<div id="stepsContainer"><!-- Step 1: Operations -->
+<div class="step-content" data-step="0">
+<h3>Select Operations</h3>
+
+<div class="option-grid"><button class="option-btn active" data-op="+">+ Addition</button><button class="option-btn active" data-op="-">&minus; Subtraction</button><button class="option-btn active" data-op="*">&times; Multiplication</button><button class="option-btn active" data-op="/">&divide; Division</button></div>
+</div>
+<!-- Step 2: Difficulty -->
+
+<div class="step-content" data-step="1" style="display:none;">
+<h3>Choose Difficulty</h3>
+
+<div class="option-grid"><button class="option-btn active" data-level="easy">Easy</button><button class="option-btn" data-level="medium">Medium</button><button class="option-btn" data-level="hard">Hard</button></div>
+</div>
+<!-- Step 3: Teams -->
+
+<div class="step-content" data-step="2" style="display:none;">
+<div class="team-row">
+<div class="team-card blue">
+<h3>Team Blue</h3>
+<input id="teamBlueName" maxlength="20" placeholder="Team name" type="text" /></div>
+
+<div class="vs">VS</div>
+
+<div class="team-card red">
+<h3>Team Red</h3>
+<input id="teamRedName" maxlength="20" placeholder="Team name" type="text" /></div>
+</div>
+</div>
+</div>
+
+<div class="nav-row"><button class="btn btn-secondary" disabled="disabled" id="btnBack"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M15 18L9 12L15 6" stroke="#ef6c00" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg> Back</button><button class="btn btn-primary" id="btnNext">Next <svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M9 18L15 12L9 6" stroke="#ef6c00" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button><button class="btn btn-primary" id="btnStart" style="display:none;">Start Game <svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M5 5V19L19 12L5 5Z" fill="#ef6c00" stroke="#ef6c00" stroke-linejoin="round" stroke-width="2"></path> </svg></button></div>
+</div>
+</div>
+<!-- Main game -->
+
+<main id="gameMain" style="display:none;">
+<div class="game-layout"><!-- Blue team numpad (left side) -->
+<div class="numpad-panel">
+<div class="panel-head">
+<h3 id="blueHeader">Team Blue</h3>
+
+<div class="score-pill" id="blueScore">0</div>
+</div>
+
+<div class="equation" id="blueEquation">? + ? = ?</div>
+<input class="answer-field" id="blueAnswer" placeholder="0" readonly="readonly" type="text" />
+<div class="numpad-grid"><button class="numpad-btn number" data-side="blue" data-value="1">1</button><button class="numpad-btn number" data-side="blue" data-value="2">2</button><button class="numpad-btn number" data-side="blue" data-value="3">3</button><button class="numpad-btn number" data-side="blue" data-value="4">4</button><button class="numpad-btn number" data-side="blue" data-value="5">5</button><button class="numpad-btn number" data-side="blue" data-value="6">6</button><button class="numpad-btn number" data-side="blue" data-value="7">7</button><button class="numpad-btn number" data-side="blue" data-value="8">8</button><button class="numpad-btn number" data-side="blue" data-value="9">9</button><button class="numpad-btn clear" data-action="clear" data-side="blue"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L6 18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M6 6L18 18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button><button class="numpad-btn number" data-side="blue" data-value="0">0</button><button class="numpad-btn submit" data-action="submit" data-side="blue"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M20 6L9 17L4 12" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button></div>
+</div>
+<!-- Center arena with video -->
+
+<div class="arena-wrapper">
+<div class="scoreboard">
+<div><span id="blueName">Team Blue</span> <span id="blueCorrect">0</span></div>
+
+<div class="timer-box"><span id="gameTimer">00:00</span></div>
+
+<div><span id="redName">Team Red</span> <span id="redCorrect">0</span></div>
+</div>
+
+<div class="arena-box">
+<div class="center-marker">&nbsp;</div>
+
+<div class="video-container" id="videoContainer">
+<video autoplay="" id="mainVideo" loop="" muted="" playsinline=""><source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/main.mp4" type="video/mp4" /> Your browser does not support video.</video>
+
+<video autoplay="" id="blueWinVideo" muted="" playsinline="" style="display:none;"><source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/win_blue.mp4" type="video/mp4" /></video>
+
+<video autoplay="" id="redWinVideo" muted="" playsinline="" style="display:none;"><source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/win_red.mp4" type="video/mp4" /></video>
+</div>
+
+<div class="win-overlay" id="winOverlay">
+<div class="win-content">
+<div class="trophy">&nbsp;</div>
+
+<h2 id="winnerTitle">&nbsp;</h2>
+
+<p id="winnerText">Wins!</p>
+<button class="btn btn-primary" onclick="location.reload()">Play Again</button></div>
+</div>
+<!-- Fireworks container -->
+
+<div class="fireworks" id="fireworks">
+<div class="firework">&nbsp;</div>
+
+<div class="firework">&nbsp;</div>
+
+<div class="firework">&nbsp;</div>
+</div>
+</div>
+</div>
+<!-- Red team numpad (right side) -->
+
+<div class="numpad-panel">
+<div class="panel-head">
+<h3 id="redHeader">Team Red</h3>
+
+<div class="score-pill" id="redScore">0</div>
+</div>
+
+<div class="equation" id="redEquation">? + ? = ?</div>
+<input class="answer-field" id="redAnswer" placeholder="0" readonly="readonly" type="text" />
+<div class="numpad-grid"><button class="numpad-btn number" data-side="red" data-value="1">1</button><button class="numpad-btn number" data-side="red" data-value="2">2</button><button class="numpad-btn number" data-side="red" data-value="3">3</button><button class="numpad-btn number" data-side="red" data-value="4">4</button><button class="numpad-btn number" data-side="red" data-value="5">5</button><button class="numpad-btn number" data-side="red" data-value="6">6</button><button class="numpad-btn number" data-side="red" data-value="7">7</button><button class="numpad-btn number" data-side="red" data-value="8">8</button><button class="numpad-btn number" data-side="red" data-value="9">9</button><button class="numpad-btn clear" data-action="clear" data-side="red"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L6 18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M6 6L18 18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button><button class="numpad-btn number" data-side="red" data-value="0">0</button><button class="numpad-btn submit" data-action="submit" data-side="red"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M20 6L9 17L4 12" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button></div>
+</div>
+</div>
+</main>
+
+<div class="controls"><button class="ctrl-btn" id="zoomOut"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M6 12H18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button><span id="zoomLevel">100%</span><button class="ctrl-btn" id="zoomIn"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M12 6V18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M6 12H18" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button><button class="ctrl-btn" id="fullscreen"><svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="M4 4H8V8H4V4Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M16 4H20V8H16V4Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M4 16H8V20H4V16Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <path d="M16 16H20V20H16V16Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> </svg></button></div>
+<script>
+// ────────────────────────────────────────────────
+// Game configuration
+// ────────────────────────────────────────────────
+
+const LEVELS = {
+  easy:   { minA: 1,  maxA: 9,   minB: 1,  maxB: 9  },
+  medium: { minA: 10, maxA: 99,  minB: 10, maxB: 99 },
+  hard:   { minA: 100,maxA: 999, minB: 100,maxB: 999}
+};
+
+const OPS = ['+', '-', '*', '/'];
+const WIN_SCORE = 6; // Correct answers needed to win
+const PULL_STEP = 40; // Pixels per pull
+
+// ────────────────────────────────────────────────
+// Elements
+// ────────────────────────────────────────────────
+
+const setupScreen   = document.getElementById('setupScreen');
+const gameMain      = document.getElementById('gameMain');
+const steps         = document.querySelectorAll('.step-content');
+const stepIndicators= document.querySelectorAll('.step');
+const btnBack       = document.getElementById('btnBack');
+const btnNext       = document.getElementById('btnNext');
+const btnStart      = document.getElementById('btnStart');
+
+const blueEquation  = document.getElementById('blueEquation');
+const redEquation   = document.getElementById('redEquation');
+const blueAnswer    = document.getElementById('blueAnswer');
+const redAnswer     = document.getElementById('redAnswer');
+const blueScore     = document.getElementById('blueScore');
+const redScore      = document.getElementById('redScore');
+const blueCorrect   = document.getElementById('blueCorrect');
+const redCorrect    = document.getElementById('redCorrect');
+const gameTimer     = document.getElementById('gameTimer');
+const winOverlay    = document.getElementById('winOverlay');
+const winnerTitle   = document.getElementById('winnerTitle');
+const videoContainer= document.getElementById('videoContainer');
+const mainVideo     = document.getElementById('mainVideo');
+const blueWinVideo  = document.getElementById('blueWinVideo');
+const redWinVideo   = document.getElementById('redWinVideo');
+const fireworks     = document.getElementById('fireworks');
+
+let currentStepIndex = 0;
+let selectedOps = OPS;
+let selectedLevel = 'easy';
+let blueName = 'Team Blue';
+let redName = 'Team Red';
+let currentQuestion = null;
+let currentAns = null;
+let timerInterval = null;
+let gameTime = 0;
+let blueCorrectCount = 0;
+let redCorrectCount = 0;
+let gameActive = false;
+let answeredThisRound = false;
+
+// ────────────────────────────────────────────────
+// Setup logic
+// ────────────────────────────────────────────────
+
+function showStep(index) {
+  steps.forEach((el,i) => el.style.display = i===index ? 'block' : 'none');
+  stepIndicators.forEach((el,i) => el.classList.toggle('active', i<=index));
+
+  btnBack.disabled = index === 0;
+  btnNext.style.display = index < 2 ? 'inline-flex' : 'none';
+  btnStart.style.display = index === 2 ? 'inline-flex' : 'none';
+}
+
+document.querySelectorAll('.option-btn[data-op]').forEach(btn => {
+  btn.onclick = () => {
+    btn.classList.toggle('active');
+    selectedOps = Array.from(document.querySelectorAll('.option-btn[data-op].active')).map(b => b.dataset.op);
+  };
+});
+
+document.querySelectorAll('.option-btn[data-level]').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.option-btn[data-level]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedLevel = btn.dataset.level;
+  };
+});
+
+btnNext.onclick = () => {
+  if (currentStepIndex < 2) {
+    currentStepIndex++;
+    showStep(currentStepIndex);
+  }
+};
+
+btnBack.onclick = () => {
+  if (currentStepIndex > 0) {
+    currentStepIndex--;
+    showStep(currentStepIndex);
+  }
+};
+
+btnStart.onclick = () => {
+  blueName = document.getElementById('teamBlueName').value.trim() || 'Team Blue';
+  redName  = document.getElementById('teamRedName').value.trim()  || 'Team Red';
+
+  document.getElementById('blueHeader').textContent = blueName;
+  document.getElementById('redHeader').textContent  = redName;
+  document.getElementById('blueName').textContent   = blueName;
+  document.getElementById('redName').textContent    = redName;
+
+  setupScreen.style.display = 'none';
+  gameMain.style.display = 'block';
+  startGame();
+};
+
+// ────────────────────────────────────────────────
+// Game logic — CORRECTED DIRECTION (2025)
+// ────────────────────────────────────────────────
+
+function generateQuestion() {
+  const cfg = LEVELS[selectedLevel];
+  const op = selectedOps[Math.floor(Math.random() * selectedOps.length)];
+  let a = Math.floor(Math.random() * (cfg.maxA - cfg.minA + 1)) + cfg.minA;
+  let b = Math.floor(Math.random() * (cfg.maxB - cfg.minB + 1)) + cfg.minB;
+
+  if (op === '-' && a < b) [a, b] = [b, a];
+  if (op === '/') {
+    b = Math.floor(Math.random() * (cfg.maxB - 1)) + 1;
+    a = b * (Math.floor(Math.random() * (cfg.maxA / b)) + 1);
+  }
+
+  currentQuestion = `${a} ${op} ${b}`;
+  currentAns = eval(currentQuestion);
+  blueEquation.textContent = currentQuestion + ' = ?';
+  redEquation.textContent = currentQuestion + ' = ?';
+  answeredThisRound = false;
+}
+
+function updatePull() {
+  // BLUE is LEFT side → correct answer by BLUE → video moves LEFT (negative translateX)
+  // RED is RIGHT side → correct answer by RED → video moves RIGHT (positive translateX)
+  // So: more blue points → more negative shift
+  const shift = - (blueCorrectCount - redCorrectCount);   // ← THIS LINE WAS FIXED
+  videoContainer.style.transform = `translateX(${shift * PULL_STEP}px)`;
+
+  blueScore.textContent = blueCorrectCount;
+  redScore.textContent = redCorrectCount;
+}
+
+function startTimer() {
+  gameTime = 0;
+  timerInterval = setInterval(() => {
+    gameTime++;
+    const min = String(Math.floor(gameTime / 60)).padStart(2, '0');
+    const sec = String(gameTime % 60).padStart(2, '0');
+    gameTimer.textContent = min + ':' + sec;
+  }, 1000);
+}
+
+function startGame() {
+  gameActive = true;
+  blueCorrectCount = redCorrectCount = 0;
+  blueAnswer.value = redAnswer.value = '';
+  blueScore.textContent = redScore.textContent = '0';
+  blueCorrect.textContent = redCorrect.textContent = '0';
+  winOverlay.classList.remove('visible');
+  fireworks.style.display = 'none';
+  mainVideo.style.display = 'block';
+  blueWinVideo.style.display = 'none';
+  redWinVideo.style.display = 'none';
+  updatePull();
+  startTimer();
+  generateQuestion();
+}
+
+function checkAnswer(side) {
+  if (!gameActive || answeredThisRound) return;
+
+  const input = side === 'blue' ? blueAnswer : redAnswer;
+  const val = parseInt(input.value.trim());
+
+  if (val === currentAns) {
+    answeredThisRound = true;
+
+    if (side === 'blue') {
+      blueCorrectCount++;
+      blueCorrect.textContent = blueCorrectCount;
+    } else {
+      redCorrectCount++;
+      redCorrect.textContent = redCorrectCount;
+    }
+
+    updatePull();
+
+    setTimeout(() => {
+      blueAnswer.value = redAnswer.value = '';
+      generateQuestion();
+    }, 1200); // Delay for pull animation
+
+    // Check win condition
+    if (blueCorrectCount >= WIN_SCORE) {
+      endGame('blue');
+    } else if (redCorrectCount >= WIN_SCORE) {
+      endGame('red');
+    }
+  } else {
+    input.style.borderColor = '#d32f2f';
+    setTimeout(() => input.style.borderColor = '', 800);
+  }
+}
+
+function endGame(winner) {
+  gameActive = false;
+  clearInterval(timerInterval);
+
+  const name = winner === 'blue' ? blueName : redName;
+  winnerTitle.textContent = `${name} Wins!`;
+  winOverlay.classList.add('visible');
+
+  // Show fireworks
+  fireworks.style.display = 'block';
+
+  // Show winning video
+  mainVideo.style.display = 'none';
+  if (winner === 'blue') {
+    blueWinVideo.style.display = 'block';
+  } else {
+    redWinVideo.style.display = 'block';
+  }
+
+  // Reset to main video after celebration
+  setTimeout(() => {
+    fireworks.style.display = 'none';
+    blueWinVideo.style.display = 'none';
+    redWinVideo.style.display = 'none';
+    mainVideo.style.display = 'block';
+    videoContainer.style.transform = 'translateX(0)';
+  }, 6000); // 6 seconds of celebration
+}
+
+// ────────────────────────────────────────────────
+// Numpad input handling
+// ────────────────────────────────────────────────
+
+document.querySelectorAll('.numpad-btn').forEach(btn => {
+  btn.onclick = () => {
+    const side = btn.dataset.side;
+    const input = side === 'blue' ? blueAnswer : redAnswer;
+    const action = btn.dataset.action;
+    const val = btn.dataset.value;
+
+    if (action === 'clear') {
+      input.value = '';
+    } else if (action === 'submit') {
+      checkAnswer(side);
+    } else if (val) {
+      input.value += val;
+    }
+  };
+});
+
+// Zoom & Fullscreen
+let zoom = 100;
+document.getElementById('zoomIn').onclick = () => {
+  zoom = Math.min(zoom + 10, 180);
+  document.body.style.zoom = zoom + '%';
+  document.getElementById('zoomLevel').textContent = zoom + '%';
+};
+
+document.getElementById('zoomOut').onclick = () => {
+  zoom = Math.max(zoom - 10, 60);
+  document.body.style.zoom = zoom + '%';
+  document.getElementById('zoomLevel').textContent = zoom + '%';
+};
+
+document.getElementById('fullscreen').onclick = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(()=>{});
+  } else {
+    document.exitFullscreen();
+  }
+};
+
+// Init
+showStep(0);
+</script>
