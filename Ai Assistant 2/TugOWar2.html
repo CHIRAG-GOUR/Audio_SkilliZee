@@ -264,7 +264,7 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
-      gap: 3rem;
+      gap: 2.5rem;
       flex-wrap: nowrap;
       width: 100%;
     }
@@ -272,57 +272,59 @@
     .numpad-panel {
       background: var(--card);
       border-radius: 28px;
-      padding: 2rem;
+      padding: 1.8rem;
       box-shadow: var(--shadow-md);
-      width: 24%;
-      min-width: 320px;
-      max-width: 420px;
+      width: 28%;
+      min-width: 300px;
+      max-width: 380px;
       flex-shrink: 1;
       border: 5px solid var(--accent);
+      display: flex;
+      flex-direction: column;
     }
 
     .panel-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.4rem;
     }
 
     .panel-head h3 {
       margin: 0;
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       color: #ef6c00;
     }
 
     .score-pill {
       background: #ffeb3b;
       color: #ef6c00;
-      padding: 10px 22px;
+      padding: 8px 18px;
       border-radius: 999px;
       font-weight: 400;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 1.4rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
     .equation {
-      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
       text-align: center;
-      margin: 1.4rem 0 1.8rem;
+      margin: 1.2rem 0 1.6rem;
       font-weight: 400;
       color: #1a1a1a;
-      min-height: 80px;
+      min-height: 70px;
       line-height: 1.2;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
     .answer-field {
       width: 100%;
-      font-size: clamp(3rem, 5.5vw, 4.4rem);
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
       text-align: center;
-      padding: 16px;
+      padding: 14px;
       border: 5px solid #ffb300;
-      border-radius: 18px;
-      margin-bottom: 1.8rem;
+      border-radius: 16px;
+      margin-bottom: 1.6rem;
       background: #fffde7;
       font-weight: 400;
       color: #ef6c00;
@@ -331,24 +333,30 @@
     .numpad-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 14px;
+      flex: 1;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     .numpad-btn {
-      aspect-ratio: 1;
-      font-size: clamp(2rem, 4vw, 2.6rem);
+      aspect-ratio: 1 / 1;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
       font-weight: 400;
-      border-radius: 18px;
+      border-radius: 16px;
       border: none;
       background: #ffe082;
       cursor: pointer;
       transition: all 0.15s;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       color: #ef6c00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .numpad-btn:hover { background: #ffca28; transform: translateY(-2px); }
-    .numpad-btn:active { transform: scale(0.94); }
+    .numpad-btn:active  { transform: scale(0.94); }
 
     .clear  { background: #ef5350; color: white; }
     .submit { background: #66bb6a; color: white; }
@@ -615,8 +623,10 @@
   Math Tug of War
 </header>
 
+<!-- Setup screen -->
 <div id="setupScreen" class="setup-screen">
   <div class="setup-card">
+
     <h2>Prepare Your Teams</h2>
 
     <div class="stepper">
@@ -628,8 +638,9 @@
     </div>
 
     <div id="stepsContainer">
+      <!-- Step 1: Operations -->
       <div class="step-content" data-step="0">
-        <h3>Select Operations You Don't Want</h3>
+        <h3>Select Operations</h3>
         <div class="option-grid">
           <button class="option-btn active" data-op="+">+ Addition</button>
           <button class="option-btn active" data-op="-">− Subtraction</button>
@@ -638,6 +649,7 @@
         </div>
       </div>
 
+      <!-- Step 2: Difficulty -->
       <div class="step-content" data-step="1" style="display:none;">
         <h3>Choose Difficulty</h3>
         <div class="option-grid">
@@ -647,6 +659,7 @@
         </div>
       </div>
 
+      <!-- Step 3: Teams -->
       <div class="step-content" data-step="2" style="display:none;">
         <div class="team-row">
           <div class="team-card blue">
@@ -663,17 +676,35 @@
     </div>
 
     <div class="nav-row">
-      <button class="btn btn-secondary" id="btnBack" disabled>Back</button>
-      <button class="btn btn-primary" id="btnNext">Next</button>
-      <button class="btn btn-primary" id="btnStart" style="display:none;">Start Game</button>
+      <button class="btn btn-secondary" id="btnBack" disabled>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="#ef6c00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+      <button class="btn btn-primary" id="btnNext">
+        Next
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="#ef6c00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="btn btn-primary" id="btnStart" style="display:none;">
+        Start Game
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 5V19L19 12L5 5Z" fill="#ef6c00" stroke="#ef6c00" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
+
   </div>
 </div>
 
+<!-- Main game -->
 <main id="gameMain" style="display:none;">
+
   <div class="game-layout">
 
-    <!-- Blue (left) -->
+    <!-- Blue team numpad (left side) -->
     <div class="numpad-panel">
       <div class="panel-head">
         <h3 id="blueHeader">Team Blue</h3>
@@ -691,17 +722,26 @@
         <button class="numpad-btn number" data-side="blue" data-value="7">7</button>
         <button class="numpad-btn number" data-side="blue" data-value="8">8</button>
         <button class="numpad-btn number" data-side="blue" data-value="9">9</button>
-        <button class="numpad-btn clear" data-side="blue" data-action="clear">Clear</button>
+        <button class="numpad-btn clear" data-side="blue" data-action="clear">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
         <button class="numpad-btn number" data-side="blue" data-value="0">0</button>
-        <button class="numpad-btn submit" data-side="blue" data-action="submit">Submit</button>
+        <button class="numpad-btn submit" data-side="blue" data-action="submit">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <!-- Center arena -->
+    <!-- Center arena with video -->
     <div class="arena-wrapper">
       <div class="scoreboard">
         <div><span id="blueName">Team Blue</span> <span id="blueCorrect">0</span></div>
-        <div class="timer-box"><span id="gameTimer">00:00</span></div>
+        <div class="timer-box"><i class="fas fa-clock"></i> <span id="gameTimer">00:00</span></div>
         <div><span id="redName">Team Red</span> <span id="redCorrect">0</span></div>
       </div>
 
@@ -710,10 +750,13 @@
         <div id="videoContainer" class="video-container">
           <video id="mainVideo" autoplay loop muted playsinline>
             <source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/main.mp4" type="video/mp4">
+            Your browser does not support video.
           </video>
+
           <video id="blueWinVideo" style="display:none;" autoplay muted playsinline>
             <source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/win_blue.mp4" type="video/mp4">
           </video>
+
           <video id="redWinVideo" style="display:none;" autoplay muted playsinline>
             <source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/win_red.mp4" type="video/mp4">
           </video>
@@ -721,13 +764,14 @@
 
         <div id="winOverlay" class="win-overlay">
           <div class="win-content">
-            <div class="trophy">🏆</div>
+            <div class="trophy"><i class="fas fa-trophy"></i></div>
             <h2 id="winnerTitle"></h2>
-            <p>Wins!</p>
+            <p id="winnerText">Wins!</p>
             <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
           </div>
         </div>
 
+        <!-- Fireworks container -->
         <div class="fireworks" id="fireworks">
           <div class="firework"></div>
           <div class="firework"></div>
@@ -736,7 +780,7 @@
       </div>
     </div>
 
-    <!-- Red (right) -->
+    <!-- Red team numpad (right side) -->
     <div class="numpad-panel">
       <div class="panel-head">
         <h3 id="redHeader">Team Red</h3>
@@ -754,9 +798,18 @@
         <button class="numpad-btn number" data-side="red" data-value="7">7</button>
         <button class="numpad-btn number" data-side="red" data-value="8">8</button>
         <button class="numpad-btn number" data-side="red" data-value="9">9</button>
-        <button class="numpad-btn clear" data-side="red" data-action="clear">Clear</button>
+        <button class="numpad-btn clear" data-side="red" data-action="clear">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
         <button class="numpad-btn number" data-side="red" data-value="0">0</button>
-        <button class="numpad-btn submit" data-side="red" data-action="submit">Submit</button>
+        <button class="numpad-btn submit" data-side="red" data-action="submit">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -764,16 +817,33 @@
 </main>
 
 <div class="controls">
-  <button class="ctrl-btn" id="zoomOut">-</button>
+  <button class="ctrl-btn" id="zoomOut">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 12H18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
   <span id="zoomLevel">100%</span>
-  <button class="ctrl-btn" id="zoomIn">+</button>
-  <button class="ctrl-btn" id="fullscreen">⛶</button>
+  <button class="ctrl-btn" id="zoomIn">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 6V18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 12H18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <button class="ctrl-btn" id="fullscreen">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4H8V8H4V4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16 4H20V8H16V4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 16H8V20H4V16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16 16H20V20H16V16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
 </div>
 
 <script>
 // ────────────────────────────────────────────────
-// Config
+// Game configuration
 // ────────────────────────────────────────────────
+
 const LEVELS = {
   easy:   { minA: 1,  maxA: 9,   minB: 1,  maxB: 9  },
   medium: { minA: 10, maxA: 99,  minB: 10, maxB: 99 },
@@ -787,6 +857,7 @@ const PULL_STEP = 40;
 // ────────────────────────────────────────────────
 // Elements
 // ────────────────────────────────────────────────
+
 const setupScreen   = document.getElementById('setupScreen');
 const gameMain      = document.getElementById('gameMain');
 const steps         = document.querySelectorAll('.step-content');
@@ -827,11 +898,13 @@ let gameActive = false;
 let answeredThisRound = false;
 
 // ────────────────────────────────────────────────
-// Setup
+// Setup logic
 // ────────────────────────────────────────────────
+
 function showStep(index) {
   steps.forEach((el,i) => el.style.display = i===index ? 'block' : 'none');
   stepIndicators.forEach((el,i) => el.classList.toggle('active', i<=index));
+
   btnBack.disabled = index === 0;
   btnNext.style.display = index < 2 ? 'inline-flex' : 'none';
   btnStart.style.display = index === 2 ? 'inline-flex' : 'none';
@@ -881,8 +954,9 @@ btnStart.onclick = () => {
 };
 
 // ────────────────────────────────────────────────
-// Game Logic
+// Game logic
 // ────────────────────────────────────────────────
+
 function generateQuestion() {
   const cfg = LEVELS[selectedLevel];
   const op = selectedOps[Math.floor(Math.random() * selectedOps.length)];
@@ -903,10 +977,9 @@ function generateQuestion() {
 }
 
 function updatePull() {
-  // FIXED: Blue correct → move LEFT (toward Blue) → negative translateX
-  //        Red correct → move RIGHT (toward Red) → positive translateX
-  // So we invert the sign compared to the old version
-  const shift = redCorrectCount - blueCorrectCount;   // ← This is the key change
+  // Blue correct → move left (negative translateX)
+  // Red correct → move right (positive translateX)
+  const shift = redCorrectCount - blueCorrectCount;
   videoContainer.style.transform = `translateX(${shift * PULL_STEP}px)`;
 
   blueScore.textContent = blueCorrectCount;
@@ -978,7 +1051,6 @@ function endGame(winner) {
   gameActive = false;
   clearInterval(timerInterval);
 
-  // Center for win celebration
   videoContainer.style.transform = 'translateX(0)';
 
   const name = winner === 'blue' ? blueName : redName;
@@ -1013,8 +1085,9 @@ function endGame(winner) {
 }
 
 // ────────────────────────────────────────────────
-// Numpad
+// Numpad input handling
 // ────────────────────────────────────────────────
+
 document.querySelectorAll('.numpad-btn').forEach(btn => {
   btn.onclick = () => {
     const side = btn.dataset.side;
