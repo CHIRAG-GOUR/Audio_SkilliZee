@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SBPL Book Publishing Mastery – Young Authors | SkilliZee</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet"/>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    @import url('https://unpkg.com/normalize.css') layer(normalize);
+    @layer normalize, base, theme, entrance, layout, components, navbar, levels, footer;
+
+    /* ─── ENTRANCE (unchanged) ─────────────────────────────── */
+    .entrance-screen {
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+      animation: fadeOut 0.8s 4.2s forwards; pointer-events: none;
+    }
+    .entrance-screen {
+      --s: 140px; --c1: #AB3E5B; --c2: #FFBE40;
+      --_g: #0000 25%,#0008 47%,var(--c1) 53% 147%,var(--c2) 153% 247%,var(--c1) 253% 347%,var(--c2) 353% 447%,var(--c1) 453% 547%,#0008 553%,#0000 575%;
+      background: radial-gradient(calc(25%/3) calc(25%/4) at 50%,var(--_g)),
+                  radial-gradient(calc(25%/3) calc(25%/4) at 50%,var(--_g)) calc(var(--s)/2) calc(3*var(--s)/4),
+                  radial-gradient(0,var(--_g)) calc(var(--s)/2) 0,
+                  radial-gradient(0,var(--_g)) 0 calc(3*var(--s)/4),
+                  repeating-linear-gradient(90deg,#ACCEC0 calc(25%/-6) calc(25%/6),#61A6AB 0 calc(25%/2));
+      background-size: var(--s) calc(3*var(--s)/2);
+      animation: m 2.5s infinite linear, fadeOut 0.8s 4.2s forwards;
+    }
+    @keyframes m { to { background-position: var(--s) 0, calc(var(--s)/-2) calc(3*var(--s)/4), calc(3*var(--s)/2) 0, calc(-1*var(--s)) calc(3*var(--s)/4), 0 0; } }
+    @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+
+    .entrance-gif  { width: clamp(180px,28vw,250px); animation: fadeIn 0.6s 0.3s forwards; opacity:0; }
+    .entrance-logo { width: clamp(380px,55vw,720px); animation: logoFloat 5s ease-out forwards; opacity:0; filter: drop-shadow(0 0 35px rgba(255,190,64,0.8)); transform-style: preserve-3d; }
+
+    @keyframes logoFloat { 
+      0%   { opacity:0; transform: perspective(1000px) rotateX(15deg) rotateY(-20deg) scale(0.6) translateY(60px); filter: drop-shadow(0 0 50px rgba(255,190,64,1)); }
+      20%  { opacity:1; transform: perspective(1000px) rotateX(-5deg) rotateY(10deg) scale(1.05) translateY(0); filter: drop-shadow(0 0 60px rgba(255,190,64,0.9)); }
+      35%  { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1); filter: drop-shadow(0 0 40px rgba(255,190,64,0.7)); }
+      85%  { opacity:1; transform: perspective(1000px) rotateX(3deg) rotateY(-3deg) scale(1); filter: drop-shadow(0 0 25px rgba(255,190,64,0.5)); }
+      100% { opacity:0; transform: perspective(1000px) rotateX(10deg) rotateY(15deg) scale(0.85); filter: drop-shadow(0 0 0px rgba(255,190,64,0)); }
+    }
+    @keyframes fadeIn { to { opacity:1; } }
+
+    #main-content { opacity:0; animation: fadeInMain 1.2s 5s forwards; }
+    @keyframes fadeInMain { to { opacity:1; } }
+
+    /* ─── BASE ──────────────────────────────────────────────── */
+    @layer base {
+      :root {
+        --book-brown: #8B4513;
+        --parchment:  #f4e8c8;
+        --gold:       #d4a017;
+        --glow:       #ffeb3b;
+        --color-0: #fff;
+        --color-1: #111;
+        --color-2: #222;
+        --color-3: #333;
+        --color-4: #2e2e2e;
+        --color-5: #d2b48c;
+        --color-6: #b22222;
+        --color-7: #871a1a;
+        --color-8: #ff6347;
+        --color-9: #ff3814;
+      }
+      body {
+        margin:0; font-family: 'Crimson Text', serif; background:#e6f0fa; color:#111;
+        min-height:100vh; overflow-x:hidden; position: relative;
+      }
+      .entrance-animation {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden;
+      }
+      .entrance-animation .spark {
+        position: absolute; width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+        box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(212, 160, 23, 0.7), 0 0 24px rgba(212, 160, 23, 0.4);
+        opacity: 0; transform-origin: center; animation: spark-float 3s ease-out forwards;
+      }
+      @keyframes spark-float { to { opacity: 0; } }
+      .bg-container {
+        width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1;
+        background-color: var(--color-1);
+        background-image:
+          linear-gradient(to top, var(--color-2) 5%, var(--color-1) 6%, var(--color-1) 7%, transparent 7%),
+          linear-gradient(to bottom, var(--color-1) 30%, transparent 80%),
+          linear-gradient(to right, var(--color-2), var(--color-4) 5%, transparent 5%),
+          linear-gradient(to right, transparent 6%, var(--color-2) 6%, var(--color-4) 9%, transparent 9%),
+          linear-gradient(to right, transparent 27%, var(--color-2) 27%, var(--color-4) 34%, transparent 34%),
+          linear-gradient(to right, transparent 51%, var(--color-2) 51%, var(--color-4) 57%, transparent 57%),
+          linear-gradient(to bottom, var(--color-1) 35%, transparent 35%),
+          linear-gradient(to right, transparent 42%, var(--color-2) 42%, var(--color-4) 44%, transparent 44%),
+          linear-gradient(to right, transparent 45%, var(--color-2) 45%, var(--color-4) 47%, transparent 47%),
+          linear-gradient(to right, transparent 48%, var(--color-2) 48%, var(--color-4) 50%, transparent 50%),
+          linear-gradient(to right, transparent 87%, var(--color-2) 87%, var(--color-4) 91%, transparent 91%),
+          linear-gradient(to bottom, var(--color-1) 37.5%, transparent 37.5%),
+          linear-gradient(to right, transparent 14%, var(--color-2) 14%, var(--color-4) 20%, transparent 20%),
+          linear-gradient(to bottom, var(--color-1) 40%, transparent 40%),
+          linear-gradient(to right, transparent 10%, var(--color-2) 10%, var(--color-4) 13%, transparent 13%),
+          linear-gradient(to right, transparent 21%, var(--color-2) 21%, #1a1a1a 25%, transparent 25%),
+          linear-gradient(to right, transparent 58%, var(--color-2) 58%, var(--color-4) 64%, transparent 64%),
+          linear-gradient(to right, transparent 92%, var(--color-2) 92%, var(--color-4) 95%, transparent 95%),
+          linear-gradient(to bottom, var(--color-1) 48%, transparent 48%),
+          linear-gradient(to right, transparent 96%, var(--color-2) 96%, #1a1a1a 99%, transparent 99%),
+          linear-gradient(to bottom, transparent 68.5%, transparent 76%, var(--color-1) 76%, var(--color-1) 77.5%, transparent 77.5%, transparent 86%, var(--color-1) 86%, var(--color-1) 87.5%, transparent 87.5%),
+          linear-gradient(to right, transparent 35%, var(--color-2) 35%, var(--color-4) 41%, transparent 41%),
+          linear-gradient(to bottom, var(--color-1) 68%, transparent 68%),
+          linear-gradient(to right, transparent 78%, var(--color-3) 78%, var(--color-3) 80%, transparent 80%, transparent 82%, var(--color-3) 82%, var(--color-3) 83%, transparent 83%),
+          linear-gradient(to right, transparent 66%, var(--color-2) 66%, var(--color-4) 85%, transparent 85%);
+        background-size: 300px 150px; background-position: center bottom;
+      }
+      .bg-container:before {
+        content: ""; width: 100%; height: 100%; position: absolute; inset: 0;
+        background-color: var(--color-1);
+        background-image:
+          linear-gradient(to top, var(--color-5) 5%, var(--color-1) 6%, var(--color-1) 7%, transparent 7%),
+          linear-gradient(to bottom, var(--color-1) 30%, transparent 30%),
+          linear-gradient(to right, var(--color-6), var(--color-7) 5%, transparent 5%),
+          linear-gradient(to right, transparent 6%, var(--color-8) 6%, var(--color-9) 9%, transparent 9%),
+          linear-gradient(to right, transparent 27%, #556b2f 27%, #39481f 34%, transparent 34%),
+          linear-gradient(to right, transparent 51%, #fa8072 51%, #f85441 57%, transparent 57%),
+          linear-gradient(to bottom, var(--color-1) 35%, transparent 35%),
+          linear-gradient(to right, transparent 42%, #008080 42%, #004d4d 44%, transparent 44%),
+          linear-gradient(to right, transparent 45%, #008080 45%, #004d4d 47%, transparent 47%),
+          linear-gradient(to right, transparent 48%, #008080 48%, #004d4d 50%, transparent 50%),
+          linear-gradient(to right, transparent 87%, #789 87%, #4f5d6a 91%, transparent 91%),
+          linear-gradient(to bottom, var(--color-1) 37.5%, transparent 37.5%),
+          linear-gradient(to right, transparent 14%, #bdb76b 14%, #989244 20%, transparent 20%),
+          linear-gradient(to bottom, var(--color-1) 40%, transparent 40%),
+          linear-gradient(to right, transparent 10%, #808000 10%, #4d4d00 13%, transparent 13%),
+          linear-gradient(to right, transparent 21%, #8b4513 21%, #5e2f0d 25%, transparent 25%),
+          linear-gradient(to right, transparent 58%, #8b4513 58%, #5e2f0d 64%, transparent 64%),
+          linear-gradient(to right, transparent 92%, #2f4f4f 92%, #1c2f2f 95%, transparent 95%),
+          linear-gradient(to bottom, var(--color-1) 48%, transparent 48%),
+          linear-gradient(to right, transparent 96%, #2f4f4f 96%, #1c2f2f 99%, transparent 99%),
+          linear-gradient(to bottom, transparent 68.5%, transparent 76%, var(--color-1) 76%, var(--color-1) 77.5%, transparent 77.5%, transparent 86%, var(--color-1) 86%, var(--color-1) 87.5%, transparent 87.5%),
+          linear-gradient(to right, transparent 35%, #cd5c5c 35%, #bc3a3a 41%, transparent 41%),
+          linear-gradient(to bottom, var(--color-1) 68%, transparent 68%),
+          linear-gradient(to right, transparent 78%, #bc8f8f 78%, #bc8f8f 80%, transparent 80%, transparent 82%, #bc8f8f 82%, #bc8f8f 83%, transparent 83%),
+          linear-gradient(to right, transparent 66%, #a52a2a 66%, #7c2020 85%, transparent 85%);
+        background-size: 300px 150px; background-position: center bottom;
+        clip-path: circle(150px at center center); animation: flashlight 5s ease infinite;
+      }
+      .bg-container:after {
+        content: ""; width: 25px; height: 10px; position: absolute; left: calc(50% + 59px); bottom: 100px;
+        background-repeat: no-repeat;
+        background-image: radial-gradient(circle, #fff 50%, transparent 50%), radial-gradient(circle, #fff 50%, transparent 50%);
+        background-size: 10px 10px; background-position: left center, right center;
+        animation: eyes 5s infinite;
+      }
+      @keyframes flashlight {
+        0% { clip-path: circle(150px at 20% 10%); } 20% { clip-path: circle(150px at 80% 20%); }
+        40% { clip-path: circle(150px at 10% 50%); } 60% { clip-path: circle(150px at 90% 60%); }
+        80% { clip-path: circle(150px at 30% 80%); } 100% { clip-path: circle(150px at 20% 10%); }
+      }
+      @keyframes eyes {
+        0%, 38% { opacity: 0; } 39%, 41% { opacity: 1; transform: scaleY(1); }
+        40% { transform: scaleY(0); filter: none; }
+        41% { transform: scaleY(1); background-image: radial-gradient(circle, #ff0000 50%, transparent 50%), radial-gradient(circle, #ff0000 50%, transparent 50%); filter: drop-shadow(0 0 4px #ff8686); }
+        42%, 100% { opacity: 0; }
+      }
+    }
+
+    /* ─── NAVBAR ────────────────────────────────────────────── */
+    @layer navbar {
+      nav {
+        position:fixed; top:0; left:0; right:0; z-index:9000;
+        background: linear-gradient(135deg, #8B4513, #654321);
+        color:white; box-shadow:0 4px 16px rgba(0,0,0,0.5);
+      }
+      .nav-container {
+        max-width:1400px; margin:0 auto; padding:1rem 2rem;
+        display:flex; justify-content:center; gap:clamp(1.5rem,4vw,5rem); flex-wrap:wrap;
+      }
+      .nav-btn {
+        background:none; border:2px solid #d4a017; color:#ffd700;
+        font:600 1.1rem 'Playfair Display',serif; padding:0.7rem 1.6rem;
+        border-radius:999px; cursor:pointer; transition:all 0.35s ease;
+      }
+      .nav-btn:hover, .nav-btn.active {
+        background:#d4a017; color:#3c2f2f; transform:translateY(-2px);
+        box-shadow:0 8px 24px rgba(212,160,23,0.5);
+      }
+    }
+
+    /* ─── LAYOUT & COMPONENTS ───────────────────────────────── */
+    @layer layout {
+      #wrapper { padding:clamp(7rem,12vh,9rem) 1.5rem 6rem; max-width:1200px; margin:0 auto; }
+      .poster-heading {
+        background:var(--book-brown); color:white; padding:1.8rem;
+        border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.3); margin-bottom:2.5rem;
+      }
+      .poster-heading h1 { font:700 clamp(2.1rem,5.5vw,3.6rem)/1.15 'Playfair Display',serif; letter-spacing:0.08em; text-transform:uppercase; }
+      .logo-container { text-align:center; margin:2.5rem 0; }
+      .book-logo { width:clamp(180px,38vw,340px); height:auto; }
+      .video-heading { font-size:1.4rem; margin:1.5rem 0 1rem; font-weight:700; color:#444; }
+      .synthesia-wrap {
+        position:relative; overflow:hidden; aspect-ratio:16/9; max-width:960px; margin:0 auto 3rem;
+        border:4px solid var(--book-brown); border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.35);
+      }
+      .synthesia-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+    }
+
+    @layer components {
+      .roadmap { position:relative; max-width:860px; margin:0 auto; padding:3rem 0; }
+      .roadmap::before {
+        content:""; position:absolute; left:50%; transform:translateX(-50%);
+        width:6px; height:100%; background:linear-gradient(to bottom, var(--book-brown), var(--parchment));
+        z-index:0; border-radius:3px;
+      }
+      .card { position:relative; width:48%; margin:2.2rem 0; z-index:1; }
+      .card:nth-child(odd)  { margin-left:52%; }
+      .card:nth-child(even) { margin-left:0; }
+      .card::before, .card::after { content:""; position:absolute; top:28px; }
+      .card::before {
+        width:22px; height:22px; background:var(--book-brown); border-radius:50%;
+        box-shadow:0 0 12px rgba(139,69,19,0.6);
+      }
+      .card:nth-child(odd)::before  { left:-36px; }
+      .card:nth-child(even)::before { right:-36px; }
+      .card::after { width:56px; height:3px; background:var(--book-brown); }
+      .card:nth-child(odd)::after  { left:-56px; }
+      .card:nth-child(even)::after { right:-56px; }
+      .heading-card {
+        background:var(--book-brown); color:white; padding:0.9rem;
+        border-radius:10px 10px 0 0; font:700 1.5rem 'Playfair Display',serif;
+      }
+      .content-card {
+        background:var(--parchment); border:3px solid var(--book-brown); border-top:none;
+        border-radius:0 0 12px 12px; padding:1.6rem 1.8rem;
+        box-shadow:0 6px 18px rgba(0,0,0,0.15);
+      }
+      .content-card h5 { text-align:left; margin:0.9em 0; font-size:clamp(1.05rem,2.2vw,1.25rem); }
+      .content-card p { text-align:left; margin:0.5em 0; font-size:1rem; color:#333; }
+      .placeholders { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-top:1.4rem; }
+      .placeholder {
+        background:#f9e4b7; color:var(--book-brown); font-weight:600;
+        padding:0.5rem 1.1rem; border-radius:8px; border:1px solid #e0c070;
+      }
+    }
+
+    /* ─── LEVEL COLORS ──────────────────────────────────────── */
+    @layer levels {
+      .level-section { display:none; }
+      .level-section.active { display:block; }
+      #juniors .poster-heading { background:#8B4513; }
+      #intermediate .poster-heading { background:#7a3a0f; }
+      #seniors .poster-heading { background:#654321; }
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────── */
+    @layer footer {
+      footer {
+        background: linear-gradient(to bottom, #3c2f2f, #1a1414);
+        color: #e0d4b8; text-align:center; padding:3rem 1.5rem 2rem;
+        border-top: 4px solid #d4a017;
+      }
+      footer .logo img { max-width:280px; height:auto; margin-bottom:1.2rem; filter: brightness(1.1); }
+      .brand-slogan { font-size:1.3rem; font-style:italic; margin:0.8rem 0 1.8rem; color:#d4a017; }
+      .social-links a {
+        color:#e0d4b8; margin:0 1.2rem; font-size:1.1rem; text-decoration:none;
+        transition:color 0.3s;
+      }
+      .social-links a:hover { color:#ffd700; }
+      .contact-info { margin:1.8rem 0; font-size:1.05rem; line-height:1.6; }
+      .copyright { font-size:0.95rem; opacity:0.8; margin-top:1.5rem; }
+    }
+
+    @media (max-width:840px) {
+      .card { width:90% !important; margin:2rem auto !important; }
+      .card::before { left:-28px !important; }
+      .card::after  { left:-48px !important; width:40px; }
+      .roadmap::before { left:16px; transform:none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ENTRANCE ANIMATION -->
+  <div class="entrance-screen">
+    <img class="entrance-gif" src="https://login.skillizee.io/s/articles/69019e095407422b825961e0/images/Reading Book.gif" alt="Reading Animation" />
+    <img class="entrance-logo" src="https://login.skillizee.io/s/articles/69019e095407422b825961e0/images/Entry logo.png" alt="SBPL Logo" />
+  </div>
+
+  <audio id="entrance-sound" preload="auto">
+    <source src="https://chirag-gour.github.io/Audio_SkilliZee/Trumpet.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- BACKGROUND LIBRARY ANIMATION -->
+  <div class="entrance-animation">
+    <!-- Sparks generated in JS -->
+  </div>
+  <div class="bg-container"></div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <button class="nav-btn active" data-level="juniors">Juniors</button>
+      <button class="nav-btn" data-level="intermediate">Intermediate</button>
+      <button class="nav-btn" data-level="seniors">Seniors / Advanced</button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
+
+    <!-- JUNIORS LEVEL -->
+    <section id="juniors" class="level-section active">
+      <div id="wrapper">
+        <div class="poster-container">
+          <div class="poster-heading"><h1>SBPL Book Publishing Mastery – Juniors</h1></div>
+          <div class="logo-container">
+            <img class="book-logo" src="https://login.skillizee.io/s/articles/69019e095407422b825961e0/images/Books.gif" alt="Open Book Animation" />
+          </div>
+          <div class="video-heading">Click on the video to play</div>
+          <div class="synthesia-wrap">
+            <iframe src="https://share.synthesia.io/embeds/videos/4d6ebf49-0d32-4729-bc0e-94fadedb0980" allow="encrypted-media; fullscreen; microphone" allowfullscreen frameborder="0" loading="lazy"></iframe>
+          </div>
+          <div class="roadmap">
+            <div class="card">
+              <div class="heading-card"><h3>1 – Introduction to Storytelling Basics</h3></div>
+              <div class="content-card">
+                <h5>1.1 – What is a Book? Categories & Story Structure</h5>
+                <p>A book is a collection of pages bound together, containing words and sometimes images that tell a story or provide information. Categories include fiction (made-up stories like adventure or mystery) and non-fiction (true information like biographies or science books). Story structure typically has a beginning (introducing characters and setting), middle (where the action happens), and end (resolution of the plot).</p>
+                <h5>1.2 – What is a publisher? Who is an author?</h5>
+                <p>An author is the person who writes the book, creating the stories or ideas. A publisher is a company or person who helps print, distribute, and sell the book to readers, making sure it reaches bookstores or online platforms.</p>
+                <h5>1.3 – Structure Of a Story – Keep It Basic</h5>
+                <p>The basic structure of a story includes the introduction (setting the scene), rising action (building tension), climax (the peak moment), falling action (wrapping up events), and resolution (how it all ends).</p>
+                <h5>1.4 – What is a cover page? Key aspects of a foreword</h5>
+                <p>The cover page is the front of the book, with the title, author's name, and an eye-catching image to attract readers. A foreword is an introduction written by someone else, explaining why the book is important or sharing insights about the author/story.</p>
+                <h5>1.5 – Plot, Plot points, characters, theme, tone, Writing styles</h5>
+                <p>The plot is the sequence of events in the story. Plot points are key moments that change the direction. Characters are the people or animals in the story. Theme is the main idea or message. Tone is the mood (happy, scary). Writing styles vary, like descriptive (detailed scenes) or dialogue-heavy.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>2 – Book Writing Made Easy With AI</h3></div>
+              <div class="content-card">
+                <h5>2.1 – Science behind using a prompt</h5>
+                <p>A prompt is a question or instruction given to AI to generate text. The science involves machine learning where AI predicts words based on patterns from vast data, making writing faster and easier.</p>
+                <h5>2.2 – Creating Characters and Plot with Help of AI</h5>
+                <p>Use AI to brainstorm characters (names, traits, backstories) and plots (events, twists) by giving prompts like "Create a brave hero for an adventure story."</p>
+                <h5>2.3 – Using CANVA</h5>
+                <p>Canva is a free tool for designing book covers and illustrations. Drag and drop elements, add text, and choose templates to make your book visually appealing.</p>
+                <h5>2.4 – Publishing and Sharing Your Book</h5>
+                <p>Once written, use platforms like Amazon KDP or Google Docs to publish. Share via email, social media, or print copies for friends and family.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>3 – Final Capstone Project</h3></div>
+              <div class="content-card">
+                <h5>3.1 – Project</h5>
+                <p>Create your own short book using what you've learned: develop a story, characters, plot, design a cover, and use AI for help.</p>
+                <h5>3.1 – Project Submission</h5>
+                <p>Submit your completed book digitally or as a printed version, including a reflection on what you learned during the process.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERMEDIATE LEVEL -->
+    <section id="intermediate" class="level-section">
+      <div id="wrapper">
+        <div class="poster-container">
+          <div class="poster-heading"><h1>SBPL Book Publishing Mastery – Intermediate</h1></div>
+          <div class="logo-container">
+            <img class="book-logo" src="https://login.skillizee.io/s/articles/69019e095407422b825961e0/images/Books.gif" alt="Open Book Animation" />
+          </div>
+          <div class="video-heading">Click on the video to play</div>
+          <div class="synthesia-wrap">
+            <iframe src="https://share.synthesia.io/embeds/videos/4d6ebf49-0d32-4729-bc0e-94fadedb0980" allow="encrypted-media; fullscreen; microphone" allowfullscreen frameborder="0" loading="lazy"></iframe>
+          </div>
+          <div class="roadmap">
+            <div class="card">
+              <div class="heading-card"><h3>1 – Introduction to Storytelling Basics</h3></div>
+              <div class="content-card">
+                <h5>1.1 – What is a Book? Categories & Story Structure</h5>
+                <p>A book is a medium for recording information in the form of writing or images. Categories include genres like fantasy, sci-fi, romance. Story structure follows Freytag's pyramid: exposition, rising action, climax, falling action, denouement.</p>
+                <h5>1.2 – What is a publisher? Who is an author?</h5>
+                <p>An author creates the content; a publisher handles production, marketing, and distribution, often providing editing and design services.</p>
+                <h5>1.3 – Structure Of a Story – Keep It Basic</h5>
+                <p>Basic structure: setup (characters/setting), conflict, resolution. Use three-act format for simplicity.</p>
+                <h5>1.4 – What is a cover page? Key aspects of a foreword</h5>
+                <p>Cover page attracts buyers with visuals. Foreword provides context, credibility, often by an expert, highlighting themes or author's background.</p>
+                <h5>1.5 – Plot, Plot points, characters, theme, tone, Writing styles</h5>
+                <p>Plot is the storyline; points are turning moments. Characters drive the plot. Theme is underlying message. Tone sets emotion. Styles: first-person, third-person, stream-of-consciousness.</p>
+                <div class="placeholders"><div class="placeholder">Experiential Activity</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>2 – Book Writing Made Easy With AI</h3></div>
+              <div class="content-card">
+                <h5>2.1 – Science behind using a prompt</h5>
+                <p>Prompt engineering uses natural language processing; AI models like GPT predict responses based on trained data, optimizing for creativity and accuracy.</p>
+                <h5>2.2 – Creating Characters and Plot with Help of AI</h5>
+                <p>AI generates detailed characters (arcs, motivations) and plots (outlines, twists) via iterative prompts for depth.</p>
+                <h5>2.3 – Using CANVA</h5>
+                <p>Canva for advanced designs: custom templates, animations, export for print/ebook formats.</p>
+                <h5>2.4 – Publishing and Sharing Your Book</h5>
+                <p>Explore self-publishing platforms, ISBN acquisition, marketing via social media, and sharing feedback loops.</p>
+                <div class="placeholders">
+                  <div class="placeholder">Experiential Activity</div>
+                  <div class="placeholder">Assignment Submission</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>3 – Final Capstone Project</h3></div>
+              <div class="content-card">
+                <h5>3.1 – Project</h5>
+                <p>Develop a complete book manuscript using AI tools, including editing and design.</p>
+                <h5>3.1 – Project Submission</h5>
+                <p>Submit the book along with a portfolio of prompts used and revisions made.</p>
+                <div class="placeholders"><div class="placeholder">Assignment Submission</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SENIORS LEVEL -->
+    <section id="seniors" class="level-section">
+      <div id="wrapper">
+        <div class="poster-container">
+          <div class="poster-heading"><h1>SBPL Book Publishing Mastery – Seniors / Advanced</h1></div>
+          <div class="logo-container">
+            <img class="book-logo" src="https://login.skillizee.io/s/articles/69019e095407422b825961e0/images/Books.gif" alt="Open Book Animation" />
+          </div>
+          <div class="video-heading">Click on the video to play</div>
+          <div class="synthesia-wrap">
+            <iframe src="https://share.synthesia.io/embeds/videos/4d6ebf49-0d32-4729-bc0e-94fadedb0980" allow="encrypted-media; fullscreen; microphone" allowfullscreen frameborder="0" loading="lazy"></iframe>
+          </div>
+          <div class="roadmap">
+            <div class="card">
+              <div class="heading-card"><h3>Module 1</h3></div>
+              <div class="content-card">
+                <h5>1.1 : Steps to publish your book & elements of book</h5>
+                <p>Steps: Write manuscript, edit, design cover/layout, get ISBN, choose platform (self/traditional), market. Elements: title, chapters, acknowledgments, bibliography.</p>
+                <h5>1.2 - Why Should We Read ?</h5>
+                <p>Reading expands knowledge, empathy, vocabulary; reduces stress, improves focus, inspires creativity.</p>
+                <h5>1.3 - Detailed Breakdown Of Book Categories</h5>
+                <p>Fiction: literary, genre (mystery, romance). Non-fiction: self-help, history, science. Hybrids like creative non-fiction.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>Module - 2 - A Complete Guide</h3></div>
+              <div class="content-card">
+                <h5>2.1 - Backstories, Motivation, Arcs</h5>
+                <p>Backstories provide depth; motivations drive actions; arcs show character growth or change over the story.</p>
+                <h5>2.2 - Science Behind Using A Prompt</h5>
+                <p>AI prompts leverage transformers in NLP; token prediction based on context for coherent outputs.</p>
+                <h5>2.3 - Editing & Peer Review</h5>
+                <p>Editing: structural, copy, proofreading. Peer review: feedback from others for improvements.</p>
+                <h5>2.4 - Use Of CANVA</h5>
+                <p>Advanced Canva: layers, effects, collaboration for professional book designs.</p>
+                <h5>2.5 - Publishing Pathways</h5>
+                <p>Traditional (agents/publishers), self (KDP, IngramSpark), hybrid; pros/cons of each.</p>
+                <div class="placeholders">
+                  <div class="placeholder">Experiential Activity</div>
+                  <div class="placeholder">Assignment Submission</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="heading-card"><h3>Module - 3 - Final Capstone Project</h3></div>
+              <div class="content-card">
+                <h5>3.1 - Final Capstone Project</h5>
+                <p>Author a full book, incorporating advanced elements like subplots, multiple arcs.</p>
+                <h5>Submit Project</h5>
+                <p>Submit published book link, marketing plan, and self-assessment.</p>
+                <div class="placeholders"><div class="placeholder">Assignment Submission</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">
+      <img src="https://storage.googleapis.com/skillizee-io.firebasestorage.app/images/logos/skillizee-white-logo.png" alt="SkilliZee Logo" style="width:300px;">
+    </div>
+    <p class="brand-slogan">Empowering Skills for Tomorrow's World</p>
+    <div class="social-links">
+      <a href="https://facebook.com/skillizee">Facebook</a>
+      <a href="https://instagram.com/skillizee">Instagram</a>
+      <a href="https://linkedin.com/company/skillizee">LinkedIn</a>
+    </div>
+    <div class="contact-info">
+      <p>Email: pm@skillizee.io | Phone: +91-7597318172 | Website: www.skillizee.io</p>
+    </div>
+    <p class="copyright">© 2026 SkilliZee. All rights reserved. | Budget Boss Course</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.nav-btn');
+      const sections = document.querySelectorAll('.level-section');
+
+      function switchLevel(level) {
+        sections.forEach(sec => sec.classList.remove('active'));
+        document.getElementById(level).classList.add('active');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[data-level="${level}"]`).classList.add('active');
+      }
+
+      buttons.forEach(btn => btn.addEventListener('click', () => switchLevel(btn.dataset.level)));
+
+      // Entrance audio
+      const audio = document.getElementById('entrance-sound');
+      audio.volume = 0.55;
+      window.addEventListener('load', () => {
+        audio.play().catch(() => document.addEventListener('click', () => audio.play().catch(() => {}), {once:true}));
+        setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 4500);
+      });
+
+      // Generate 360 sparks for entrance
+      const container = document.querySelector('.entrance-animation');
+      for (let i = 1; i <= 360; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+        const angle = i * 1;
+        const delay = i * 0.003;
+        const dist = i * 0.8;
+        const z = i * -0.08;
+        const hue = (i % 60) * 6;
+        spark.style.left = '50%';
+        spark.style.top = '50%';
+        spark.style.animationDelay = `${delay}s`;
+        spark.style.background = `hsl(${hue}, 80%, 65%)`;
+        spark.style.boxShadow = `0 0 8px hsl(${hue}, 80%, 65%), 0 0 16px hsla(${hue}, 80%, 65%, 0.7), 0 0 24px hsla(${hue}, 80%, 65%, 0.4)`;
+        spark.style.transform = `translate(-50%, -50%) rotateZ(${angle}deg) perspective(48px) translate3d(${dist}px, ${dist}px, ${z}px)`;
+        const kf = `@keyframes spark-${i} {
+          0% { opacity: 0; transform: translate(-50%, -50%) rotateZ(${angle}deg) scale(0) translate3d(0, 0, 0); }
+          30% { opacity: 1; transform: translate(-50%, -50%) rotateZ(${angle + 45}deg) scale(1.3) translate3d(${dist * 1.5}px, ${dist * 1.2}px, ${z * 8}px); }
+          100% { opacity: 0; transform: translate(-50%, -50%) rotateZ(${angle + 90}deg) scale(0.3) translate3d(${dist * -2}px, ${dist * 3}px, ${z * -12}px); }
+        }`;
+        document.styleSheets[0].insertRule(kf, document.styleSheets[0].cssRules.length);
+        spark.style.animationName = `spark-${i}`;
+        container.appendChild(spark);
+      }
+    });
+  </script>
+</body>
+</html>
