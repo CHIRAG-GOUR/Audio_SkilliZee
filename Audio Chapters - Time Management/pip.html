@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FocusBurst - Tame the Distractions Beast</title>
+  <style>
+    :root {
+      --focus-teal: #015959;
+      --calm-canvas: #FFF8E5;
+      --action-orange: #F95D00;
+      --energy-gold: #FBC117;
+      --fresh-turquoise: #29B3B6;
+      --text-dark: #0d2b2b;
+      --shadow: 0 12px 32px rgba(1,89,89,0.18);
+      --glow: 0 0 30px rgba(41,179,182,0.35);
+      --card-bg: rgba(255, 255, 255, 0.94);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--calm-canvas);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #diary-bg {
+      position: fixed;
+      inset: 0;
+      background: url('/s/articles/69954204a0965353d97f2850/images/1.gif') center/cover no-repeat;
+      opacity: 1;
+      z-index: -2;
+      pointer-events: none;
+    }
+    #diary-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 248, 229, 0.48);
+      backdrop-filter: blur(2px);
+      z-index: -1;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+    .header-actions {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      z-index: 10;
+    }
+    .fullscreen-btn {
+      background: rgba(1,89,89,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 1.6rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s;
+    }
+    .fullscreen-btn:hover {
+      background: var(--focus-teal);
+      transform: scale(1.1);
+    }
+    .hero {
+      background: linear-gradient(rgba(1,89,89,0.75), rgba(0,56,56,0.85)),
+                  url('https://images.unsplash.com/photo-1506784983877-45594f9d6b0f?auto=format&fit=crop&q=80') center/cover;
+      color: white;
+      padding: 5rem 1.5rem 3.5rem;
+      border-radius: 0 0 48px 48px;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      line-height: 1.15;
+    }
+    .hero-title::after {
+      content: "";
+      display: block;
+      width: 140px;
+      height: 6px;
+      background: var(--energy-gold);
+      margin: 1.4rem auto 0;
+      border-radius: 3px;
+    }
+    .main-title {
+      text-align: center;
+      margin: 2rem 0 2.5rem;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: var(--focus-teal);
+      border-bottom: 5px solid var(--energy-gold);
+      padding-bottom: 0.8rem;
+    }
+    .content-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 2.8rem 2.2rem;
+      margin-bottom: 3rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(41,179,182,0.08);
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .content-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 80px rgba(1,89,89,0.22), var(--glow);
+      border-color: var(--fresh-turquoise);
+    }
+    .content-card::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: var(--fresh-turquoise);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.4s ease;
+    }
+    .content-card:hover::before { transform: scaleY(1); }
+    .timer-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2.5rem;
+    }
+    #timer-section {
+      flex: 1;
+      text-align: center;
+    }
+    #analog-progress {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      flex-shrink: 0;
+      display: none;
+    }
+    .clock-face {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(41,179,182,0.08);
+      border: 8px solid rgba(1,89,89,0.15);
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.1), 0 8px 24px rgba(1,89,89,0.12);
+      position: relative;
+    }
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      width: 6px;
+      height: 40%;
+      background: linear-gradient(to top, var(--fresh-turquoise), var(--energy-gold));
+      border-radius: 3px 3px 0 0;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(0deg);
+      transition: transform 1s linear;
+      box-shadow: 0 0 12px var(--fresh-turquoise), 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .hand::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      background: var(--energy-gold);
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 16px var(--energy-gold);
+    }
+    .center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: var(--focus-teal);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px var(--focus-teal);
+      z-index: 2;
+    }
+    .section-heading {
+      background: linear-gradient(to right, #f8fbfc, #eef6f7);
+      border-left: 8px solid var(--fresh-turquoise);
+      border-radius: 0 20px 20px 0;
+      padding: 1.2rem 2rem;
+      margin: 2rem 0 1.5rem;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--focus-teal);
+      box-shadow: 0 4px 16px rgba(41,179,182,0.1);
+    }
+    #mode-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .mode-btn {
+      padding: 0.8rem 1.6rem;
+      border: 2px solid #ddd;
+      border-radius: 50px;
+      background: white;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text-dark);
+      transition: all 0.25s;
+    }
+    .mode-btn.active {
+      background: var(--focus-teal);
+      color: white;
+      border-color: var(--focus-teal);
+    }
+    .mode-btn.break-mode.active {
+      background: var(--fresh-turquoise);
+      border-color: var(--fresh-turquoise);
+      color: white;
+    }
+    #display {
+      font-size: 6rem;
+      font-weight: 900;
+      color: var(--focus-teal);
+      margin: 0.5rem 0;
+      letter-spacing: -3px;
+    }
+    #progress {
+      height: 12px;
+      background: rgba(41,179,182,0.12);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.2rem 0 1.8rem;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--fresh-turquoise), var(--energy-gold));
+      transition: width 0.4s linear;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+    .btn {
+      padding: 1rem 2.2rem;
+      font-size: 1.15rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.25s;
+    }
+    #start { background: var(--focus-teal); color: white; }
+    #pause { background: var(--action-orange); color: white; }
+    #reset { background: #7f8c8d; color: white; }
+    #pip-timer { background: var(--fresh-turquoise); color: white; }
+    #download, #submit-log {
+      background: var(--energy-gold);
+      color: var(--text-dark);
+    }
+    #submit-log {
+      background: #27ae60;
+      color: white;
+      margin: 1.5rem 0 0.5rem;
+      width: 100%;
+      max-width: 300px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #status {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--focus-teal);
+      margin: 1rem 0;
+      min-height: 1.8em;
+    }
+    #cycles {
+      font-size: 1.15rem;
+      color: #555;
+    }
+    form label {
+      display: block;
+      margin: 1.2rem 0 0.5rem;
+      font-weight: 700;
+      color: var(--focus-teal);
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 0.9rem;
+      border: 1px solid rgba(41,179,182,0.2);
+      border-radius: 12px;
+      font-size: 1.05rem;
+      background: rgba(255,255,255,0.7);
+      transition: all 0.25s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--fresh-turquoise);
+      box-shadow: 0 0 0 4px rgba(41,179,182,0.15);
+    }
+    textarea { height: 120px; resize: vertical; }
+    .distraction-group { margin-bottom: 1.6rem; }
+    #log-message {
+      margin-top: 1.6rem;
+      padding: 1rem 1.5rem;
+      background: rgba(41,179,182,0.1);
+      border-radius: 16px;
+      color: var(--focus-teal);
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-align: center;
+      display: none;
+    }
+    #completed-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(1,89,89,0.85);
+      color: white;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 32px;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+    }
+    #completed-overlay h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: var(--energy-gold);
+    }
+    .instructions-section {
+      background: linear-gradient(to bottom, rgba(41,179,182,0.05), rgba(251,193,23,0.05));
+      border-radius: 24px;
+      padding: 2rem;
+      margin: 2rem 0;
+      border: 2px dashed var(--fresh-turquoise);
+    }
+    .instructions-section h2 {
+      color: var(--focus-teal);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.9rem;
+    }
+    .instructions-text {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    .submit-guide-img {
+      max-width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(1,89,89,0.15);
+      margin: 1.5rem auto;
+      display: block;
+    }
+    footer {
+      background: var(--focus-teal);
+      color: white;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      margin-top: auto;
+      font-size: 1rem;
+      z-index: 3;
+    }
+    footer a { color: var(--energy-gold); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .container { padding: 0 14px; }
+      .content-card { padding: 2rem 1.6rem; }
+      #display { font-size: 4.5rem; }
+      .hero { padding: 4rem 1.2rem 3rem; }
+      .timer-wrapper { flex-direction: column; gap: 2rem; }
+      #analog-progress { width: 160px; height: 160px; margin: 0 auto; }
+      .header-actions { top: 15px; right: 15px; }
+      .submit-guide-img { margin: 1rem auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="diary-bg"></div>
+  <div class="container">
+    <div class="hero">
+      <div class="header-actions">
+        <button class="fullscreen-btn" id="fullscreenToggle" title="Toggle Fullscreen">⛶</button>
+      </div>
+      <h2 class="hero-title">Chapter 3: Taming the Distractions Beast - FocusBurst Activity</h2>
+    </div>
+
+    <h1 class="main-title">FocusBurst - Your Pomodoro Guided Session</h1>
+
+    <div class="content-card">
+      <div class="section-heading">Start Your Focus Burst</div>
+      <div class="timer-wrapper">
+        <div id="timer-section">
+          <div id="mode-buttons">
+            <button class="mode-btn active" data-mode="work">Focus Burst (25 min)</button>
+            <button class="mode-btn" data-mode="short">Short Break (5 min)</button>
+            <button class="mode-btn" data-mode="long">Long Break (15 min)</button>
+          </div>
+          <div id="display">25:00</div>
+          <div id="progress"><div id="progress-bar"></div></div>
+          <div class="controls">
+            <button class="btn" id="start">Start Focus</button>
+            <button class="btn" disabled id="pause">Pause</button>
+            <button class="btn" id="reset">Reset</button>
+            <button class="btn" id="pip-timer">PiP Timer</button>
+          </div>
+          <div id="status">Ready to tame the distractions?</div>
+          <div id="cycles">Session 0 / 4</div>
+          <div id="completed-overlay">
+            <h2>Session Completed!</h2>
+            <p>Great job — you've finished this FocusBurst activity.</p>
+            <p>Your log has been saved locally in your browser.</p>
+          </div>
+        </div>
+        <div id="analog-progress">
+          <div class="clock-face">
+            <div class="center-dot"></div>
+            <div class="hand" id="hand"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="section-heading">After Your Burst: Log Distractions & Reflection</div>
+      <p>Record what tried to pull you away and your plan to defeat it next time. This builds stronger focus habits.</p>
+      
+      <form id="distraction-form">
+        <label>Current Task / Goal:</label>
+        <input id="task" placeholder="e.g., Read Chapter 3 notes, Write summary" required type="text" />
+
+        <div class="distraction-group">
+          <label>Distraction 1:</label>
+          <input id="dist1" placeholder="e.g., Phone buzzing" type="text" />
+          <label>Strategy for next time:</label>
+          <input id="strat1" placeholder="e.g., Phone in another room or Focus mode on" type="text" />
+        </div>
+
+        <div class="distraction-group">
+          <label>Distraction 2:</label>
+          <input id="dist2" type="text" />
+          <label>Strategy:</label>
+          <input id="strat2" type="text" />
+        </div>
+
+        <div class="distraction-group">
+          <label>Distraction 3:</label>
+          <input id="dist3" type="text" />
+          <label>Strategy:</label>
+          <input id="strat3" type="text" />
+        </div>
+
+        <label>Quick Reflection (what helped or didn't?):</label>
+        <textarea id="reflection" placeholder="e.g., Turning off notifications made a huge difference..."></textarea>
+
+        <button type="button" class="btn" id="submit-log">Submit Log</button>
+      </form>
+
+      <div id="log-message"></div>
+
+      <button class="btn" id="download" style="margin: 2rem auto; display: block;">Download Log as Word Doc</button>
+
+      <div class="instructions-section">
+        <h2>How to Submit Your Focus Log</h2>
+        <p class="instructions-text">
+          1. Fill in your task, distractions, strategies, and reflection above.<br>
+          2. Click the green <strong>"Submit Log"</strong> button to save it locally (you'll see a confirmation message).<br>
+          3. Use the <strong>"Download Log as Word Doc"</strong> button to get a nicely formatted .doc file.<br>
+          4. Open the downloaded file in Microsoft Word / Google Docs — you can now print it, share it, or add it to your study folder.
+        </p>
+        <p class="instructions-text" style="text-align: center; font-weight: 700; color: var(--focus-teal);">
+          Follow this visual guide:
+        </p>
+        <img 
+          src="/s/articles/6997fb6240b4d5409d2dccdf/images/SubmitDoc.png" 
+          alt="Step-by-step guide: How to submit and download your FocusBurst log" 
+          class="submit-guide-img"
+        />
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>FocusBurst © 2026 | Built for better focus habits • Chirag's Personalized Productivity Tool</p>
+  </footer>
+
+  <script>
+    // ========== Fullscreen Toggle ==========
+    const fullscreenBtn = document.getElementById('fullscreenToggle');
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.error(err));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // ========== Timer Logic ==========
+    let timerInterval;
+    let timeLeft = 25 * 60;
+    let isRunning = false;
+    let isWork = true;
+    let cycleCount = 0;
+    const maxCycles = 4;
+
+    const display = document.getElementById('display');
+    const progressBar = document.getElementById('progress-bar');
+    const status = document.getElementById('status');
+    const cyclesEl = document.getElementById('cycles');
+    const startBtn = document.getElementById('start');
+    const pauseBtn = document.getElementById('pause');
+    const resetBtn = document.getElementById('reset');
+    const analogHand = document.getElementById('hand');
+    const analogProgress = document.getElementById('analog-progress');
+    const completedOverlay = document.getElementById('completed-overlay');
+
+    function updateDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      display.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+
+      const total = isWork ? 25*60 : (timeLeft > 300 ? 15*60 : 5*60);
+      const progress = ((total - timeLeft) / total) * 100;
+      progressBar.style.width = `${progress}%`;
+
+      const deg = (timeLeft / total) * 360;
+      analogHand.style.transform = `translateX(-50%) rotate(${-deg}deg)`;
+    }
+
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        timerInterval = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            completedOverlay.style.display = 'flex';
+            if (isWork) {
+              cycleCount = Math.min(cycleCount + 1, maxCycles);
+              cyclesEl.textContent = `Session ${cycleCount} / ${maxCycles}`;
+              if (cycleCount < maxCycles) setTimeout(switchToBreak, 3000);
+            }
+          }
+        }, 1000);
+        status.textContent = isWork ? 'Focus mode ON - Stay strong!' : 'Break time - Relax!';
+        analogProgress.style.display = 'block';
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      status.textContent = 'Paused - Ready when you are';
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      timeLeft = 25 * 60;
+      isWork = true;
+      updateDisplay();
+      progressBar.style.width = '0%';
+      analogHand.style.transform = 'translateX(-50%) rotate(0deg)';
+      analogProgress.style.display = 'none';
+      completedOverlay.style.display = 'none';
+      status.textContent = 'Ready to tame the distractions?';
+    }
+
+    function switchToBreak() {
+      isWork = false;
+      timeLeft = cycleCount % 4 === 0 ? 15*60 : 5*60;
+      updateDisplay();
+      startTimer();
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+
+    document.querySelectorAll('#mode-buttons button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('.mode-btn.active').classList.remove('active');
+        btn.classList.add('active');
+        isWork = btn.dataset.mode === 'work';
+        timeLeft = isWork ? 25*60 : (btn.dataset.mode === 'short' ? 5*60 : 15*60);
+        updateDisplay();
+        resetTimer();
+      });
+    });
+
+    // ========== Picture-in-Picture Timer (Document PiP) ==========
+    const pipBtn = document.getElementById('pip-timer');
+    let pipWindow = null;
+
+    pipBtn.addEventListener('click', async () => {
+      if (!('documentPictureInPicture' in window)) {
+        alert(
+          "Picture-in-Picture (floating timer window) is not supported in this browser.\n\n" +
+          "Best experience: Use Google Chrome or Microsoft Edge.\n" +
+          "In other browsers you can still use fullscreen mode."
+        );
+        return;
+      }
+
+      try {
+        // If already open → focus it
+        if (pipWindow && !pipWindow.closed) {
+          pipWindow.focus();
+          return;
+        }
+
+        // Open new PiP window
+        pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: 340,
+          height: 280
+        });
+
+        // Create clean timer content for PiP
+        const pipDoc = pipWindow.document;
+        pipDoc.body.style.margin = '0';
+        pipDoc.body.style.padding = '1.2rem';
+        pipDoc.body.style.background = 'linear-gradient(135deg, #015959, #0d2b2b)';
+        pipDoc.body.style.color = 'white';
+        pipDoc.body.style.fontFamily = 'system-ui, sans-serif';
+        pipDoc.body.style.overflow = 'hidden';
+
+        const pipContainer = pipDoc.createElement('div');
+        pipContainer.style.textAlign = 'center';
+
+        const pipDisplay = pipDoc.createElement('div');
+        pipDisplay.id = 'pip-display';
+        pipDisplay.textContent = display.textContent;
+        pipDisplay.style.fontSize = '5.5rem';
+        pipDisplay.style.fontWeight = '900';
+        pipDisplay.style.letterSpacing = '-4px';
+        pipDisplay.style.margin = '0.5rem 0';
+
+        const pipStatus = pipDoc.createElement('div');
+        pipStatus.id = 'pip-status';
+        pipStatus.textContent = status.textContent;
+        pipStatus.style.fontSize = '1.4rem';
+        pipStatus.style.margin = '0.8rem 0';
+        pipStatus.style.fontWeight = '700';
+
+        const pipAnalog = document.getElementById('analog-progress').cloneNode(true);
+        pipAnalog.style.width = '160px';
+        pipAnalog.style.height = '160px';
+        pipAnalog.style.margin = '0.5rem auto';
+        pipAnalog.style.display = analogProgress.style.display;
+
+        pipContainer.appendChild(pipDisplay);
+        pipContainer.appendChild(pipAnalog);
+        pipContainer.appendChild(pipStatus);
+        pipDoc.body.appendChild(pipContainer);
+
+        // Basic sync (updates when main timer changes)
+        const updatePiP = () => {
+          if (pipWindow && !pipWindow.closed) {
+            pipDisplay.textContent = display.textContent;
+            pipStatus.textContent = status.textContent;
+            // Analog hand rotation (approximate)
+            const hand = pipAnalog.querySelector('.hand');
+            if (hand) {
+              const deg = (timeLeft / (isWork ? 25*60 : 900)) * 360; // rough
+              hand.style.transform = `translateX(-50%) rotate(${-deg}deg)`;
+            }
+          }
+        };
+
+        // Update PiP every second while timer runs
+        const pipSyncInterval = setInterval(() => {
+          if (pipWindow && !pipWindow.closed) {
+            updatePiP();
+          } else {
+            clearInterval(pipSyncInterval);
+          }
+        }, 1000);
+
+        // Cleanup when PiP closed
+        pipWindow.addEventListener('pagehide', () => {
+          pipWindow = null;
+          clearInterval(pipSyncInterval);
+        });
+
+      } catch (err) {
+        console.error('PiP error:', err);
+        alert('Could not open floating timer window.\nMake sure the page is not embedded in an iframe.');
+      }
+    });
+
+    // ========== Form & LocalStorage ==========
+    const logMessage = document.getElementById('log-message');
+    const downloadBtn = document.getElementById('download');
+    const submitLogBtn = document.getElementById('submit-log');
+
+    function loadSavedData() {
+      const saved = localStorage.getItem('focusBurstLog');
+      if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('task').value = data.task || '';
+        document.getElementById('dist1').value = data.dist1 || '';
+        document.getElementById('strat1').value = data.strat1 || '';
+        document.getElementById('dist2').value = data.dist2 || '';
+        document.getElementById('strat2').value = data.strat2 || '';
+        document.getElementById('dist3').value = data.dist3 || '';
+        document.getElementById('strat3').value = data.strat3 || '';
+        document.getElementById('reflection').value = data.reflection || '';
+        cycleCount = data.cycleCount || 0;
+        cyclesEl.textContent = `Session ${cycleCount} / ${maxCycles}`;
+      }
+    }
+
+    function saveData() {
+      const data = {
+        task: document.getElementById('task').value,
+        dist1: document.getElementById('dist1').value,
+        strat1: document.getElementById('strat1').value,
+        dist2: document.getElementById('dist2').value,
+        strat2: document.getElementById('strat2').value,
+        dist3: document.getElementById('dist3').value,
+        strat3: document.getElementById('strat3').value,
+        reflection: document.getElementById('reflection').value,
+        cycleCount: cycleCount,
+        timestamp: new Date().toLocaleString()
+      };
+      localStorage.setItem('focusBurstLog', JSON.stringify(data));
+      logMessage.textContent = 'Log saved successfully! You can now download it.';
+      logMessage.style.display = 'block';
+      setTimeout(() => logMessage.style.display = 'none', 5000);
+    }
+
+    submitLogBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!document.getElementById('task').value.trim()) {
+        alert('Please enter your Current Task / Goal');
+        return;
+      }
+      saveData();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const task = document.getElementById('task').value || '[Not entered]';
+      const d1 = document.getElementById('dist1').value || ''; const s1 = document.getElementById('strat1').value || '';
+      const d2 = document.getElementById('dist2').value || ''; const s2 = document.getElementById('strat2').value || '';
+      const d3 = document.getElementById('dist3').value || ''; const s3 = document.getElementById('strat3').value || '';
+      const ref = document.getElementById('reflection').value || '';
+
+      const content = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head><meta charset="utf-8"><title>FocusBurst Log - ${new Date().toLocaleDateString()}</title></head>
+<body style="font-family:Calibri,Arial,sans-serif; line-height:1.5;">
+<h1 style="color:#015959; text-align:center;">FocusBurst Session Log</h1>
+<p style="text-align:center; color:#555;"><strong>${new Date().toLocaleString()}</strong> • Session ${cycleCount} / 4</p>
+<hr style="border:1px solid #29B3B6; margin:2rem 0;">
+<h2 style="color:#015959; border-left:5px solid #FBC117; padding-left:12px;">After Your Burst: Log Distractions & Reflection</h2>
+<p style="font-style:italic; color:#444;">Record what tried to pull you away and your plan to defeat it next time. This builds stronger focus habits.</p>
+<p><strong>Current Task / Goal:</strong><br>${task.replace(/\n/g,'<br>')}</p>
+<p><strong>Distraction 1:</strong> ${d1}<br><strong>Strategy for next time:</strong> ${s1}</p>
+<p><strong>Distraction 2:</strong> ${d2}<br><strong>Strategy:</strong> ${s2}</p>
+<p><strong>Distraction 3:</strong> ${d3}<br><strong>Strategy:</strong> ${s3}</p>
+<p><strong>Quick Reflection (what helped or didn't?):</strong><br>${ref.replace(/\n/g,'<br>')}</p>
+<hr style="border:1px solid #29B3B6; margin:2rem 0;">
+<p style="text-align:center; font-size:0.9rem; color:#777;">Generated with FocusBurst • Keep building those focus habits!</p>
+</body>
+</html>`;
+
+      const blob = new Blob([content], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `FocusBurst_Log_${new Date().toISOString().slice(0,10)}.doc`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Load saved data on page load
+    loadSavedData();
+    updateDisplay();
+  </script>
+</body>
+</html>
