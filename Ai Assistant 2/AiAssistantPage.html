@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skillizee AI Adventure Lab – CBSE AI Assistant using Teachable Machine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&family=Luckiest+Guy&family=Permanent+Marker&family=Rock+Salt&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --comic-red: #d00;
+      --comic-yellow: #ffeb3b;
+      --comic-orange: #ff9500;
+      --comic-green: #2ecc71;
+      --comic-black: #000;
+      --paper: #fffef7;
+      --gold: #FFD700;
+    }
+    body {
+      font-family: 'Comic Neue', cursive;
+      color: #111;
+      line-height: 1.5;
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 254, 247, 0.78);
+      z-index: -2;
+    }
+    .tag {
+      margin: 0 auto 2rem;
+      padding: clamp(2.5rem, 6vw, 3.5rem) clamp(6vw, 8vw, 10vw) clamp(6rem, 8rem, 10rem);
+      background: repeating-conic-gradient(from 0deg at 50% 50%, var(--comic-red) 0 6deg, #b71c1c 0 12deg),
+                  radial-gradient(circle at 50% 50%, #ff4a4a88 0%, transparent 70%);
+      color: white;
+      font-family: 'Luckiest Guy', 'Bangers', cursive;
+      font-size: clamp(2.4rem, 5.5vw, 3.4rem);
+      text-align: center;
+      border-radius: 50px 50px 0 0;
+      box-shadow: 0 12px 0 var(--comic-black);
+      min-height: 140px;
+      animation: zoomBg 24s infinite ease-in-out;
+    }
+    .tag strong {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(4.2rem, 9vw, 5.6rem);
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+    }
+    @keyframes zoomBg {
+      0%, 100% { background-size: 200% 200%; background-position: center center; }
+      50% { background-size: 240% 240%; background-position: 52% 52%; }
+    }
+    #fullscreenBtn {
+      position: fixed;
+      top: 20px; right: 20px;
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 50%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 999999;
+      transition: all 0.35s ease;
+    }
+    #fullscreenBtn:hover {
+      background: var(--comic-red);
+      transform: scale(1.15) rotate(8deg);
+    }
+    #entryOverlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: black; display: flex; align-items: center; justify-content: center;
+      transition: opacity 1.2s;
+    }
+    #entryOverlay.hidden { opacity: 0; pointer-events: none; }
+    #introVideo { width: 100%; height: 100%; object-fit: cover; }
+    #startButton {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--comic-red);
+      color: white;
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      padding: 1.2rem 3.5rem;
+      border: 10px solid var(--comic-black);
+      border-radius: 40px;
+      box-shadow: 0 14px 0 var(--comic-black);
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 10000;
+    }
+    #startButton:hover {
+      background: var(--comic-yellow);
+      color: var(--comic-black);
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 18px 0 var(--comic-black);
+    }
+    .post-video-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+    #entryOverlay.hidden ~ .post-video-hidden {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #progressContainer {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 10px;
+      width: 0%;
+      background: rgba(0,0,0,0.08);
+      z-index: 9999;
+      border-radius: 0 0 10px 10px;
+      max-width: 96vw;
+      transition: width 0.5s ease-out;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #topProgress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--comic-yellow), #ffd700);
+      border-radius: 0 0 10px 10px;
+    }
+    .end-icon {
+      position: absolute;
+      top: -6px;
+      pointer-events: auto;
+      z-index: 10000;
+    }
+    .end-icon.left { left: 0; width: 80px; height: 80px; transform: translateX(-50%); }
+    .end-icon.right { right: 0; width: 80px; height: 80px; transform: translateX(50%); }
+    .end-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+    .wobbling-element {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      width: 110px;
+      height: 110px;
+      animation: wobble 4s ease-in-out infinite;
+    }
+    #percentageCounter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #F6C817;
+      font-size: 1.7rem;
+      font-weight: 900;
+      text-shadow: 0 0 12px rgba(246,200,23,0.9);
+    }
+    .outer_circle { fill: transparent; stroke: #F6C817; stroke-width: 2; stroke-dasharray: 7 1; }
+    .outer_progress, .inner_progress { fill: none; stroke: #F6C817; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.4s ease-out; }
+    @keyframes wobble {
+      0%,100% { transform: translate(0,0); }
+      25% { transform: translate(2px,-2px); }
+      50% { transform: translate(0,2px); }
+      75% { transform: translate(-2px,-1px); }
+    }
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 50%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s ease;
+    }
+    #backToTop.opacity-100 { opacity: 1; pointer-events: auto; }
+    .content-card {
+      background: white;
+      border: 12px solid var(--comic-black);
+      box-shadow: 14px 14px 0 var(--comic-black);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      margin: 0 auto 3rem;
+      max-width: 1200px;
+      position: relative;
+      z-index: 5;
+    }
+    h1, h2 {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: clamp(42px, 7.5vw, 54px) !important;
+      color: var(--comic-red);
+      text-shadow: 3px 7px 0 var(--comic-black);
+      text-align: center;
+      margin-bottom: 2.2rem;
+      line-height: 1.15;
+    }
+    .logo-center {
+      display: block;
+      margin: 0 auto 3rem;
+      max-width: 280px;
+      height: auto;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    .module-box {
+      background: var(--comic-yellow);
+      border: 8px solid var(--comic-black);
+      box-shadow: 10px 10px 0 var(--comic-black);
+      padding: 1.8rem;
+      border-radius: 20px;
+      transform: rotate(1deg);
+      transition: all 0.3s;
+    }
+    .module-box:nth-child(even) { transform: rotate(-1.5deg); background: #e6f7ff; }
+    .module-box:hover {
+      transform: rotate(0deg) translateY(-10px);
+      box-shadow: 16px 16px 0 var(--comic-black);
+    }
+    .module-title {
+      font-size: clamp(32px, 5.5vw, 44px);
+      color: var(--comic-red);
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+    .module-list {
+      list-style: none;
+      padding: 0;
+      font-size: 1.35rem;
+    }
+    .module-list li {
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .pointer-gif {
+      width: 45px;
+      height: auto;
+      flex-shrink: 0;
+    }
+    .timeline-wrapper {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto 4rem;
+      overflow: hidden;
+    }
+    .comic-timeline {
+      display: flex;
+      overflow-x: auto;
+      gap: 2.5rem;
+      padding: 2rem 1rem;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    .comic-timeline::-webkit-scrollbar { display: none; }
+    .comic-panel {
+      flex: 0 0 340px;
+      background: white;
+      border: 10px solid var(--comic-black);
+      box-shadow: 12px 12px 0 var(--comic-black);
+      padding: 1.8rem 1.3rem;
+      border-radius: 20px;
+      position: relative;
+      scroll-snap-align: start;
+      transition: all 0.3s;
+    }
+    .comic-panel:hover { transform: scale(1.04); }
+    .panel-number {
+      position: absolute;
+      top: -50px; left: 50%; transform: translateX(-50%);
+      background: var(--comic-yellow);
+      font-family: 'Permanent Marker', cursive;
+      font-size: 1.8rem;
+      padding: 0.4rem 1.2rem;
+      border: 6px solid var(--comic-black);
+      border-radius: 50%;
+      box-shadow: 6px 6px 0 var(--comic-black);
+    }
+    .comic-panel h3, .comic-panel p {
+      font-size: 20px;
+      text-align: center;
+      margin: 0.6rem 0;
+    }
+    .comic-panel h3 {
+      color: var(--comic-red);
+      font-weight: bold;
+    }
+    .carousel-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+    .small-arrow {
+      background: var(--comic-red);
+      color: white;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 6px solid var(--comic-black);
+      box-shadow: 8px 8px 0 var(--comic-black);
+      font-size: 2.5rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s;
+      margin: 0 1rem;
+    }
+    .small-arrow:hover {
+      background: var(--comic-orange);
+      transform: scale(1.15);
+    }
+    .dots-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ccc;
+      margin: 0 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active {
+      background: var(--comic-red);
+      transform: scale(1.4);
+    }
+    .final-splash {
+      max-width: 1000px;
+      margin: 5rem auto;
+      padding: 5rem 3rem;
+      background: radial-gradient(circle at 50% 30%, var(--comic-yellow), var(--comic-orange));
+      border: 14px solid var(--comic-black);
+      border-radius: 60px;
+      box-shadow: 0 0 60px #ff950044;
+      text-align: center;
+      position: relative;
+      z-index: 5;
+    }
+    .final-text {
+      font-family: 'Luckiest Guy', cursive;
+      -webkit-text-stroke: 5px var(--comic-black);
+      text-shadow: 10px 10px 0 var(--comic-black);
+      font-size: clamp(4rem, 9vw, 7rem);
+      color: white;
+    }
+    footer {
+      background: #000;
+      color: var(--comic-yellow);
+      text-align: center;
+      padding: 4rem 1rem;
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+    }
+    footer .logo img {
+      display: block;
+      margin: 0 auto 1.5rem;
+      max-width: 300px;
+    }
+    footer .social-links a {
+      color: var(--comic-yellow);
+      margin: 0 1.2rem;
+      text-decoration: none;
+    }
+    footer .social-links a:hover { color: white; }
+  </style>
+</head>
+<body>
+
+<div id="entryOverlay">
+  <video id="introVideo" playsinline preload="auto" muted>
+    <source src="https://chirag-gour.github.io/Audio_SkilliZee/Ai%20Assistant%202/Intro%202.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <button id="startButton">Let's Explore!</button>
+</div>
+
+<button id="fullscreenBtn" title="Toggle Fullscreen">
+  <svg fill="none" height="32" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24" width="32">
+    <polyline points="15 3 21 3 21 9"></polyline>
+    <polyline points="9 21 3 21 3 15"></polyline>
+    <line x1="21" x2="14" y1="3" y2="10"></line>
+    <line x1="3" x2="10" y1="21" y2="14"></line>
+  </svg>
+</button>
+
+<div class="tag post-video-hidden"><strong>SKILLIZEE AI ADVENTURE LAB</strong>CBSE - AI Assistant using Teachable Machine</div>
+
+<div class="post-video-hidden" id="progressContainer">
+  <div id="topProgress">
+    <div class="end-icon left">
+      <img src="https://login.skillizee.io/s/articles/69897aae6a6fca004e098672/images/Human 2.gif" alt="Human">
+    </div>
+    <div class="end-icon right">
+      <img src="https://login.skillizee.io/s/articles/69897aae6a6fca004e098672/images/emo-robot-happy-discord.gif" alt="AI">
+    </div>
+  </div>
+</div>
+
+<div class="wobbling-element post-video-hidden">
+  <div id="percentageCounter">0%</div>
+  <svg height="110" viewBox="-100 -100 200 200" width="110">
+    <circle class="outer_circle" cx="0" cy="0" r="99"></circle>
+    <circle class="outer_circle_bars_l" cx="0" cy="0" r="96"></circle>
+    <circle class="outer_circle_bars_r" cx="0" cy="0" r="96"></circle>
+    <circle class="outer_progress" cx="0" cy="0" r="96" stroke-dasharray="602" stroke-dashoffset="602" transform="rotate(-90 0 0)"></circle>
+    <circle class="inner_progress" cx="0" cy="0" r="80" stroke-dasharray="502" stroke-dashoffset="502" transform="rotate(90 0 0)"></circle>
+    <circle class="center_outer_circle" cx="0" cy="0" r="73"></circle>
+    <circle class="center_inner_circle_second" cx="0" cy="0" r="67"></circle>
+    <rect fill="#F6C817" height="4" rx="1" width="4" x="-1.5" y="-68"></rect>
+    <rect fill="#F6C817" height="4" rx="1" width="4" x="-2.5" y="64"></rect>
+    <rect fill="#F6C817" height="4" rx="1" width="4" x="-68" y="-2.5"></rect>
+    <rect fill="#F6C817" height="4" rx="1" width="4" x="64" y="-1.5"></rect>
+  </svg>
+</div>
+
+<button class="post-video-hidden" id="backToTop">
+  <svg fill="none" height="32" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="32">
+    <path d="M12 19V5M5 12l7-7 7 7"></path>
+  </svg>
+</button>
+
+<main class="max-w-6xl mx-auto px-6 pb-20 space-y-16 post-video-hidden">
+
+  <div class="content-card text-center">
+    <h1>Welcome to CBSE - AI Assistant using Teachable</h1>
+    <p style="font-size:1.8rem; margin:2rem 0;">
+      Turn everyday places into smart adventures!<br>
+      Snap photos &rarr; train AI &rarr; make it talk &rarr; launch your own robot guide!<br>
+      Perfect for curious explorers, school heroes & future coders. 🚀🤖
+    </p>
+    <img alt="AI Adventure Lab Logo" class="logo-center" src="https://login.skillizee.io/s/articles/69902121056a5f4a6054c8d3/images/Thumbnail 3.png" style="filter: drop-shadow(8px 8px 0 #000);">
+    <div style="font-size:1.6rem; font-weight:bold; color:var(--comic-orange); margin-top:2rem;">
+      &rarr; Collect local data &rarr; Train with Teachable Machine &rarr; Build app in MIT &rarr; Become an AI inventor!
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h2>What You'll Master</h2>
+    <div class="module-grid">
+      <div class="module-box">
+        <h3 class="module-title">Module 1: Foundations of AI</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Understand real intelligence vs artificial intelligence</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Learn core machine learning ideas in a fun way</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Explore what AI can (and can't) do + see a live demo</li>
+        </ul>
+      </div>
+      <div class="module-box">
+        <h3 class="module-title">Module 2: Exploring AI Tools</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Play with AI that sees images, hears sounds & speaks</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Get creative with AI art, music & story tools</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Solve math problems live with AI help</li>
+        </ul>
+      </div>
+      <div class="module-box">
+        <h3 class="module-title">Module 3: Project Planning</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Set your big mission: build a Locality Guide AI</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Create your Data Wishlist activity</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Master smart data collection, cleaning & export prep</li>
+        </ul>
+      </div>
+      <div class="module-box">
+        <h3 class="module-title">Module 4: Training with Teachable Machine</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Get to know Google's free Teachable Machine tool</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Learn the step-by-step magic of training AI</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Follow the fun Bananameter tutorial example</li>
+        </ul>
+      </div>
+      <div class="module-box">
+        <h3 class="module-title">Module 5: Testing & Bringing to Life</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Test your AI, find mistakes & improve it</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Use MIT App Inventor to turn your model into a real phone app</li>
+        </ul>
+      </div>
+      <div class="module-box">
+        <h3 class="module-title">Module 6: Capstone Project</h3>
+        <ul class="module-list">
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Finish and launch your complete Locality Guide AI</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Create a project flowchart assignment</li>
+          <li><img class="pointer-gif" src="https://login.skillizee.io/s/articles/6990029ea28614530f9c5c9f/images/Pointer.gif"> Build bonus chatbot, journey video or reflection</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h2>Your 6-Module Comic Journey</h2>
+    <p class="text-center text-xl mb-6">Swipe or use arrows to read the adventure panels!</p>
+    <div class="timeline-wrapper">
+      <div class="comic-timeline" id="timeline">
+        <div class="comic-panel">
+          <div class="panel-number">1</div>
+          <h3>Foundations</h3>
+          <p>Discover what real intelligence means, how machines try to copy it, and what AI is already super good (and not so good) at - with a fun live demo!</p>
+        </div>
+        <div class="comic-panel">
+          <div class="panel-number">2</div>
+          <h3>AI Tools Party</h3>
+          <p>Get hands-on with amazing AI that can look at pictures, listen to your voice, speak answers back, get creative, and even solve math problems live!</p>
+        </div>
+        <div class="comic-panel">
+          <div class="panel-number">3</div>
+          <h3>Project Plan</h3>
+          <p>Plan your own super-cool project: create an AI guide for places around you - decide what data you need, collect it smartly, clean it up, and prepare everything for training!</p>
+        </div>
+        <div class="comic-panel">
+          <div class="panel-number">4</div>
+          <h3>Training Time!</h3>
+          <p>Meet Google's free Teachable Machine tool - learn how to feed it examples, watch it learn step-by-step, and try the famous Bananameter example to see magic happen!</p>
+        </div>
+        <div class="comic-panel">
+          <div class="panel-number">5</div>
+          <h3>Test & Launch</h3>
+          <p>Put your AI to the test, fix any mistakes, make it better, then use MIT App Inventor to turn your trained model into a real working phone app that anyone can use!</p>
+        </div>
+        <div class="comic-panel">
+          <div class="panel-number">6</div>
+          <h3>CAPSTONE!</h3>
+          <p>Bring everything together - finish and launch your full Locality Guide AI project, draw a flowchart of how it works, build a bonus chatbot or video, and reflect on your amazing journey!</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-controls">
+      <button class="small-arrow" onclick="scrollTimeline(-1)">&larr;</button>
+      <div class="dots-container" id="dotsContainer"></div>
+      <button class="small-arrow" onclick="scrollTimeline(1)">&rarr;</button>
+    </div>
+  </div>
+
+  <div class="final-splash">
+    <div class="final-text">READY TO<br>BECOME AN<br>AI INVENTOR?!</div>
+    <p style="font-size:2.5rem; margin-top:2rem; color:#111; font-weight:bold;">Start Training Your Robot Friend Today!</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="logo">
+    <img src="https://storage.googleapis.com/skillizee-io.firebasestorage.app/images/logos/skillizee-white-logo.png" alt="SkilliZee Logo">
+  </div>
+  <p class="brand-slogan">Empowering Skills for Tomorrow's World</p>
+  <div class="social-links">
+    <a href="https://facebook.com/skillizee">Facebook</a>
+    <a href="https://instagram.com/skillizee">Instagram</a>
+    <a href="https://linkedin.com/company/skillizee">LinkedIn</a>
+  </div>
+  <div class="contact-info">
+    <p>Email: pm@skillizee.io | Phone: +91-7597318172 | Website: www.skillizee.io</p>
+  </div>
+  <p class="copyright">© 2026 SkilliZee. All rights reserved. | AI Adventure Lab</p>
+</footer>
+
+<script>
+// Entry video + start button
+const entryOverlay = document.getElementById('entryOverlay');
+const introVideo = document.getElementById('introVideo');
+const startBtn = document.getElementById('startButton');
+
+if (introVideo && startBtn) {
+  startBtn.onclick = () => {
+    introVideo.muted = false;
+    introVideo.volume = 0.85;
+    introVideo.play().catch(() => setTimeout(() => introVideo.play(), 300));
+    startBtn.style.display = 'none';
+  };
+
+  introVideo.onended = () => entryOverlay.classList.add('hidden');
+
+  setTimeout(() => {
+    if (!entryOverlay.classList.contains('hidden')) entryOverlay.classList.add('hidden');
+  }, 45000);
+}
+
+// Progress + back to top
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrolled = docHeight > 0 ? scrollTop / docHeight : 0;
+  const percent = Math.min(scrolled * 100, 100);
+  document.getElementById('progressContainer').style.width = `${percent}%`;
+  document.getElementById('percentageCounter').textContent = Math.round(percent) + '%';
+  document.getElementById('backToTop').classList.toggle('opacity-100', scrollTop > 400);
+});
+
+document.getElementById('backToTop').onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+
+// Fullscreen
+document.getElementById('fullscreenBtn').onclick = () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+};
+
+// Comic timeline carousel
+const timeline = document.getElementById('timeline');
+if (timeline) {
+  const panels = timeline.querySelectorAll('.comic-panel');
+  let currentIndex = 0;
+  const gap = parseFloat(getComputedStyle(timeline).gap) || 40;
+  const panelWidth = panels[0].offsetWidth + gap;
+
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+    });
+  }
+
+  function scrollToIndex(idx) {
+    currentIndex = Math.max(0, Math.min(idx, panels.length - 1));
+    timeline.scrollTo({ left: currentIndex * panelWidth, behavior: 'smooth' });
+    updateDots();
+  }
+
+  window.scrollTimeline = (dir) => scrollToIndex(currentIndex + dir);
+
+  panels.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => scrollToIndex(i);
+    document.getElementById('dotsContainer').appendChild(dot);
+  });
+
+  setInterval(() => window.scrollTimeline(1), 10000);
+}
+</script>
+</body>
+</html>
