@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Light Quiz Challenge - Class 8 Science</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #01579b;
+      margin-bottom: 8px;
+      font-size: 2.1em;
+    }
+    .subtitle {
+      text-align: center;
+      color: #555;
+      font-size: 1.1em;
+      margin-bottom: 30px;
+    }
+    .question {
+      background: #f5faff;
+      padding: 20px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+      border-left: 4px solid #0288d1;
+    }
+    h3 {
+      margin-top: 0;
+      color: #01579b;
+    }
+    .options label {
+      display: block;
+      margin: 12px 0;
+      padding: 10px 12px;
+      background: #e8f4fd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .options label:hover {
+      background: #d1e8ff;
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      background: #0288d1;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.1em;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0277bd;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #result {
+      text-align: center;
+      font-size: 1.3em;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 6px;
+      display: none;
+    }
+    .correct { 
+      background: #e8f5e9; 
+      color: #2e7d32; 
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .incorrect { 
+      background: #ffebee; 
+      color: #c62828; 
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .progress {
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #01579b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Light Quiz Challenge</h1>
+    <p class="subtitle">Class 8 Science - Reflection of Light and Human Eye</p>
+
+    <div id="quiz">
+      <!-- Questions inserted by JavaScript -->
+    </div>
+
+    <button id="submitBtn">Submit Answers and View Results</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "According to the laws of reflection, the angle of incidence is always ________ the angle of reflection.",
+        options: ["more than", "equal to", "less than", "sometimes more, sometimes less"],
+        correct: 1,
+        explanation: "One key law: angle of incidence (i) = angle of reflection (r)."
+      },
+      {
+        question: "The dark muscular structure behind the cornea in the human eye that controls the amount of light entering is called the:",
+        options: ["Iris", "Pupil", "Lens", "Retina"],
+        correct: 0,
+        explanation: "The iris is the coloured part that adjusts the pupil size to control light."
+      },
+      {
+        question: "When you look in dim light (like at night), the size of your pupil becomes:",
+        options: ["Large (to let in more light)", "Small", "Medium", "Stays the same"],
+        correct: 0,
+        explanation: "In dim light, the iris makes the pupil bigger so more light can enter the eye."
+      },
+      {
+        question: "The image formed by a plane mirror is:",
+        options: [
+          "virtual, behind the mirror and enlarged",
+          "virtual, behind the mirror and of the same size as the object",
+          "real, at the surface of the mirror and enlarged",
+          "real, behind the mirror and of the same size as the object"
+        ],
+        correct: 1,
+        explanation: "Plane mirrors always give virtual, erect, same-size images behind the mirror (with lateral inversion)."
+      }
+    ];
+
+    const quizContainer = document.getElementById("quiz");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultDiv = document.getElementById("result");
+
+    // Render questions
+    questions.forEach((q, index) => {
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+      qDiv.innerHTML = `
+        <h3>Question ${index + 1}: ${q.question}</h3>
+        <div class="options">
+          ${q.options.map((opt, i) => `
+            <label>
+              <input type="radio" name="q${index}" value="${i}">
+              ${String.fromCharCode(97 + i)}. ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+      quizContainer.appendChild(qDiv);
+    });
+
+    // Submit logic
+    submitBtn.addEventListener("click", () => {
+      let score = 0;
+      let feedback = "";
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        const userAnswer = selected ? parseInt(selected.value) : -1;
+
+        if (userAnswer === q.correct) {
+          score++;
+          feedback += `<div class="correct">Q${index+1}: Correct. ${q.explanation}</div>`;
+        } else {
+          feedback += `<div class="incorrect">Q${index+1}: Incorrect. The correct answer is "${q.options[q.correct]}". ${q.explanation}</div>`;
+        }
+      });
+
+      const percentage = Math.round((score / questions.length) * 100);
+      let message = "";
+      if (score === questions.length) {
+        message = "Perfect score. Excellent understanding of the topic.";
+      } else if (score >= questions.length - 1) {
+        message = "Very good performance. Almost perfect.";
+      } else if (score >= Math.floor(questions.length / 2)) {
+        message = "Good effort. Review the laws of reflection and eye parts again.";
+      } else {
+        message = "Keep practicing. Revisit the chapter and try again.";
+      }
+
+      resultDiv.innerHTML = `
+        <h2>Your Score: ${score} / ${questions.length} (${percentage}%)</h2>
+        <p><strong>${message}</strong></p>
+        <div>${feedback}</div>
+      `;
+      resultDiv.style.display = "block";
+      resultDiv.style.background = percentage >= 80 ? "#e8f5e9" : percentage >= 50 ? "#fff8e1" : "#ffebee";
+
+      resultDiv.scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+
+</body>
+</html>
