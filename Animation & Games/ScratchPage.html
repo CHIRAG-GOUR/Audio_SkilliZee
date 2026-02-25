@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SBPL Animation & Games • Scratch Adventure • Skillizee</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --primary: #F7A028;
+      --primary-light: #FFBE00;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .bg-container {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+    }
+    .bg-gif {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255, 204, 153, 0.4),
+          rgba(255, 255, 255, 0.5)
+        ),
+        url('https://login.skillizee.io/s/articles/69749bb372042713b50fa1fe/images/James Curran.gif') center/cover no-repeat fixed;
+      opacity: 1;
+    }
+    .entry-animation {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1s ease-out;
+      opacity: 1;
+    }
+    .entry-animation.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .entry-animation img.gif {
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+    }
+    .hero-gradient { background: linear-gradient(to right, var(--primary), var(--primary-light)); }
+    .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12), 0 8px 10px -6px rgba(0,0,0,0.08); }
+    .mascot-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-18px); }
+    }
+    #startupFullscreenBtn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 99999;
+      width: 70px;
+      height: 70px;
+      background: rgba(247,160,40,0.96);
+      border: 5px solid #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 35px rgba(247,160,40,0.5), 0 0 40px rgba(247,160,40,0.6), inset 0 0 25px rgba(255,255,255,0.4);
+      backdrop-filter: blur(14px);
+      transition: all .4s;
+      animation: orangePulse 3.5s infinite;
+    }
+    #startupFullscreenBtn:hover {
+      transform: scale(1.22) rotate(10deg);
+      box-shadow: 0 20px 60px rgba(247,160,40,0.8), 0 0 80px rgba(247,160,40,0.9);
+      border-color: #000;
+    }
+    #startupFullscreenBtn svg { width: 40px; height: 40px; fill: #fff; }
+    @keyframes orangePulse {
+      0%,100% { box-shadow: 0 12px 35px rgba(247,160,40,0.5), 0 0 40px rgba(247,160,40,0.6), inset 0 0 25px rgba(255,255,255,0.4); }
+      50% { box-shadow: 0 18px 50px rgba(247,160,40,0.7), 0 0 60px rgba(247,160,40,0.8), inset 0 0 30px rgba(255,255,255,0.5); }
+    }
+    .glass { background: rgba(255,245,230,0.92); backdrop-filter: blur(24px); border: 1px solid rgba(247,160,40,0.5); border-radius: 2rem; }
+    .glass-dark { background: rgba(40,30,20,0.94); backdrop-filter: blur(22px); border: 2px solid var(--primary); border-radius: 2rem; color: #FFF8E1; }
+    .content-card {
+      background: #FFF8E1;
+      color: #2E2E2E;
+      border-radius: 2rem;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(247,160,40,0.18);
+      border: 2px solid var(--primary-light);
+    }
+    section { padding: 2.5rem 1.5rem; }
+    @media (min-width:768px) { section { padding: 3rem 2rem; } }
+    .space-y-6 > * + * { margin-top: 1.5rem !important; }
+    .timeline-container { max-width: 1100px; margin: 1rem auto; position: relative; padding: 1rem 0; opacity: 1; }
+    .timeline-container::before { content:''; position: absolute; top: 0; bottom: 0; left: 50%; width: 6px; background: var(--primary-light); transform: translateX(-50%); border-radius: 3px; box-shadow: 0 0 25px var(--primary); }
+    .timeline-item { margin: 2.5rem 0; width: 50%; position: relative; }
+    .timeline-item.left { left: 0; }
+    .timeline-item.right { left: 50%; }
+    .timeline-content {
+      background: rgba(247,160,40,0.15);
+      backdrop-filter: blur(16px);
+      border: 2px solid var(--primary);
+      border-radius: 1.5rem;
+      padding: 1.8rem;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+      transition: all .4s;
+      cursor: pointer;
+    }
+    .timeline-content:hover { transform: translateY(-10px); box-shadow: 0 25px 60px rgba(247,160,40,0.35); }
+    .timeline-content::before {
+      content: '';
+      position: absolute;
+      top: 1.8rem;
+      width: 0;
+      height: 0;
+      border: 16px solid transparent;
+    }
+    .left .timeline-content::before { right: -32px; border-left-color: var(--primary); }
+    .right .timeline-content::before { left: -32px; border-right-color: var(--primary); }
+    .timeline-dot {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      border: 6px solid var(--primary-light);
+      border-radius: 50%;
+      position: absolute;
+      top: 1.8rem;
+      z-index: 10;
+      box-shadow: 0 0 30px var(--primary-light);
+    }
+    .left .timeline-dot { right: -65px; }
+    .right .timeline-dot { left: -65px; }
+    .module-title { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
+    .chapters { margin-top: 1.2rem; display: none; opacity: 0; transition: opacity .5s; }
+    .chapters.show { display: block; opacity: 1; }
+    .chapter-item { padding: 0.6rem 0; font-size: 1.05rem; border-bottom: 1px dashed rgba(247,160,40,0.3); cursor: pointer; transition: all .3s; color: #2E2E2E; }
+    .chapter-item:hover { color: var(--primary); transform: translateX(6px); }
+    .chapter-explanation { display: none; margin-top: 0.4rem; font-size: 0.95rem; color: #444; padding: 0.7rem; background: rgba(0,0,0,0.04); border-radius: 0.5rem; }
+    .benefit-list {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .benefit-item {
+      background: rgba(255,190,0,0.12);
+      border-left: 5px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 1.05rem;
+      color: #2E2E2E;
+    }
+    .cta-dark { color: #1a1a1a; }
+    .cta-instruction { color: #444; font-size: 1.1rem; margin-top: 1rem; font-weight: 500; }
+    /* Improved Footer */
+    footer {
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      color: #f0f0f0;
+      padding: 4rem 1rem 2rem;
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.95rem;
+      border-top: 4px solid var(--primary);
+    }
+    footer .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    footer .logo img {
+      max-width: 280px;
+      filter: brightness(1.15);
+    }
+    footer .brand-slogan {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--primary-light);
+      margin-bottom: 1.5rem;
+    }
+    footer .social-links a {
+      color: var(--primary);
+      margin: 0 1.2rem;
+      font-size: 1.5rem;
+      transition: all 0.3s;
+    }
+    footer .social-links a:hover {
+      color: var(--primary-light);
+      transform: translateY(-3px);
+    }
+    footer .contact-info {
+      margin: 1.5rem 0;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    footer .copyright {
+      margin-top: 1.5rem;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Entry Animation (no Let's Explore button) -->
+<div class="entry-animation" id="entryOverlay">
+  <img alt="Entry Animation" class="gif" id="entryGif" src="https://login.skillizee.io/s/articles/696a2adc7cf1534ab64f5d38/images/intro%20gif%201%20(1).gif?v=1772006050126" />
+  <audio id="entryMusic1" preload="auto">
+    <source src="https://chirag-gour.github.io/Audio_SkilliZee/Animation%20&amp;%20Games/wiwiwi-8secCrop.mp3" type="audio/mpeg" />
+  </audio>
+  <audio id="entryMusic2" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-kitty-begging-meow-02-120.mp3" type="audio/mpeg" />
+  </audio>
+</div>
+
+<!-- Background GIF -->
+<div class="bg-container">
+  <div class="bg-gif"></div>
+</div>
+
+<!-- Fullscreen Button -->
+<button id="startupFullscreenBtn" title="Toggle Fullscreen">
+  <svg fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<!-- HERO -->
+<header class="hero-gradient text-white py-20 px-6 md:px-12 relative overflow-hidden rounded-b-3xl card-shadow">
+  <div class="max-w-5xl mx-auto text-center relative z-10">
+    <h1 class="text-5xl md:text-7xl font-bold leading-tight drop-shadow-lg">
+      <span style="font-size:5rem;">SBPL Animation & Games</span>
+    </h1>
+    <p class="text-2xl md:text-4xl mt-4 font-medium opacity-95 drop-shadow">Create • Animate • Play</p>
+  </div>
+  <img alt="Scratch Cat Mascot" class="absolute -bottom-12 right-8 md:right-20 w-48 md:w-64 mascot-float opacity-90 pointer-events-none" src="https://sweezy-cursors.com/wp-content/uploads/cursor/auto-draft/scratch-cat-custom-cursor.png" />
+  <div class="absolute top-10 left-10 w-32 h-32 bg-[#4E97FE] rounded-full opacity-0 blur-xl"></div>
+  <div class="absolute bottom-20 left-1/4 w-40 h-40 bg-[#35C759] rounded-full opacity-0 blur-2xl"></div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12 space-y-6">
+
+  <!-- WELCOME -->
+  <section>
+    <div class="content-card text-center">
+      <h2 class="font-bold mb-6 text-var(--primary)" style="font-size:2.5rem;">Welcome to Hands-On Scratch Animation & Games!</h2>
+      <p class="leading-relaxed text-[#2E2E2E]" style="font-size:1.25rem;">
+        Get excited about diving into the world of animation and games! Hello, Student - welcome to the SBPL (Scratch-Based Programming Learning) course on Animation and Games using Scratch, tailored for creative minds like yours.<br /><br />
+        Scratch makes coding fun with colorful blocks - no complicated typing needed! Whether you're dreaming of making your own cricket game or a flying cat adventure, we'll blend creativity, technology, and storytelling. Safety first: Remember to follow internet rules, limit screen time, and balance with outdoor play. Let's code some magic starting Now!
+      </p>
+      <div class="benefit-list mt-8">
+        <div class="benefit-item">By completing this course, you'll master visual programming and creative design.</div>
+        <div class="benefit-item">Create simple Scratch projects with block-based code for animations and games.</div>
+        <div class="benefit-item">Design interactive elements like moving sprites, scoring systems, and stories.</div>
+        <div class="benefit-item">Build skills in logic, problem-solving, and collaboration through activities and peer reviews.</div>
+        <div class="benefit-item">Understand real-world applications, from app development to careers like game developer or animator.</div>
+        <div class="benefit-item font-semibold text-var(--primary)">Plus, boost your confidence in tech - imagine sharing your animated birthday card or folk story game with friends! No prior coding needed; just curiosity and a computer.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU’LL MASTER -->
+  <section>
+    <div class="glass-dark rounded-3xl p-10 text-center">
+      <h2 class="font-bold mb-8 text-white" style="font-size:2.5rem;">What You’ll Master</h2>
+      <img alt="Scratch Cat mascot" class="w-40 mx-auto mb-6 drop-shadow-2xl mascot-float" src="https://login.skillizee.io/s/articles/697316ce544eca25d10a4b95/images/Scratch logo 1.png" />
+      <p class="text-white text-lg mb-8 leading-relaxed font-medium">Create animations, build games, use blocks like Motion, Events, Sensing & Variables - all with Scratch's fun, colorful interface!</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="module-card">Game Design - Logic & Input</div>
+        <div class="module-card">Game Design - Sensing & Variables</div>
+        <div class="module-card">Animation & Storytelling</div>
+        <div class="module-card">Game Mechanics (Interactive Play)</div>
+        <div class="module-card">The Capstone Project</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE – full chapters, fully interactive -->
+  <section>
+    <div class="max-w-5xl mx-auto text-center mb-8">
+      <div class="glass rounded-3xl p-8">
+        <h2 class="font-bold mb-4 text-var(--primary)" style="font-size:2.5rem;">Your 5-Module Journey</h2>
+        <p class="text-xl font-semibold text-[#2E2E2E]">Click on each module to explore chapters</p>
+        <p class="mt-3 text-gray-700">
+          This course spans 5 modules over 20–25 class periods (45–60 min each). Navigate sequentially, complete activities, watch videos, use simulations. Track in notebook. Certificate: Finish all 11 activities, pass quizzes (Modules 1–4), complete Capstone (design/code/share mini-game or animation with peer feedback). Aim 80%+.
+        </p>
+        <p class="mt-3 font-bold text-var(--primary)">
+          Fun Fact: Scratch has over 100 million users worldwide, including kids in India who’ve created games about Diwali fireworks - your project could be next!
+        </p>
+      </div>
+    </div>
+
+    <div class="timeline-container">
+
+      <!-- Module 1 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content glass-dark">
+          <h3 class="module-title">Module 1: Game Design - Logic & Input</h3>
+          <div class="chapters">
+            <div class="chapter-item">
+              1.1: The Scratch Workspace
+              <div class="chapter-explanation">Get familiar with the Scratch editor, stage, sprites, and blocks palette.</div>
+            </div>
+            <div class="chapter-item">
+              1.2 - Interactive Controls
+              <div class="chapter-explanation">Learn events and basic motion blocks for user input.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Keyboard Controls
+              <div class="chapter-explanation">Build your first interactive movement script.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content glass-dark">
+          <h3 class="module-title">Module 2: Game Design - Sensing & Variables</h3>
+          <div class="chapters">
+            <div class="chapter-item">
+              2.1 - Collision & Sensing
+              <div class="chapter-explanation">Use touching/overlap to detect interactions.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Sensing & Collision
+              <div class="chapter-explanation">Make objects react when they touch.</div>
+            </div>
+            <div class="chapter-item">
+              2.2 - Keeping Score
+              <div class="chapter-explanation">Introduce variables to track points.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Creating a Score Variable
+              <div class="chapter-explanation">Build scoring logic.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Planning & Building
+              <div class="chapter-explanation">Plan your mini-game.</div>
+            </div>
+            <div class="chapter-item">
+              Experiential Simulation - Variables and Scoring Simulator
+              <div class="chapter-explanation">Interactive variable practice.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content glass-dark">
+          <h3 class="module-title">Module 3: Animation & Storytelling</h3>
+          <div class="chapters">
+            <div class="chapter-item">
+              3.1 - Sprite Animation
+              <div class="chapter-explanation">Use costumes and loops for movement.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Animating a Walking Character
+              <div class="chapter-explanation">Create smooth walk cycles.</div>
+            </div>
+            <div class="chapter-item">
+              Experiential Simulation - Costume Animation Simulator
+              <div class="chapter-explanation">Practice costume switching.</div>
+            </div>
+            <div class="chapter-item">
+              3.2 - Storytelling With Dialogues
+              <div class="chapter-explanation">Add speech bubbles and sequences.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Create an Animated Birthday Card
+              <div class="chapter-explanation">Build a short story animation.</div>
+            </div>
+            <div class="chapter-item">
+              Experiential Simulation - Dialogue and Storytelling Simulator
+              <div class="chapter-explanation">Interactive storytelling practice.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content glass-dark">
+          <h3 class="module-title">Module 4: Game Mechanics (Interactive Play)</h3>
+          <div class="chapters">
+            <div class="chapter-item">
+              4.1 - User Input and Keyboard Controls
+              <div class="chapter-explanation">Advanced keyboard movement.</div>
+            </div>
+            <div class="chapter-item">
+              Experiential Simulation - Keyboard Movement Simulator
+              <div class="chapter-explanation">Practice smooth controls.</div>
+            </div>
+            <div class="chapter-item">
+              4.2 - Sensing, Touching, and Conditional Logic
+              <div class="chapter-explanation">If-then logic for game rules.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Game Over
+              <div class="chapter-explanation">Add lose conditions.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Jumping Logic & Game
+              <div class="chapter-explanation">Implement jumps.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Trying It Out: Testing and Debugging
+              <div class="chapter-explanation">Fix bugs.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Game Testing Challenge
+              <div class="chapter-explanation">Test thoroughly.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 5 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content glass-dark">
+          <h3 class="module-title">Module 5: The Capstone Project</h3>
+          <div class="chapters">
+            <div class="chapter-item">
+              5.1 - Storyboarding and Project Planning
+              <div class="chapter-explanation">Plan your mini-game or animation.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Sketching Your Mini-Game
+              <div class="chapter-explanation">Draw ideas.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Storyboard Planning Simulator
+              <div class="chapter-explanation">Sequence scenes.</div>
+            </div>
+            <div class="chapter-item">
+              5.2 - Asset Design and Preparation
+              <div class="chapter-explanation">Create/find sprites & backdrops.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Asset Builder
+              <div class="chapter-explanation">Build assets.</div>
+            </div>
+            <div class="chapter-item">
+              5.3 - Coding The Capstone Project
+              <div class="chapter-explanation">Implement full logic.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Implementing Full Logic
+              <div class="chapter-explanation">Code step-by-step.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Advanced Techniques Simulator
+              <div class="chapter-explanation">Try extras.</div>
+            </div>
+            <div class="chapter-item">
+              5.4 - Testing, Peer Review, Sharing, and Reflections
+              <div class="chapter-explanation">Test, review, share.</div>
+            </div>
+            <div class="chapter-item">
+              Activity - Sharing and Review Simulator
+              <div class="chapter-explanation">Get feedback.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="text-center">
+    <div class="glass rounded-3xl p-12">
+      <h2 class="font-black mb-4 cta-dark" style="font-size:2.8rem;">Ready to Code the Future?</h2>
+      <p class="font-black text-3xl cta-dark mb-3">Start Your Scratch Adventure Now!</p>
+      <p class="cta-instruction">Click on the next button for moving further.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="logo">
+    <img src="https://storage.googleapis.com/skillizee-io.firebasestorage.app/images/logos/skillizee-white-logo.png" alt="SkilliZee Logo">
+  </div>
+  <p class="brand-slogan">Empowering Skills for Tomorrow's World</p>
+  <div class="social-links">
+    <a href="https://facebook.com/skillizee">Facebook</a>
+    <a href="https://instagram.com/skillizee">Instagram</a>
+    <a href="https://linkedin.com/company/skillizee">LinkedIn</a>
+  </div>
+  <div class="contact-info">
+    <p>Email: pm@skillizee.io | Phone: +91-7597318172 | Website: www.skillizee.io</p>
+  </div>
+  <p class="copyright">© 2026 SkilliZee. All rights reserved. | SBPL Animation & Games</p>
+</footer>
+
+<script>
+// ── Progress & Hourglass logic ──
+function getProgress() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  return scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+}
+const progressBar = document.getElementById('progress-bar');
+const progressIcon = document.getElementById('progress-icon');
+const dashRing = document.getElementById('dash-ring');
+const upper = document.getElementById('upper');
+const line = document.getElementById('line');
+const lower = document.getElementById('lower');
+const percentText = document.getElementById('percentText');
+const percentBelow = document.getElementById('percent-below');
+const rotatingGroup = document.getElementById('hourglass-rotating-group');
+const circumference = 820;
+let isFlipped = false;
+
+function updateAll() {
+  const p = getProgress();
+  const percent = p * 100;
+  if (progressBar) progressBar.style.width = percent + '%';
+  if (progressBar) progressBar.classList.toggle('active', percent > 3);
+  if (progressIcon) progressIcon.style.left = `calc(${percent}% - 32px)`;
+  const eased = p * p * (3 - 2 * p);
+  const t = eased;
+  if (dashRing) dashRing.setAttribute('stroke-dashoffset', circumference * (1 - t));
+  if (p > 0.99 && !isFlipped) {
+    if (rotatingGroup) rotatingGroup.style.transform = `rotate(-180deg)`;
+    isFlipped = true;
+  } else if (p < 0.01 && isFlipped) {
+    if (rotatingGroup) rotatingGroup.style.transform = `rotate(0deg)`;
+    isFlipped = false;
+  }
+  let sandT = !isFlipped ? Math.min(t / 0.95, 1) : Math.max(1 - (t / 0.95), 0);
+  if (upper) upper.setAttribute('points', `120,125 180,125 150,${195 - sandT * 70}`);
+  if (lower) lower.setAttribute('d', `M120,195 L180,195 L150,${195 - sandT * 70} Z`);
+  if (line) {
+    line.setAttribute('stroke-dashoffset', 200 * (1 - sandT));
+    line.style.opacity = (sandT > 0.02 && sandT < 0.98) ? '1' : '0';
+  }
+  const displayPercent = Math.round(percent);
+  if (percentText) percentText.textContent = displayPercent + '%';
+  if (percentBelow) percentBelow.textContent = displayPercent + '%';
+}
+
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    ticking = true;
+    requestAnimationFrame(() => {
+      updateAll();
+      ticking = false;
+    });
+  }
+});
+
+// Fullscreen
+document.getElementById('startupFullscreenBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+});
+
+// ── Entry Animation (auto-hide, no button) ──
+const entryOverlay = document.getElementById('entryOverlay');
+const entryGif = document.getElementById('entryGif');
+const audio1 = document.getElementById('entryMusic1');
+const audio2 = document.getElementById('entryMusic2');
+
+// Force GIF restart
+const timestamp = Date.now();
+const cleanSrc = entryGif.src.split('?')[0];
+entryGif.src = cleanSrc + '?v=' + timestamp;
+
+// Audio
+audio1.volume = 0.7;
+audio2.volume = 0.7;
+audio1.play().catch(() => console.log("Audio1 started"));
+setTimeout(() => audio2.play().catch(() => console.log("Audio2 started")), 3000);
+
+// Auto-remove entry after 5 seconds + fade
+setTimeout(() => {
+  entryOverlay.classList.add('hidden');
+  // Gentle audio fade out
+  let fadeInterval = setInterval(() => {
+    if (audio1.volume > 0.05) {
+      audio1.volume -= 0.05;
+      audio2.volume -= 0.05;
+    } else {
+      audio1.pause();
+      audio2.pause();
+      clearInterval(fadeInterval);
+    }
+  }, 200);
+}, 5000);
+
+// Fallback: force remove after 10s
+setTimeout(() => {
+  if (entryOverlay.parentNode) {
+    entryOverlay.remove();
+    document.body.style.overflowY = 'auto';
+  }
+}, 10000);
+
+// Timeline expand/collapse
+document.querySelectorAll('.timeline-content').forEach(item => {
+  item.addEventListener('click', function(e) {
+    if (e.target.closest('.chapter-item')) return;
+    const chapters = this.querySelector('.chapters');
+    if (chapters) chapters.classList.toggle('show');
+  });
+});
+
+// Chapter expand
+document.querySelectorAll('.chapter-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const explanation = this.querySelector('.chapter-explanation');
+    if (explanation) explanation.classList.toggle('show');
+  });
+});
+</script>
+
+</body>
+</html>
