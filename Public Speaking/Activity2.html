@@ -219,7 +219,7 @@
     textarea.addEventListener('input', startTimer);
 
     // Download logic
-    document.getElementById('downloadStickyBtn').addEventListener('click', async () => {
+    document.getElementById('downloadStickyBtn').addEventListener('click', () => {
       const answer = textarea.value.trim();
       const displayText = answer || "They want 3 actionable ways to cut meeting time in half.";
       const canvas = document.createElement('canvas');
@@ -256,41 +256,44 @@
       ctx.fillStyle = '#666';
       ctx.fillText("skillizee.io – Speak Smart Lab", canvas.width / 2, canvas.height - 35);
 
-      // Mobile/App fix using Blob instead of Data URL
-      canvas.toBlob(async (blob) => {
-        const fileName = 'my-sticky-note-reframe.png';
+      // 1. Get the Data URL
+      const dataUrl = canvas.toDataURL('image/png');
+      
+      // 2. Synchronously create a File Blob to preserve user gesture
+      const arr = dataUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while(n--){
+          u8arr[n] = bstr.charCodeAt(n);
+      }
+      const file = new File([new Blob([u8arr], {type:mime})], 'my-sticky-note-reframe.png', { type: mime });
 
-        // 1. Try modern Web Share API (Strongest method for mobile WebViews)
-        if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'image/png' })] })) {
-          try {
-            const file = new File([blob], fileName, { type: 'image/png' });
-            await navigator.share({
-              files: [file],
-              title: 'My Sticky Note',
-              text: 'My public speaking reframe sticky note!'
-            });
-            return; // Successfully shared/saved natively
-          } catch (e) {
-            console.log('Share API denied or failed, falling back to blob URL download', e);
-          }
-        }
-        
-        // 2. Standard Blob URL fallback download (Standard for Laptops and compliant Apps)
-        const objectUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = objectUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        
-        // Clean up
-        setTimeout(() => {
-          document.body.removeChild(link);
-          URL.revokeObjectURL(objectUrl);
-        }, 150);
-
-      }, 'image/png');
+      // 3. Try Native Web Share API first (For Mobile Apps & WebViews)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: 'My Sticky Note',
+          text: 'Here is my public speaking reframe!'
+        }).catch(err => {
+          // If the user cancelled or share failed, fallback
+          forceLaptopDownload(dataUrl);
+        });
+      } else {
+        // 4. Standard Browser Download Fallback (For Laptops)
+        forceLaptopDownload(dataUrl);
+      }
     });
+
+    function forceLaptopDownload(dataUrl) {
+      const link = document.createElement('a');
+      link.download = 'my-sticky-note-reframe.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
       const words = text.split(' ');
