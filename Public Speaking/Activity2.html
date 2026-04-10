@@ -39,12 +39,12 @@
 
     .container {
       width: 90%;
-      max-width: 900px; /* keeps it focused and readable */
+      max-width: 900px;
       background: white;
       border-radius: 24px;
       padding: 3.5rem 2.8rem;
       box-shadow: 0 16px 50px rgba(31,51,69,0.18);
-      margin: 0 auto; /* centers horizontally */
+      margin: 0 auto;
       text-align: center;
     }
 
@@ -175,21 +175,12 @@
     <textarea id="stickyAnswer" placeholder="Type your one-sentence answer here…
 (Example: They want 3 fast ways to run shorter, more productive meetings.)"></textarea>
 
-    <button id="downloadStickyBtn">📥 Create & Download Image (Save / Print)</button>
-
-    <!-- Mobile App Fallback Container -->
-    <div id="imageDisplayContainer" style="display:none; margin-top: 1rem; padding: 1.2rem; border: 2px dashed var(--gold); border-radius: 12px; background: #fffaf0;">
-      <p style="font-weight:bold; color: var(--navy); font-size: 1.1rem; margin-bottom: 1rem; text-align: left; line-height: 1.5;">
-        📱 <strong>App Users:</strong> Long-press the image below to "Save Image".<br/>
-        💻 <strong>PC Users:</strong> The file should download automatically.
-      </p>
-      <img id="generatedImage" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-    </div>
+    <button id="downloadStickyBtn">📥 Download as Image (Save / Print)</button>
 
     <div class="instructions">
       <p style="font-weight: bold; color: var(--navy); margin-bottom: 1.2rem; font-size: 1.4rem;">Next Steps:</p>
       <ol>
-        <li>Click the button above to generate your personalized sticky note as an image</li>
+        <li>Click the button above to download your personalized sticky note as an image</li>
         <li>Save it to your phone or computer &mdash; or print it if possible</li>
         <li>Keep it visible during the rest of your preparation and during your actual talk</li>
         <li><strong>Submit</strong> a screenshot or photo of your completed sticky note in the LMS activity submission area to mark this challenge as complete.</li>
@@ -228,7 +219,7 @@
     textarea.addEventListener('input', startTimer);
 
     // Download logic
-    document.getElementById('downloadStickyBtn').addEventListener('click', () => {
+    document.getElementById('downloadStickyBtn').addEventListener('click', async () => {
       const answer = textarea.value.trim();
       const displayText = answer || "They want 3 actionable ways to cut meeting time in half.";
       const canvas = document.createElement('canvas');
@@ -265,19 +256,40 @@
       ctx.fillStyle = '#666';
       ctx.fillText("skillizee.io – Speak Smart Lab", canvas.width / 2, canvas.height - 35);
 
-      const dataUrl = canvas.toDataURL('image/png');
+      // Mobile/App fix using Blob instead of Data URL
+      canvas.toBlob(async (blob) => {
+        const fileName = 'my-sticky-note-reframe.png';
 
-      // 1. Trigger automated download (Works for Laptop/PC)
-      const link = document.createElement('a');
-      link.download = 'my-sticky-note-reframe.png';
-      link.href = dataUrl;
-      link.click();
+        // 1. Try modern Web Share API (Strongest method for mobile WebViews)
+        if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'image/png' })] })) {
+          try {
+            const file = new File([blob], fileName, { type: 'image/png' });
+            await navigator.share({
+              files: [file],
+              title: 'My Sticky Note',
+              text: 'My public speaking reframe sticky note!'
+            });
+            return; // Successfully shared/saved natively
+          } catch (e) {
+            console.log('Share API denied or failed, falling back to blob URL download', e);
+          }
+        }
+        
+        // 2. Standard Blob URL fallback download (Standard for Laptops and compliant Apps)
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(objectUrl);
+        }, 150);
 
-      // 2. Visually render the image for the Mobile App WebView users
-      const imgContainer = document.getElementById('imageDisplayContainer');
-      const imgEl = document.getElementById('generatedImage');
-      imgEl.src = dataUrl;
-      imgContainer.style.display = 'block';
+      }, 'image/png');
     });
 
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
